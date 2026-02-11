@@ -1,0 +1,1798 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model IDBIapply {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  clubId     Int      @db.TinyInt
+  userId     Int      @db.UnsignedMediumInt
+  createdAt  DateTime @db.DateTime(0)
+  updatedAt  DateTime @db.DateTime(0)
+  isApproved Boolean  @default(false)
+
+  @@unique([clubId, userId], map: "IDBIapply_userID_clubID_unique")
+  @@index([userId], map: "userID")
+}
+
+model IDBIbooths {
+  id        Int       @id @default(autoincrement()) @db.SmallInt
+  name      String    @db.Text
+  operator  Int       @unique(map: "IDBIbooths_UNIQUE") @db.UnsignedMediumInt
+  IDBIusers IDBIusers @relation(fields: [operator], references: [id], onDelete: Cascade, map: "IDBIbooths_IDBIusers_FK")
+}
+
+model IDBIclubs {
+  id            Int      @id @default(autoincrement()) @db.TinyInt
+  name          String   @db.VarChar(255)
+  leader        Int      @db.UnsignedMediumInt
+  subleader     Int?     @db.UnsignedMediumInt
+  maxPeople     Int?     @db.TinyInt
+  type          Int      @default(1) @db.TinyInt
+  hasInterview  Boolean? @default(false)
+  hasResume     Boolean? @default(false)
+  resumeLink    String?  @db.Text
+  interviewInfo String?  @db.Text
+
+  @@index([leader], map: "leader")
+  @@index([subleader], map: "subleader")
+  @@index([type], map: "type")
+}
+
+model IDBIclubtype {
+  id     Int     @id @default(autoincrement()) @db.TinyInt
+  type   String  @unique(map: "type") @db.VarChar(255)
+  icon   String? @db.VarChar(255)
+  option Int?    @db.TinyInt
+}
+
+model IDBIphone {
+  id      Int      @id @default(autoincrement())
+  student Int      @db.MediumInt
+  device  Int      @db.UnsignedMediumInt
+  time    DateTime @db.DateTime(0)
+  submit  Boolean
+}
+
+model IDBIusers {
+  id         Int         @id @db.UnsignedMediumInt
+  name       String      @db.VarChar(255)
+  stuid      Int         @unique(map: "stuid") @db.UnsignedSmallInt
+  accessKey  String?     @unique(map: "accessKey") @db.VarChar(255)
+  level      Int?        @db.TinyInt
+  jshsus     String      @db.Text
+  IDBIbooths IDBIbooths?
+}
+
+model audit_log {
+  id      Int    @id @default(autoincrement()) @db.UnsignedInt
+  content String @db.VarChar(1000)
+  teacher Int
+  date    String @db.VarChar(100)
+}
+
+model banned {
+  id        Int     @id @default(autoincrement()) @db.UnsignedInt
+  user      Int
+  days      Int     @default(3)
+  status    Int     @default(0)
+  exceedsum Int?
+  date      String? @db.VarChar(100)
+}
+
+model case_history {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  operatedBy Int
+  operatedAt DateTime @db.DateTime(0)
+  affected   Int      @db.TinyInt
+  statusTo   Boolean
+
+  @@index([operatedBy], map: "case_history_teacher_FK")
+}
+
+model case_schedule {
+  id   Int    @id @default(autoincrement()) @db.UnsignedInt
+  cron String @db.VarChar(50)
+  bhv  Int    @default(0)
+}
+
+model case_status {
+  id        Int       @id @default(autoincrement()) @db.UnsignedInt
+  status    Int       @default(0)
+  name      String?   @db.VarChar(100)
+  updatedAt DateTime? @db.DateTime(0)
+  updatedBy String    @db.Text
+}
+
+model case_time {
+  id         Int       @id @default(autoincrement())
+  start_time DateTime? @db.DateTime(0)
+  end_time   DateTime? @db.DateTime(0)
+  info       String?   @db.Text
+}
+
+model dorm_ban {
+  student Int      @id
+  target  Int
+  date    DateTime @db.DateTime(0)
+}
+
+model dorm_reports {
+  id              Int                  @id @default(autoincrement())
+  user_id         Int                  @db.UnsignedInt
+  room_id         Int
+  description     String               @db.Text
+  status          dorm_reports_status? @default(pending)
+  created_at      DateTime?            @default(now()) @db.Timestamp(0)
+  updated_at      DateTime?            @default(now()) @db.Timestamp(0)
+  image_url       String?              @db.VarChar(255)
+  image_public_id String?              @db.VarChar(255)
+  user            user                 @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "dorm_reports_ibfk_1")
+  dorm_rooms      dorm_rooms           @relation(fields: [room_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "dorm_reports_ibfk_2")
+
+  @@index([room_id], map: "room_id")
+  @@index([user_id], map: "student_id")
+}
+
+model dorm_rooms {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique(map: "dorm_rooms_unique") @db.Char(8)
+  capacity     Int
+  grade        Int
+  dorm_name    String         @default("송죽관") @db.Char(16)
+  dorm_reports dorm_reports[]
+  dorm_users   dorm_users[]
+}
+
+model dorm_users {
+  id           Int        @id @default(autoincrement())
+  room_id      Int
+  user_id      Int        @unique(map: "dorm_rooms_user_unique") @db.UnsignedInt
+  year         Int?       @db.UnsignedInt
+  semester     Int?       @db.UnsignedInt
+  bed_position Int?
+  dorm_rooms   dorm_rooms @relation(fields: [room_id], references: [id], onDelete: Cascade, map: "dorm_rooms_user_dorm_rooms_FK")
+  user         user       @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "dorm_rooms_user_user_FK")
+
+  @@index([room_id], map: "dorm_rooms_user_dorm_rooms_FK")
+}
+
+model eq_license {
+  id          Int     @id @default(autoincrement()) @db.UnsignedInt
+  user        Int     @db.UnsignedInt
+  equipment   Int     @db.UnsignedInt
+  master      Int     @db.UnsignedInt
+  issued_date String? @db.VarChar(300)
+  eq_list     eq_list @relation(fields: [equipment], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "id")
+  iam         iam     @relation(fields: [user], references: [stuid], onDelete: NoAction, onUpdate: NoAction, map: "stuid")
+
+  @@index([equipment], map: "id_idx")
+  @@index([user], map: "stuid_idx")
+  @@index([user, master], map: "stuid_idx1")
+  @@index([master], map: "stuid_idx2")
+}
+
+model eq_list {
+  id         Int          @id @default(autoincrement()) @db.UnsignedInt
+  name       String       @db.VarChar(200)
+  location   String       @db.VarChar(500)
+  content    String?      @db.VarChar(500)
+  eq_license eq_license[]
+}
+
+model eq_session {
+  id        Int  @id @default(autoincrement()) @db.UnsignedInt
+  equipment Int?
+  master    Int?
+  limit     Int?
+  date      Int?
+}
+
+model forgot {
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+  user      Int
+  code      String @db.VarChar(10)
+  isExpired Int    @default(0)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model history {
+  id             Int       @id @default(autoincrement()) @db.UnsignedInt
+  date           DateTime? @db.Date
+  teacher        Int
+  user           Int
+  beforeplus     Int?
+  beforeminus    Int?
+  afterplus      Int?
+  afterminus     Int?
+  reason         Int?
+  reason_caption String?   @db.VarChar(200)
+  act_date       String?   @db.VarChar(50)
+  sum            Int?
+  aftersum       Int?
+  display        Boolean   @default(true)
+}
+
+model iam {
+  id                   Int                    @id @default(autoincrement()) @db.UnsignedInt
+  stuid                Int                    @unique(map: "stuid") @db.UnsignedInt
+  name                 String                 @default("") @db.VarChar(15)
+  grade                Int
+  class                Int
+  num                  Int
+  dpc                  Int                    @default(0)
+  code                 String?                @db.VarChar(100)
+  password             String                 @db.VarChar(500)
+  plma                 Int?
+  jshsus               String?                @db.VarChar(100)
+  cms_id               String?                @db.VarChar(100)
+  cms_password         String?                @db.VarChar(100)
+  pass                 String?                @db.VarChar(100)
+  restricted           Int                    @default(0)
+  naju_id              String?                @db.VarChar(100)
+  phone                String?                @db.VarChar(100)
+  newID                Int?                   @db.MediumInt
+  email                String?                @db.VarChar(100)
+  gender               String?                @db.VarChar(6)
+  eq_license           eq_license[]
+  iam_user_permissions iam_user_permissions[]
+  songs                songs[]
+}
+
+model iam_permission {
+  id    Int     @id @default(autoincrement()) @db.UnsignedInt
+  title String? @db.VarChar(1000)
+}
+
+model iam_permissions {
+  id                   Int                    @id @default(autoincrement()) @db.UnsignedInt
+  name                 String                 @db.VarChar(127)
+  iam_user_permissions iam_user_permissions[]
+}
+
+model iam_sessions {
+  session_id String  @id @db.VarChar(128)
+  expires    Int     @db.UnsignedInt
+  data       String? @db.MediumText
+}
+
+model iam_user_permissions {
+  id              Int             @id @default(autoincrement()) @db.UnsignedInt
+  user_id         Int             @db.UnsignedInt
+  permission_id   Int             @db.UnsignedInt
+  hasPermission   Boolean         @default(true)
+  granted_at      DateTime?       @default(now()) @db.Timestamp(0)
+  iam             iam             @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "iam_user_permissions_ibfk_1")
+  iam_permissions iam_permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade, map: "iam_user_permissions_ibfk_2")
+
+  @@unique([user_id, permission_id], map: "user_id")
+  @@index([permission_id], map: "permission_id")
+}
+
+model jshsus {
+  id    Int    @id @default(autoincrement()) @db.UnsignedInt
+  name  String @db.VarChar(30)
+  stuid Int
+  code  String @db.VarChar(100)
+}
+
+model logs {
+  id     Int     @id @default(autoincrement()) @db.UnsignedInt
+  date   String  @db.VarChar(200)
+  user   String? @db.VarChar(500)
+  behave String  @db.VarChar(1000)
+}
+
+model pass_code {
+  student_id Int    @id
+  pass_code  String @default("******") @db.VarChar(500)
+  count      Int    @default(0)
+}
+
+model reason {
+  id    Int    @id @default(autoincrement()) @db.UnsignedInt
+  title String @default("") @db.VarChar(100)
+  plus  Int    @default(0)
+  minus Int    @default(0)
+  dpc   Int    @default(0)
+}
+
+model rx_action_forward {
+  act          String  @id @db.VarChar(80)
+  module       String  @db.VarChar(60)
+  type         String  @db.VarChar(15)
+  route_regexp String? @db.Text
+  route_config String? @db.Text
+  global_route String  @default("N") @db.Char(1)
+}
+
+model rx_addons {
+  addon      String  @id @db.VarChar(80)
+  is_used    String  @default("Y") @db.Char(1)
+  is_used_m  String  @default("N") @db.Char(1)
+  is_fixed   String  @default("N") @db.Char(1)
+  extra_vars String? @db.Text
+  regdate    String? @db.Char(14)
+
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_addons_site {
+  site_srl   BigInt  @default(0)
+  addon      String  @db.VarChar(80)
+  is_used    String  @default("Y") @db.Char(1)
+  is_used_m  String  @default("N") @db.Char(1)
+  extra_vars String? @db.Text
+  regdate    String? @db.Char(14)
+
+  @@unique([site_srl, addon], map: "unique_addon_site")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_admin_favorite {
+  admin_favorite_srl BigInt  @id
+  site_srl           BigInt? @default(0)
+  module             String? @db.VarChar(80)
+  type               String? @db.VarChar(30)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_admin_log {
+  ipaddress    String  @db.VarChar(60)
+  regdate      String? @db.Char(14)
+  site_srl     BigInt? @default(0)
+  module       String? @db.VarChar(100)
+  act          String? @db.VarChar(100)
+  request_vars String? @db.Text
+
+  @@index([regdate], map: "idx_admin_date")
+  @@index([ipaddress], map: "idx_admin_ip")
+  @@ignore
+}
+
+model rx_advanced_mailer_log {
+  mail_id        BigInt  @id @default(autoincrement())
+  mail_from      String  @db.VarChar(250)
+  mail_to        String  @db.Text
+  subject        String  @db.VarChar(250)
+  calling_script String  @db.VarChar(250)
+  sending_method String  @db.VarChar(40)
+  regdate        String  @db.Char(14)
+  status         String  @db.VarChar(40)
+  errors         String? @db.LongText
+
+  @@index([regdate], map: "idx_regdate")
+  @@index([status], map: "idx_status")
+}
+
+model rx_advanced_mailer_push_log {
+  push_id        BigInt  @id @default(autoincrement())
+  push_from      String  @db.VarChar(250)
+  push_to        String  @db.LongText
+  subject        String  @db.VarChar(250)
+  content        String  @db.Text
+  calling_script String  @db.VarChar(250)
+  success_count  Int
+  deleted_count  Int
+  updated_count  Int
+  regdate        String  @db.Char(14)
+  status         String  @db.VarChar(40)
+  errors         String? @db.LongText
+
+  @@index([regdate], map: "idx_regdate")
+  @@index([status], map: "idx_status")
+}
+
+model rx_advanced_mailer_sms_log {
+  sms_id         BigInt  @id @default(autoincrement())
+  sms_from       String  @db.VarChar(250)
+  sms_to         String  @db.Text
+  content        String  @db.Text
+  calling_script String  @db.VarChar(250)
+  sending_method String  @db.VarChar(40)
+  regdate        String  @db.Char(14)
+  status         String  @db.VarChar(40)
+  errors         String? @db.LongText
+
+  @@index([regdate], map: "idx_regdate")
+  @@index([status], map: "idx_status")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_ai_installed_packages {
+  package_srl     BigInt  @default(0)
+  version         String? @db.VarChar(255)
+  current_version String? @db.VarChar(255)
+  need_update     String? @default("N") @db.Char(1)
+
+  @@index([package_srl], map: "idx_package_srl")
+  @@ignore
+}
+
+model rx_ai_remote_categories {
+  category_srl BigInt @id @default(0)
+  parent_srl   BigInt @default(0)
+  title        String @db.VarChar(250)
+  list_order   BigInt
+
+  @@index([list_order], map: "idx_list_order")
+  @@index([parent_srl], map: "idx_parent_srl")
+}
+
+model rx_autoinstall_packages {
+  package_srl     BigInt  @default(0)
+  category_srl    BigInt? @default(0)
+  path            String  @unique(map: "unique_path")
+  have_instance   String  @default("N") @db.Char(1)
+  updatedate      String? @db.Char(14)
+  latest_item_srl BigInt  @default(0)
+  version         String? @db.VarChar(255)
+
+  @@index([category_srl], map: "idx_category_srl")
+  @@index([package_srl], map: "idx_package_srl")
+  @@index([updatedate], map: "idx_regdate")
+}
+
+model rx_comment_declared {
+  comment_srl    BigInt @id
+  declared_count BigInt @default(0)
+
+  @@index([declared_count], map: "idx_declared_count")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_comment_declared_log {
+  comment_srl     BigInt
+  member_srl      BigInt
+  ipaddress       String  @db.VarChar(128)
+  declare_message String? @db.Text
+  regdate         String? @db.Char(14)
+
+  @@index([comment_srl], map: "idx_comment_srl")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_comment_voted_log {
+  comment_srl BigInt
+  member_srl  BigInt
+  ipaddress   String  @db.VarChar(128)
+  regdate     String? @db.Char(14)
+  point       BigInt
+
+  @@index([comment_srl], map: "idx_comment_srl")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@ignore
+}
+
+model rx_comments {
+  comment_srl    BigInt  @id
+  module_srl     BigInt  @default(0)
+  document_srl   BigInt  @default(0)
+  parent_srl     BigInt  @default(0)
+  is_secret      String  @default("N") @db.Char(1)
+  content        String  @db.LongText
+  voted_count    BigInt  @default(0)
+  blamed_count   BigInt  @default(0)
+  notify_message String  @default("N") @db.Char(1)
+  password       String? @db.VarChar(60)
+  user_id        String? @db.VarChar(80)
+  user_name      String  @db.VarChar(80)
+  nick_name      String  @db.VarChar(80)
+  member_srl     BigInt
+  email_address  String  @db.VarChar(250)
+  homepage       String  @db.VarChar(250)
+  uploaded_count BigInt  @default(0)
+  regdate        String? @db.Char(14)
+  last_update    String? @db.Char(14)
+  ipaddress      String  @db.VarChar(128)
+  list_order     BigInt
+  status         BigInt  @default(1)
+
+  @@unique([module_srl, list_order], map: "idx_module_list_order")
+  @@index([blamed_count], map: "idx_blamed_count")
+  @@index([document_srl], map: "idx_document_srl")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([last_update], map: "idx_last_update")
+  @@index([list_order], map: "idx_list_order")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([module_srl], map: "idx_module_srl")
+  @@index([nick_name], map: "idx_nick_name")
+  @@index([parent_srl], map: "idx_parent_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@index([status], map: "idx_status")
+  @@index([uploaded_count], map: "idx_uploaded_count")
+  @@index([voted_count], map: "idx_voted_count")
+}
+
+model rx_comments_list {
+  comment_srl  BigInt  @id
+  document_srl BigInt  @default(0)
+  head         BigInt  @default(0)
+  arrange      BigInt  @default(0)
+  module_srl   BigInt  @default(0)
+  regdate      String? @db.Char(14)
+  depth        BigInt  @default(0)
+
+  @@index([module_srl, regdate], map: "idx_date")
+  @@index([document_srl, head, arrange], map: "idx_list")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_counter_log {
+  site_srl   BigInt  @default(0)
+  ipaddress  String  @db.VarChar(60)
+  regdate    String? @db.Char(14)
+  user_agent String? @db.VarChar(250)
+
+  @@index([regdate], map: "idx_counter_log")
+  @@index([site_srl, ipaddress], map: "idx_site_counter_log")
+  @@ignore
+}
+
+model rx_counter_status {
+  regdate        BigInt  @id
+  unique_visitor BigInt? @default(0)
+  pageview       BigInt? @default(0)
+}
+
+model rx_document_aliases {
+  alias_srl    BigInt @id @default(0)
+  module_srl   BigInt @default(0)
+  document_srl BigInt @default(0)
+  alias_title  String @db.VarChar(180)
+
+  @@unique([module_srl, alias_title], map: "idx_module_title")
+  @@index([alias_title], map: "idx_alias_title")
+  @@index([document_srl], map: "idx_document_srl")
+  @@index([module_srl], map: "idx_module_srl")
+}
+
+model rx_document_categories {
+  category_srl   BigInt  @id
+  module_srl     BigInt
+  parent_srl     BigInt
+  title          String? @db.VarChar(250)
+  expand         String? @default("N") @db.Char(1)
+  document_count BigInt  @default(0)
+  regdate        String? @db.Char(14)
+  last_update    String? @db.Char(14)
+  list_order     BigInt
+  group_srls     String? @db.Text
+  color          String? @db.VarChar(11)
+  description    String? @db.VarChar(200)
+
+  @@index([module_srl], map: "idx_module_srl")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_document_declared {
+  document_srl   BigInt @id
+  declared_count BigInt @default(0)
+
+  @@index([declared_count], map: "idx_declared_count")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_document_declared_log {
+  document_srl    BigInt
+  member_srl      BigInt
+  ipaddress       String  @db.VarChar(128)
+  declare_message String? @db.Text
+  regdate         String? @db.Char(14)
+
+  @@index([document_srl], map: "idx_document_srl")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@ignore
+}
+
+model rx_document_extra_keys {
+  module_srl      BigInt
+  var_idx         BigInt
+  var_name        String  @db.VarChar(250)
+  var_type        String  @db.VarChar(50)
+  var_is_required String  @default("N") @db.Char(1)
+  var_search      String  @default("N") @db.Char(1)
+  var_default     String? @db.Text
+  var_desc        String? @db.Text
+  eid             String? @db.VarChar(40)
+
+  @@unique([module_srl, var_idx], map: "unique_module_keys")
+}
+
+model rx_document_extra_vars {
+  module_srl   BigInt
+  document_srl BigInt
+  var_idx      BigInt
+  lang_code    String  @db.VarChar(10)
+  value        String? @db.LongText
+  eid          String? @db.VarChar(40)
+
+  @@unique([module_srl, document_srl, var_idx, lang_code], map: "unique_extra_vars")
+  @@index([document_srl, module_srl, var_idx], map: "idx_document_list_order")
+}
+
+model rx_document_histories {
+  history_srl  BigInt  @id @default(0)
+  module_srl   BigInt  @default(0)
+  document_srl BigInt  @default(0)
+  content      String? @db.LongText
+  nick_name    String  @db.VarChar(80)
+  member_srl   BigInt?
+  regdate      String? @db.Char(14)
+  ipaddress    String  @db.VarChar(128)
+
+  @@index([document_srl], map: "idx_document_srl")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([module_srl], map: "idx_module_srl")
+  @@index([regdate], map: "idx_regdate")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_document_readed_log {
+  document_srl BigInt
+  member_srl   BigInt
+  ipaddress    String  @db.VarChar(128)
+  regdate      String? @db.Char(14)
+
+  @@index([document_srl], map: "idx_document_srl")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@ignore
+}
+
+model rx_document_trash {
+  trash_srl    BigInt  @id @default(0)
+  document_srl BigInt  @default(0)
+  module_srl   BigInt  @default(0)
+  trash_date   String? @db.Char(14)
+  description  String? @db.Text
+  ipaddress    String  @db.VarChar(128)
+  user_id      String? @db.VarChar(80)
+  user_name    String  @db.VarChar(80)
+  nick_name    String  @db.VarChar(80)
+  member_srl   BigInt
+
+  @@index([document_srl], map: "idx_document_srl")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([module_srl], map: "idx_module_srl")
+  @@index([trash_date], map: "idx_trash_date")
+}
+
+model rx_document_update_log {
+  update_id         BigInt  @id @default(autoincrement())
+  document_srl      BigInt
+  update_member_srl BigInt
+  module_srl        BigInt
+  category_srl      BigInt?
+  ipaddress         String  @db.VarChar(128)
+  nick_name         String  @db.VarChar(80)
+  regdate           String? @db.Char(14)
+  title             String? @db.VarChar(250)
+  title_bold        String  @default("N") @db.Char(1)
+  title_color       String? @db.VarChar(7)
+  content           String  @db.LongText
+  update_nick_name  String? @db.VarChar(80)
+  tags              String? @db.Text
+  extra_vars        String? @db.Text
+  reason_update     String? @db.Text
+  is_admin          String? @db.VarChar(1)
+
+  @@index([document_srl], map: "idx_document_srl")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([is_admin], map: "idx_is_admin")
+  @@index([regdate], map: "idx_regdate")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_document_voted_log {
+  document_srl BigInt
+  member_srl   BigInt
+  ipaddress    String  @db.VarChar(128)
+  regdate      String? @db.Char(14)
+  point        BigInt
+
+  @@index([document_srl], map: "idx_document_srl")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@ignore
+}
+
+model rx_documents {
+  document_srl    BigInt  @id
+  module_srl      BigInt  @default(0)
+  category_srl    BigInt  @default(0)
+  lang_code       String  @default("") @db.VarChar(10)
+  is_notice       String  @default("N") @db.Char(1)
+  title           String? @db.VarChar(250)
+  title_bold      String  @default("N") @db.Char(1)
+  title_color     String? @db.VarChar(7)
+  content         String  @db.LongText
+  readed_count    BigInt  @default(0)
+  voted_count     BigInt  @default(0)
+  blamed_count    BigInt  @default(0)
+  comment_count   BigInt  @default(0)
+  trackback_count BigInt  @default(0)
+  uploaded_count  BigInt  @default(0)
+  password        String? @db.VarChar(60)
+  user_id         String? @db.VarChar(80)
+  user_name       String  @db.VarChar(80)
+  nick_name       String  @db.VarChar(80)
+  member_srl      BigInt
+  email_address   String  @db.VarChar(250)
+  homepage        String  @db.VarChar(250)
+  tags            String? @db.Text
+  extra_vars      String? @db.Text
+  regdate         String? @db.Char(14)
+  last_update     String? @db.Char(14)
+  last_updater    String? @db.VarChar(80)
+  ipaddress       String  @db.VarChar(128)
+  list_order      BigInt
+  update_order    BigInt
+  allow_trackback String  @default("Y") @db.Char(1)
+  notify_message  String  @default("N") @db.Char(1)
+  status          String? @default("PUBLIC") @db.VarChar(20)
+  comment_status  String? @default("ALLOW") @db.VarChar(20)
+
+  @@index([blamed_count], map: "idx_blamed_count")
+  @@index([category_srl], map: "idx_category_srl")
+  @@index([comment_count], map: "idx_comment_count")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([is_notice], map: "idx_is_notice")
+  @@index([last_update], map: "idx_last_update")
+  @@index([list_order], map: "idx_list_order")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([module_srl, blamed_count], map: "idx_module_blamed_count")
+  @@index([module_srl, document_srl], map: "idx_module_document_srl")
+  @@index([module_srl, list_order], map: "idx_module_list_order")
+  @@index([module_srl, is_notice], map: "idx_module_notice")
+  @@index([module_srl, readed_count], map: "idx_module_readed_count")
+  @@index([module_srl, regdate], map: "idx_module_regdate")
+  @@index([module_srl], map: "idx_module_srl")
+  @@index([module_srl, status], map: "idx_module_status")
+  @@index([module_srl, update_order], map: "idx_module_update_order")
+  @@index([module_srl, voted_count], map: "idx_module_voted_count")
+  @@index([nick_name], map: "idx_nick_name")
+  @@index([readed_count], map: "idx_readed_count")
+  @@index([regdate], map: "idx_regdate")
+  @@index([trackback_count], map: "idx_trackback_count")
+  @@index([update_order], map: "idx_update_order")
+  @@index([uploaded_count], map: "idx_uploaded_count")
+  @@index([voted_count], map: "idx_voted_count")
+}
+
+model rx_domains {
+  domain_srl          BigInt  @id
+  domain              String  @db.VarChar(80)
+  is_default_domain   String  @default("N") @db.Char(1)
+  index_module_srl    BigInt
+  index_document_srl  BigInt
+  default_layout_srl  BigInt  @default(0)
+  default_mlayout_srl BigInt  @default(0)
+  default_menu_srl    BigInt  @default(0)
+  http_port           BigInt?
+  https_port          BigInt?
+  security            String  @default("none") @db.VarChar(20)
+  description         String? @db.Text
+  settings            String? @db.Text
+  regdate             String? @db.Char(14)
+
+  @@index([domain], map: "idx_domain")
+  @@index([index_document_srl], map: "idx_index_document_srl")
+  @@index([index_module_srl], map: "idx_index_module_srl")
+  @@index([is_default_domain], map: "idx_is_default_domain")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_editor_autosave {
+  member_srl   BigInt? @default(0)
+  ipaddress    String? @db.VarChar(60)
+  module_srl   BigInt?
+  document_srl BigInt  @default(0)
+  title        String? @db.VarChar(250)
+  content      String  @db.LongText
+  certify_key  String? @db.VarChar(32)
+  regdate      String? @db.Char(14)
+
+  @@index([certify_key], map: "idx_certify_key")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([module_srl], map: "idx_module_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@ignore
+}
+
+model rx_editor_components {
+  component_name String  @id
+  enabled        String  @default("N") @db.Char(1)
+  extra_vars     String? @db.Text
+  list_order     BigInt
+
+  @@index([list_order], map: "idx_list_order")
+}
+
+model rx_editor_components_site {
+  site_srl       BigInt  @default(0)
+  component_name String
+  enabled        String  @default("N") @db.Char(1)
+  extra_vars     String? @db.Text
+  list_order     BigInt
+
+  @@unique([site_srl, component_name], map: "unique_component_site")
+  @@index([list_order], map: "idx_list_order")
+}
+
+model rx_files {
+  file_srl           BigInt  @id
+  upload_target_srl  BigInt  @default(0)
+  upload_target_type String? @db.Char(3)
+  sid                String? @db.VarChar(60)
+  module_srl         BigInt  @default(0)
+  member_srl         BigInt
+  download_count     BigInt  @default(0)
+  direct_download    String  @default("N") @db.Char(1)
+  source_filename    String? @db.VarChar(250)
+  uploaded_filename  String? @db.VarChar(250)
+  thumbnail_filename String? @db.VarChar(250)
+  file_size          BigInt  @default(0)
+  mime_type          String  @db.VarChar(100)
+  original_type      String? @db.VarChar(100)
+  width              BigInt?
+  height             BigInt?
+  duration           BigInt?
+  comment            String? @db.VarChar(250)
+  isvalid            String? @default("N") @db.Char(1)
+  cover_image        String  @default("N") @db.Char(1)
+  regdate            String? @db.Char(14)
+  ipaddress          String  @db.VarChar(60)
+
+  @@index([download_count], map: "idx_download_count")
+  @@index([file_size], map: "idx_file_size")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([isvalid], map: "idx_is_valid")
+  @@index([cover_image], map: "idx_list_order")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([mime_type], map: "idx_mime_type")
+  @@index([module_srl], map: "idx_module_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@index([upload_target_srl], map: "idx_upload_target_srl")
+  @@index([upload_target_type], map: "idx_upload_target_type")
+}
+
+model rx_files_changelog {
+  id                BigInt  @id @default(autoincrement())
+  change_type       String  @db.Char(1)
+  file_srl          BigInt
+  file_size         BigInt
+  uploaded_filename String  @db.VarChar(250)
+  previous_filename String? @db.VarChar(250)
+  regdate           String  @db.Char(14)
+
+  @@index([change_type], map: "idx_change_type")
+  @@index([file_srl], map: "idx_file_srl")
+  @@index([regdate], map: "idx_regdate")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_lang {
+  name      String  @db.VarChar(100)
+  lang_code String  @db.VarChar(10)
+  site_srl  BigInt  @default(0)
+  value     String? @db.Text
+
+  @@index([name, lang_code], map: "idx_lang")
+  @@index([lang_code], map: "idx_lang_code")
+  @@index([name], map: "idx_name")
+  @@ignore
+}
+
+model rx_layouts {
+  layout_srl  BigInt  @id
+  site_srl    BigInt  @default(0)
+  layout      String? @db.VarChar(250)
+  title       String? @db.VarChar(250)
+  extra_vars  String? @db.Text
+  layout_path String? @db.VarChar(250)
+  module_srl  BigInt? @default(0)
+  regdate     String? @db.Char(14)
+  layout_type String? @default("P") @db.Char(1)
+
+  @@index([module_srl], map: "idx_module_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@index([site_srl], map: "menu_site_srl")
+}
+
+model rx_member {
+  member_srl            BigInt  @id
+  user_id               String  @unique(map: "unique_user_id") @db.VarChar(80)
+  password              String  @db.VarChar(250)
+  email_address         String  @unique(map: "unique_email_address") @db.VarChar(80)
+  email_id              String  @db.VarChar(80)
+  email_host            String? @db.VarChar(80)
+  phone_number          String? @db.VarChar(80)
+  phone_country         String? @db.VarChar(10)
+  phone_type            String? @db.VarChar(10)
+  user_name             String  @db.VarChar(40)
+  nick_name             String  @db.VarChar(40)
+  find_account_question BigInt?
+  find_account_answer   String? @db.VarChar(250)
+  homepage              String? @db.VarChar(250)
+  blog                  String? @db.VarChar(250)
+  birthday              String? @db.Char(8)
+  allow_mailing         String  @default("Y") @db.Char(1)
+  allow_message         String  @default("Y") @db.Char(1)
+  is_admin              String  @default("N") @db.Char(1)
+  denied                String  @default("N") @db.Char(1)
+  status                String  @default("APPROVED") @db.VarChar(20)
+  regdate               String? @db.Char(14)
+  ipaddress             String? @db.VarChar(60)
+  last_login            String? @db.Char(14)
+  last_login_ipaddress  String? @db.VarChar(60)
+  change_password_date  String? @db.Char(14)
+  limit_date            String? @db.Char(14)
+  description           String? @db.Text
+  extra_vars            String? @db.Text
+  list_order            BigInt
+
+  @@index([allow_mailing], map: "idx_allow_mailing")
+  @@index([email_host], map: "idx_email_host")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([is_admin], map: "idx_is_admin")
+  @@index([denied], map: "idx_is_denied")
+  @@index([last_login], map: "idx_last_login")
+  @@index([last_login_ipaddress], map: "idx_last_login_ipaddress")
+  @@index([list_order], map: "idx_list_order")
+  @@index([nick_name], map: "idx_nick_name")
+  @@index([phone_country], map: "idx_phone_country")
+  @@index([phone_number], map: "idx_phone_number")
+  @@index([phone_type], map: "idx_phone_type")
+  @@index([regdate], map: "idx_regdate")
+  @@index([status], map: "idx_status")
+}
+
+model rx_member_agreed {
+  id                 BigInt @id @default(autoincrement())
+  member_srl         BigInt
+  agreement_sequence BigInt
+  agreed             String @db.Char(1)
+  ipaddress          String @db.VarChar(60)
+  regdate            String @db.Char(14)
+
+  @@index([agreed], map: "idx_agreed")
+  @@index([agreement_sequence], map: "idx_agreement_sequence")
+  @@index([member_srl], map: "idx_member_srl")
+}
+
+model rx_member_auth_mail {
+  auth_key     String  @db.VarChar(60)
+  member_srl   BigInt
+  user_id      String  @db.VarChar(80)
+  new_password String  @db.VarChar(250)
+  is_register  String? @default("N") @db.Char(1)
+  regdate      String? @db.Char(14)
+
+  @@unique([auth_key, member_srl], map: "unique_key")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_member_auth_sms {
+  id            BigInt  @id @default(autoincrement())
+  member_srl    BigInt
+  phone_number  String? @db.VarChar(80)
+  phone_country String? @db.VarChar(10)
+  code          String  @db.VarChar(20)
+  regdate       String? @db.Char(14)
+  ipaddress     String? @db.VarChar(60)
+
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([phone_country], map: "idx_phone_country")
+  @@index([phone_number], map: "idx_phone_number")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_member_autologin {
+  id             BigInt  @id @default(autoincrement())
+  autologin_key  String  @unique(map: "unique_autologin_key") @db.VarChar(80)
+  security_key   String  @db.VarChar(80)
+  member_srl     BigInt
+  regdate        String? @db.Char(14)
+  ipaddress      String? @db.VarChar(60)
+  last_visit     String? @db.Char(14)
+  last_ipaddress String? @db.VarChar(80)
+  user_agent     String? @db.VarChar(250)
+
+  @@index([last_visit], map: "idx_last_visited")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_member_count_history {
+  member_srl  BigInt  @id
+  content     String  @db.LongText
+  last_update String? @db.Char(14)
+
+  @@index([last_update], map: "idx_last_update")
+}
+
+model rx_member_denied_nick_name {
+  nick_name   String  @id @db.VarChar(80)
+  regdate     String? @db.Char(14)
+  description String? @db.Text
+}
+
+model rx_member_denied_user_id {
+  user_id     String  @id @db.VarChar(80)
+  regdate     String? @db.Char(14)
+  description String? @db.Text
+  list_order  BigInt
+
+  @@index([list_order], map: "idx_list_order")
+}
+
+model rx_member_devices {
+  device_srl         BigInt  @id
+  member_srl         BigInt
+  device_token       String  @unique(map: "unique_device_token")
+  device_token_type  String  @db.VarChar(20)
+  device_key         String  @db.Char(64)
+  device_type        String  @db.VarChar(20)
+  device_version     String  @db.VarChar(20)
+  device_model       String  @db.VarChar(40)
+  device_description String? @db.VarChar(200)
+  regdate            String  @db.Char(14)
+  last_active_date   String  @db.Char(14)
+  ipaddress          String  @db.VarChar(60)
+
+  @@index([device_token_type], map: "idx_device_token_type")
+  @@index([device_type], map: "idx_device_type")
+  @@index([last_active_date], map: "idx_last_active_date")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_member_friend {
+  friend_srl       BigInt  @id
+  friend_group_srl BigInt  @default(0)
+  member_srl       BigInt
+  target_srl       BigInt
+  list_order       BigInt
+  regdate          String? @db.Char(14)
+
+  @@index([friend_group_srl], map: "idx_friend_group_srl")
+  @@index([list_order], map: "idx_list_order")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([target_srl], map: "idx_target_srl")
+}
+
+model rx_member_friend_group {
+  friend_group_srl BigInt  @id
+  member_srl       BigInt
+  title            String  @db.VarChar(250)
+  regdate          String? @db.Char(14)
+
+  @@index([member_srl], map: "index_owner_member_srl")
+}
+
+model rx_member_group {
+  site_srl    BigInt  @default(0)
+  group_srl   BigInt  @id
+  list_order  BigInt
+  title       String  @db.VarChar(80)
+  regdate     String? @db.Char(14)
+  is_default  String? @default("N") @db.Char(1)
+  is_admin    String? @default("N") @db.Char(1)
+  image_mark  String? @db.Text
+  description String? @db.Text
+
+  @@index([list_order], map: "idx_list_order")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_member_group_member {
+  site_srl   BigInt  @default(0)
+  group_srl  BigInt
+  member_srl BigInt
+  regdate    String? @db.Char(14)
+
+  @@index([group_srl, member_srl], map: "idx_group_member")
+  @@index([member_srl], map: "idx_member_srl")
+  @@ignore
+}
+
+model rx_member_join_form {
+  member_join_form_srl BigInt  @id
+  column_type          String  @db.VarChar(60)
+  column_name          String  @db.VarChar(60)
+  column_title         String  @db.VarChar(60)
+  required             String  @default("N") @db.Char(1)
+  default_value        String? @db.Text
+  is_active            String? @default("Y") @db.Char(1)
+  description          String? @db.Text
+  list_order           BigInt  @default(1)
+  regdate              String? @db.Char(14)
+
+  @@index([list_order], map: "idx_list_order")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_member_login_count {
+  ipaddress   String  @db.VarChar(60)
+  count       BigInt  @default(0)
+  regdate     String? @db.Char(14)
+  last_update String? @db.Char(14)
+
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([last_update], map: "idx_last_update")
+  @@index([regdate], map: "idx_regdate")
+  @@ignore
+}
+
+model rx_member_managed_email_hosts {
+  email_host  String  @id
+  regdate     String? @db.Char(14)
+  description String? @db.Text
+}
+
+model rx_member_message {
+  message_srl  BigInt  @id
+  related_srl  BigInt
+  sender_srl   BigInt
+  receiver_srl BigInt
+  message_type String  @default("S") @db.Char(1)
+  title        String  @db.VarChar(250)
+  content      String  @db.Text
+  readed       String  @default("N") @db.Char(1)
+  list_order   BigInt
+  regdate      String? @db.Char(14)
+  readed_date  String? @db.Char(14)
+
+  @@index([list_order], map: "idx_list_order")
+  @@index([receiver_srl], map: "idx_receiver_srl")
+  @@index([related_srl], map: "idx_related_srl")
+  @@index([sender_srl], map: "idx_sender_srl")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_member_nickname_log {
+  member_srl       BigInt
+  before_nick_name String  @db.VarChar(80)
+  after_nick_name  String  @db.VarChar(80)
+  regdate          String? @db.Char(14)
+  user_id          String? @db.VarChar(80)
+
+  @@index([after_nick_name], map: "idx_after_nick_name")
+  @@index([before_nick_name], map: "idx_before_nick_name")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@index([user_id], map: "idx_user_id")
+  @@ignore
+}
+
+model rx_member_scrap {
+  member_srl        BigInt
+  document_srl      BigInt
+  folder_srl        BigInt?
+  title             String? @db.VarChar(250)
+  user_id           String? @db.VarChar(80)
+  user_name         String  @db.VarChar(80)
+  nick_name         String  @db.VarChar(80)
+  target_member_srl BigInt
+  regdate           String? @db.Char(14)
+  list_order        BigInt
+
+  @@unique([member_srl, document_srl], map: "unique_scrap")
+  @@index([folder_srl], map: "idx_folder_srl")
+  @@index([list_order], map: "idx_list_order")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_member_scrap_folders {
+  folder_srl BigInt  @id
+  member_srl BigInt
+  name       String? @db.VarChar(250)
+  regdate    String? @db.Char(14)
+  list_order BigInt
+
+  @@index([list_order], map: "idx_list_order")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_menu {
+  menu_srl  BigInt  @id
+  site_srl  BigInt  @default(0)
+  title     String? @db.VarChar(180)
+  listorder BigInt? @default(0)
+  regdate   String? @db.Char(14)
+
+  @@index([listorder], map: "idx_listorder")
+  @@index([regdate], map: "idx_regdate")
+  @@index([title], map: "idx_title")
+  @@index([site_srl], map: "menu_site_srl")
+}
+
+model rx_menu_item {
+  menu_item_srl BigInt  @id
+  parent_srl    BigInt  @default(0)
+  menu_srl      BigInt
+  name          String? @db.Text
+  icon          String? @db.VarChar(250)
+  desc          String? @db.VarChar(250)
+  url           String? @db.VarChar(250)
+  is_shortcut   String? @default("N") @db.Char(1)
+  open_window   String? @default("N") @db.Char(1)
+  expand        String? @default("N") @db.Char(1)
+  normal_btn    String? @db.VarChar(255)
+  hover_btn     String? @db.VarChar(255)
+  active_btn    String? @db.VarChar(255)
+  group_srls    String? @db.Text
+  listorder     BigInt? @default(0)
+  regdate       String? @db.Char(14)
+
+  @@index([listorder], map: "idx_listorder")
+  @@index([menu_srl], map: "idx_menu_srl")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_menu_layout {
+  menu_srl   BigInt @id
+  layout_srl BigInt
+}
+
+model rx_module_admins {
+  module_srl BigInt
+  member_srl BigInt
+  regdate    String? @db.Char(14)
+
+  @@unique([module_srl, member_srl], map: "unique_module_admin")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_module_categories {
+  module_category_srl BigInt  @id @default(0)
+  title               String? @db.VarChar(250)
+  regdate             String? @db.Char(14)
+
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_module_config {
+  module   String  @id @db.VarChar(80)
+  site_srl BigInt  @default(0)
+  config   String? @db.LongText
+  regdate  String? @db.Char(14)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_module_extend {
+  parent_module String  @db.VarChar(80)
+  extend_module String  @db.VarChar(80)
+  type          String  @db.VarChar(15)
+  kind          String? @db.VarChar(5)
+
+  @@ignore
+}
+
+model rx_module_extra_vars {
+  module_srl BigInt
+  name       String  @db.VarChar(80)
+  value      String? @db.Text
+
+  @@unique([module_srl, name], map: "unique_module_vars")
+}
+
+model rx_module_filebox {
+  module_filebox_srl BigInt  @id
+  member_srl         BigInt
+  filename           String  @db.VarChar(250)
+  fileextension      String  @db.VarChar(4)
+  filesize           BigInt  @default(0)
+  comment            String? @db.LongText
+  regdate            String? @db.Char(14)
+
+  @@index([fileextension], map: "idx_fileextension")
+  @@index([member_srl], map: "idx_member_srl")
+}
+
+model rx_module_grants {
+  module_srl BigInt
+  name       String @db.VarChar(20)
+  group_srl  BigInt
+
+  @@unique([module_srl, name, group_srl], map: "unique_module")
+}
+
+model rx_module_locks {
+  lock_name  String  @unique(map: "unique_lock_name") @db.VarChar(40)
+  deadline   String? @db.Char(14)
+  member_srl BigInt?
+
+  @@index([deadline], map: "idx_deadline")
+}
+
+model rx_module_mobile_skins {
+  module_srl BigInt
+  name       String  @db.VarChar(80)
+  value      String? @db.Text
+
+  @@unique([module_srl, name], map: "unique_module_mobile_skins")
+}
+
+model rx_module_part_config {
+  module     String  @db.VarChar(80)
+  module_srl BigInt
+  config     String? @db.LongText
+  regdate    String? @db.Char(14)
+
+  @@unique([module, module_srl], map: "unique_module_part_config")
+}
+
+model rx_module_skins {
+  module_srl BigInt
+  name       String  @db.VarChar(80)
+  value      String? @db.Text
+
+  @@unique([module_srl, name], map: "unique_module_skins")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_module_trigger {
+  trigger_name    String @db.VarChar(80)
+  called_position String @db.VarChar(20)
+  module          String @db.VarChar(80)
+  type            String @db.VarChar(120)
+  called_method   String @db.VarChar(80)
+
+  @@index([trigger_name, called_position], map: "idx_trigger_name")
+  @@index([module, type, called_method], map: "idx_trigger_target")
+  @@ignore
+}
+
+model rx_module_update {
+  update_id String @id
+}
+
+model rx_modules {
+  module_srl          BigInt  @id
+  module              String  @db.VarChar(80)
+  module_category_srl BigInt? @default(0)
+  menu_srl            BigInt  @default(0)
+  site_srl            BigInt  @default(0)
+  domain_srl          BigInt  @default(-1)
+  mid                 String  @unique(map: "unique_mid") @db.VarChar(40)
+  layout_srl          BigInt? @default(0)
+  mlayout_srl         BigInt? @default(0)
+  use_mobile          String? @default("N") @db.Char(1)
+  skin                String? @db.VarChar(250)
+  is_skin_fix         String  @default("Y") @db.Char(1)
+  mskin               String? @db.VarChar(250)
+  is_mskin_fix        String  @default("Y") @db.Char(1)
+  browser_title       String  @db.VarChar(250)
+  description         String? @db.Text
+  content             String? @db.LongText
+  mcontent            String? @db.LongText
+  is_default          String  @default("N") @db.Char(1)
+  open_rss            String  @default("Y") @db.Char(1)
+  header_text         String? @db.Text
+  footer_text         String? @db.Text
+  regdate             String? @db.Char(14)
+
+  @@index([domain_srl], map: "idx_domain_srl")
+  @@index([mid], map: "idx_mid")
+  @@index([module], map: "idx_module")
+  @@index([module_category_srl], map: "idx_module_category")
+}
+
+model rx_ncenterlite_notify {
+  id                   BigInt  @id @default(autoincrement())
+  notify               String  @unique(map: "unique_notify") @db.Char(32)
+  srl                  BigInt
+  target_srl           BigInt
+  target_p_srl         BigInt
+  type                 String  @db.Char(1)
+  target_type          String  @db.Char(1)
+  notify_type          BigInt?
+  member_srl           BigInt
+  target_member_srl    BigInt
+  target_nick_name     String  @db.VarChar(80)
+  target_user_id       String  @db.VarChar(80)
+  target_email_address String  @db.VarChar(80)
+  target_browser       String? @db.VarChar(80)
+  target_summary       String? @db.VarChar(80)
+  target_body          String? @db.VarChar(255)
+  target_url           String  @db.VarChar(255)
+  readed               String  @default("N") @db.Char(1)
+  regdate              String? @db.Char(14)
+
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([member_srl, readed], map: "idx_member_srl_and_readed")
+  @@index([readed], map: "idx_readed")
+  @@index([regdate], map: "idx_regdate")
+  @@index([srl], map: "idx_srl")
+  @@index([target_member_srl], map: "idx_target_member_srl")
+  @@index([target_p_srl], map: "idx_target_p_srl")
+  @@index([target_srl], map: "idx_target_srl")
+}
+
+model rx_ncenterlite_notify_type {
+  notify_type_srl  BigInt  @id
+  notify_type_id   String  @db.VarChar(50)
+  notify_type_args String? @db.VarChar(250)
+  notify_string    String  @db.VarChar(250)
+}
+
+model rx_ncenterlite_unsubscribe {
+  unsubscribe_srl  BigInt @id
+  member_srl       BigInt
+  text             String @db.Text
+  target_srl       BigInt
+  unsubscribe_type String @db.VarChar(10)
+
+  @@index([member_srl], map: "idx_member_srl")
+}
+
+model rx_ncenterlite_user_set {
+  member_srl             BigInt  @id
+  comment_notify         String  @db.VarChar(40)
+  comment_comment_notify String  @db.VarChar(40)
+  mention_notify         String  @db.VarChar(40)
+  vote_notify            String  @db.VarChar(40)
+  scrap_notify           String  @db.VarChar(40)
+  message_notify         String  @db.VarChar(40)
+  regdate                String? @db.Char(14)
+
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_point {
+  member_srl BigInt @id
+  point      BigInt @default(0)
+
+  @@index([point], map: "idx_point")
+}
+
+model rx_pointsend_batch_log {
+  log_srl     BigInt  @id
+  target      String  @db.VarChar(6)
+  sender_srl  BigInt
+  target_srls String  @db.Text
+  point       BigInt
+  title       String  @db.VarChar(250)
+  comment     String  @db.Text
+  regdate     String? @db.Char(14)
+
+  @@index([point], map: "idx_point")
+  @@index([regdate], map: "idx_regdate")
+  @@index([sender_srl], map: "idx_sender_srl")
+  @@index([target], map: "idx_target")
+}
+
+model rx_pointsend_log {
+  log_srl      BigInt  @id
+  sender_srl   BigInt
+  receiver_srl BigInt
+  ipaddress    String  @db.VarChar(128)
+  regdate      String? @db.Char(14)
+  point        BigInt
+  fee          BigInt
+  comment      String? @db.Text
+
+  @@index([fee], map: "idx_fee")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([point], map: "idx_point")
+  @@index([receiver_srl], map: "idx_receiver_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@index([sender_srl], map: "idx_sender_srl")
+}
+
+model rx_poll {
+  poll_srl          BigInt  @id
+  stop_date         String? @db.Char(14)
+  upload_target_srl BigInt
+  poll_count        BigInt
+  member_srl        BigInt
+  ipaddress         String  @db.VarChar(60)
+  regdate           String? @db.Char(14)
+  list_order        BigInt
+  poll_type         BigInt
+
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([list_order], map: "idx_list_order")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([poll_type], map: "idx_poll_type")
+  @@index([regdate], map: "idx_regdate")
+  @@index([upload_target_srl], map: "idx_upload_target_srl")
+}
+
+model rx_poll_item {
+  poll_item_srl     BigInt @id
+  poll_srl          BigInt
+  poll_index_srl    BigInt
+  upload_target_srl BigInt
+  title             String @db.VarChar(250)
+  poll_count        BigInt
+  add_user_srl      BigInt
+
+  @@index([poll_index_srl], map: "idx_poll_index_srl")
+  @@index([upload_target_srl], map: "idx_upload_target_srl")
+  @@index([poll_srl], map: "index_poll_srl")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_poll_log {
+  poll_srl   BigInt
+  member_srl BigInt
+  ipaddress  String  @db.VarChar(60)
+  regdate    String? @db.Char(14)
+  poll_item  String? @default("0") @db.VarChar(250)
+
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([poll_srl], map: "idx_poll_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_poll_title {
+  poll_srl          BigInt
+  poll_index_srl    BigInt
+  title             String  @db.VarChar(250)
+  checkcount        BigInt  @default(1)
+  poll_count        BigInt
+  upload_target_srl BigInt
+  member_srl        BigInt
+  ipaddress         String  @db.VarChar(60)
+  regdate           String? @db.Char(14)
+  list_order        BigInt  @default(0)
+
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([list_order], map: "idx_list_order")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([poll_srl, poll_index_srl], map: "idx_poll_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@index([upload_target_srl], map: "idx_upload_target_srl")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model rx_roulette_log {
+  data_srl     BigInt
+  member_srl   BigInt
+  category_srl BigInt
+  point        BigInt? @default(0)
+  content      String? @db.Text
+  regdate      String? @db.Char(14)
+  ipaddress    String  @db.VarChar(128)
+
+  @@index([category_srl], map: "idx_category_srl")
+  @@index([data_srl], map: "idx_data_srl")
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([member_srl], map: "idx_member_srl")
+  @@index([point], map: "idx_point")
+  @@ignore
+}
+
+model rx_sequence {
+  seq BigInt @id @default(autoincrement())
+}
+
+model rx_session {
+  session_key String  @id @db.VarChar(128)
+  member_srl  BigInt
+  expired     String? @db.Char(14)
+  val         String? @db.LongText
+  ipaddress   String  @db.VarChar(60)
+  last_update String? @db.Char(14)
+  cur_mid     String? @db.VarChar(128)
+
+  @@index([cur_mid], map: "idx_session_cur_mid")
+  @@index([expired], map: "idx_session_expired")
+  @@index([member_srl], map: "idx_session_member_srl")
+  @@index([last_update], map: "idx_session_update")
+  @@index([member_srl, last_update, cur_mid], map: "idx_session_update_mid")
+}
+
+model rx_sites {
+  site_srl         BigInt  @id
+  index_module_srl BigInt? @default(0)
+  domain           String  @unique(map: "unique_domain")
+  default_language String?
+  regdate          String? @db.Char(14)
+}
+
+model rx_spamfilter_denied_ip {
+  ipaddress     String  @id @db.VarChar(60)
+  hit           BigInt  @default(0)
+  latest_hit    String? @db.Char(14)
+  except_member String? @default("N") @db.Char(1)
+  description   String?
+  regdate       String? @db.Char(14)
+
+  @@index([hit], map: "idx_hit")
+  @@index([latest_hit], map: "idx_latest_hit")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_spamfilter_denied_word {
+  word          String  @id @db.VarChar(100)
+  hit           BigInt  @default(0)
+  latest_hit    String? @db.Char(14)
+  except_member String? @default("N") @db.Char(1)
+  filter_html   String? @default("N") @db.Char(1)
+  is_regexp     String? @default("N") @db.Char(1)
+  description   String?
+  regdate       String? @db.Char(14)
+
+  @@index([hit], map: "idx_hit")
+  @@index([latest_hit], map: "idx_latest_hit")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_spamfilter_log {
+  spamfilter_log_srl BigInt  @id
+  ipaddress          String  @db.VarChar(60)
+  regdate            String? @db.Char(14)
+
+  @@index([ipaddress], map: "idx_ipaddress")
+  @@index([regdate], map: "idx_regdate")
+}
+
+model rx_tags {
+  tag_srl      BigInt  @id
+  module_srl   BigInt  @default(0)
+  document_srl BigInt  @default(0)
+  tag          String  @db.VarChar(180)
+  regdate      String? @db.Char(14)
+
+  @@index([document_srl], map: "idx_document_srl")
+  @@index([module_srl], map: "idx_module_srl")
+  @@index([regdate], map: "idx_regdate")
+  @@index([document_srl, tag], map: "idx_tag")
+}
+
+model rx_trash {
+  trash_srl         BigInt  @id
+  title             String? @db.VarChar(250)
+  origin_module     String  @default("document") @db.VarChar(250)
+  serialized_object String  @db.LongText
+  description       String? @db.Text
+  ipaddress         String  @db.VarChar(60)
+  remover_srl       BigInt
+  regdate           String? @db.Char(14)
+
+  @@index([regdate], map: "idx_regdate")
+}
+
+model sessions {
+  session_id String  @id @db.VarChar(128)
+  expires    Int     @db.UnsignedInt
+  data       String? @db.MediumText
+}
+
+model songs {
+  id          Int      @id @default(autoincrement())
+  requester   Int      @db.UnsignedInt
+  requestWeek DateTime @db.Date
+  ytlink      String   @db.Text
+  confirmed   Boolean  @default(false)
+  createdAt   DateTime @db.DateTime(0)
+  start       Int?
+  end         Int?
+  speed       Float?   @default(1) @db.Float
+  iam         iam      @relation(fields: [requester], references: [id], onDelete: Cascade, map: "songs_iam_FK")
+
+  @@index([requester], map: "songs_iam_FK")
+}
+
+model songs_vote {
+  id     Int     @id @default(autoincrement())
+  songId Int
+  iamId  Int
+  vote   Boolean
+
+  @@unique([songId, iamId], map: "songs_vote_unique")
+}
+
+model tamhwal {
+  id           Int     @id @default(autoincrement()) @db.UnsignedInt
+  status       Int?
+  head_student Int?
+  room         Int?
+  title        String? @db.VarChar(400)
+  teacher      Int?
+  date         String? @db.VarChar(100)
+  time         String? @db.VarChar(100)
+  content      String? @db.VarChar(1000)
+  reg_date     String? @db.VarChar(100)
+}
+
+model tamhwal_avail {
+  id    Int  @id @default(autoincrement()) @db.UnsignedInt
+  room  Int?
+  date  Int?
+  time  Int?
+  total Int?
+}
+
+model tamhwal_category {
+  id   Int     @id @default(autoincrement()) @db.UnsignedInt
+  name String? @db.VarChar(200)
+}
+
+model tamhwal_notice {
+  id      Int     @id @default(autoincrement()) @db.UnsignedInt
+  content String? @db.VarChar(500)
+  user    Int?
+}
+
+model tamhwal_room {
+  id       Int     @id @default(autoincrement()) @db.UnsignedInt
+  name     String? @db.VarChar(1000)
+  teacher  Int?
+  maximum  Int?
+  status   Int?
+  category Int?
+}
+
+model teacher {
+  id         Int     @id @default(autoincrement())
+  name       String? @db.VarChar(15)
+  job        String? @db.VarChar(30)
+  password   String? @db.VarChar(300)
+  dpc        Int     @default(0)
+  level      Int     @default(0)
+  stuid      Int     @unique(map: "stuid_UNIQUE")
+  manage     String? @db.VarChar(100)
+  permission Json?
+}
+
+model user {
+  id           Int            @id @default(autoincrement()) @db.UnsignedInt
+  stuid        Int            @db.UnsignedInt
+  name         String         @default("") @db.VarChar(15)
+  grade        Int
+  class        Int            @db.UnsignedInt
+  num          Int
+  plus         Int            @default(0)
+  minus        Int            @default(0)
+  dpc          Int            @default(0)
+  code         String?        @db.VarChar(100)
+  maeso        Int?           @default(0) @db.UnsignedInt
+  gisu         Int            @default(0) @db.UnsignedInt
+  gender       String?        @default("M") @db.Char(1)
+  phone_number String?        @default("01012345678") @db.Char(11)
+  dorm_reports dorm_reports[]
+  dorm_users   dorm_users?
+
+  @@index([stuid], map: "stuid_idx")
+}
+
+model verify {
+  id    Int     @id @default(autoincrement()) @db.UnsignedInt
+  stuid Int
+  name  String? @db.VarChar(30)
+  code  String  @db.VarChar(100)
+  dpc   Int     @default(0)
+}
+
+enum dorm_reports_status {
+  pending
+  in_progress
+  completed
+}

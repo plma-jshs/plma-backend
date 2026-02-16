@@ -1,4 +1,12 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all"
+  "printWidth": 90,
+  "semi": false,
+  "tabWidth": 4,
+  "endOfLine": "auto",
+  "trailingComma": "all",
+  "importOrder": ["^react$", "^@?\\w", "^@/(.*)$", "^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+
+  "plugins": ["@trivago/prettier-plugin-sort-imports"]
 }

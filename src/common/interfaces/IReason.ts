@@ -1,3 +1,4 @@
+import { createZodDto } from 'nestjs-zod';
 import z from 'zod';
 import { pointType} from '../enum/pointType';
 
@@ -9,3 +10,4 @@ export const IReason = z.object({
 }).strict();
 
 export type IReason = z.infer<typeof IReason>;
+export class IReasonDto extends createZodDto(IReason) {}

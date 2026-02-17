@@ -6,8 +6,8 @@ export const IPoint = z.object({
     studentId: z.int(),
     teacherId: z.int(),
     reason: IReason,
-    baseDate: z.date(),
-    updatedDate: z.date(),
+    baseDate: z.iso.datetime(),
+    updatedDate: z.iso.datetime(),
 }).strict();
 
 export type IPoint = z.infer<typeof IPoint>;

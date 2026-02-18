@@ -30,7 +30,7 @@ import {
 
 @ApiTags('dorms')
 @Controller('api/dorms')
-export class DormRoomsController {
+export class DormsController {
   constructor(private readonly dormRoomsService: DormRoomsService) {}
 
   @Get('assignments')

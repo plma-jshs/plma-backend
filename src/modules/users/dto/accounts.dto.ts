@@ -81,3 +81,11 @@ export class AccountUpdateDto {
   @Matches(/^01[0-9]-?\d{3,4}-?\d{4}$/)
   phoneNumber?: string | null;
 }
+
+export class AccountListQueryDto {
+  @ApiProperty({ example: 1 })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page: number;
+}

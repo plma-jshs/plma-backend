@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { AccountCreateDto, AccountUpdateDto } from './dto/accounts.dto';
+import {
+  AccountCreateDto,
+  AccountListQueryDto,
+  AccountUpdateDto,
+} from './dto/accounts.dto';
 
 @Injectable()
 export class UsersService {
+  private readonly pageSize = 20;
+
   constructor(private readonly prisma: PrismaService) {}
 
   private readonly accountSelect = {
@@ -32,10 +38,14 @@ export class UsersService {
     });
   }
 
-  findAll() {
+  findAll(query: AccountListQueryDto) {
+    const page = Number(query.page) || 1;
+
     return this.prisma.user.findMany({
       select: this.accountSelect,
       orderBy: { id: 'desc' },
+      skip: (page - 1) * this.pageSize,
+      take: this.pageSize,
     });
   }
 

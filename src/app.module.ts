@@ -8,7 +8,7 @@ import { PointsModule } from '@/modules/points/points.module';
 import { CasesModule } from '@/modules/cases/cases.module';
 import { CaseSchedulesModule } from '@/modules/case-schedules/case-schedules.module';
 import { SongsModule } from '@/modules/songs/songs.module';
-import { DormRoomsModule } from '@/modules/dorms/dorms.module';
+import { DormsModule } from '@/modules/dorms/dorms.module';
 import { SessionModule } from '@/modules/session/session.module';
 
 @Module({
@@ -19,7 +19,7 @@ import { SessionModule } from '@/modules/session/session.module';
     CasesModule,
     CaseSchedulesModule,
     SongsModule,
-    DormRoomsModule,
+    DormsModule,
     SessionModule,
   ],
   controllers: [AppController],

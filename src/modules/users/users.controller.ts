@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -16,10 +17,15 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { AccountCreateDto, AccountUpdateDto } from './dto/accounts.dto';
+import {
+  AccountCreateDto,
+  AccountListQueryDto,
+  AccountUpdateDto,
+} from './dto/accounts.dto';
 
 @ApiTags('Accounts')
 @Controller('api/accounts')
@@ -47,6 +53,7 @@ export class UsersController {
 
   @Get()
   @ApiOperation({ summary: '계정 목록 조회' })
+  @ApiQuery({ name: 'page', required: true, type: Number })
   @ApiOkResponse({
     description: '계정 목록',
     schema: {
@@ -62,8 +69,8 @@ export class UsersController {
       ],
     },
   })
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() query: AccountListQueryDto) {
+    return this.usersService.findAll(query);
   }
 
   @Patch(':id')

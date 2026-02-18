@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { CaseUpdateInput } from './dto/cases.schema';
+import { CaseScheduleCreateInput, CaseScheduleUpdateInput, CaseUpdateInput } from './dto/cases.schema';
 
 @Injectable()
 export class CasesService {
@@ -49,5 +49,34 @@ export class CasesService {
       excludedDisconnectedCount: disconnectedCases,
       updatedCount: updated.count,
     };
+  }
+
+  createSchedule(body: CaseScheduleCreateInput) {
+    return this.prisma.caseSchedule.create({
+      data: {
+        ...body,
+        date: new Date(body.date),
+      },
+    });
+  }
+
+  findAllSchedule() {
+    return this.prisma.caseSchedule.findMany({ orderBy: { date: 'asc' } });
+  }
+
+  updateSchedule(id: number, body: CaseScheduleUpdateInput) {
+    const { date, ...rest } = body;
+
+    return this.prisma.caseSchedule.update({
+      where: { id },
+      data: {
+        ...rest,
+        ...(date ? { date: new Date(date) } : {}),
+      },
+    });
+  }
+
+  removeSchedule(id: number) {
+    return this.prisma.caseSchedule.delete({ where: { id } }).then(() => undefined);
   }
 }

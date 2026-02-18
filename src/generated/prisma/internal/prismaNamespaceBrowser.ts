@@ -119,6 +119,8 @@ export const PointScalarFieldEnum = {
   studentId: 'studentId',
   teacherId: 'teacherId',
   reasonId: 'reasonId',
+  point: 'point',
+  comment: 'comment',
   baseDate: 'baseDate',
   updatedDate: 'updatedDate'
 } as const
@@ -129,7 +131,6 @@ export type PointScalarFieldEnum = (typeof PointScalarFieldEnum)[keyof typeof Po
 export const CaseScalarFieldEnum = {
   id: 'id',
   status: 'status',
-  baseDate: 'baseDate',
   updatedDate: 'updatedDate'
 } as const
 
@@ -230,6 +231,13 @@ export const ReasonOrderByRelevanceFieldEnum = {
 } as const
 
 export type ReasonOrderByRelevanceFieldEnum = (typeof ReasonOrderByRelevanceFieldEnum)[keyof typeof ReasonOrderByRelevanceFieldEnum]
+
+
+export const PointOrderByRelevanceFieldEnum = {
+  comment: 'comment'
+} as const
+
+export type PointOrderByRelevanceFieldEnum = (typeof PointOrderByRelevanceFieldEnum)[keyof typeof PointOrderByRelevanceFieldEnum]
 
 
 export const SongOrderByRelevanceFieldEnum = {

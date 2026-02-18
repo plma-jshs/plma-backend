@@ -127,7 +127,7 @@ export class PointsService {
     return { student, points };
   }
 
-  findReasons() {
+  async findReasons() {
     return this.prisma.reason
       .findMany({ orderBy: { id: 'desc' } })
       .then((reasons) => ({ reasons }));

@@ -1,3 +1,4 @@
+import { pointType } from '@/common/enum/pointType';
 import { z } from 'zod';
 
 export const pointIdParamSchema = z.object({
@@ -30,13 +31,13 @@ export const pointStudentsQuerySchema = z.object({
 });
 
 export const pointReasonSchema = z.object({
-  type: z.enum(['PLUS', 'MINUS', 'ETC']),
+  type: pointType,
   point: z.coerce.number().int().min(0),
   comment: z.string().trim().min(1).max(255),
 });
 
 export const pointReasonUpdateSchema = z.object({
-  type: z.enum(['PLUS', 'MINUS', 'ETC']).optional(),
+  type: pointType.optional(),
   point: z.coerce.number().int().min(0).optional(),
   comment: z.string().trim().min(1).max(255).optional(),
 });
@@ -65,7 +66,7 @@ const pointTeacherSchema = z.object({
 
 const reasonSchema = z.object({
   id: z.number().int(),
-  type: z.enum(['PLUS', 'MINUS', 'ETC']),
+  type: pointType,
   point: z.number().int(),
   comment: z.string(),
 });

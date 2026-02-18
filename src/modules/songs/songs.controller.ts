@@ -12,20 +12,23 @@ import {
 import { parseZod } from '@/common/zod/parse-zod';
 
 @ApiTags('Songs')
-@Controller('api/remote/songs')
+@Controller('api/songs')
 export class SongsController {
   constructor(private readonly songsService: SongsService) {}
 
-  @Post()  create(@Body() body: unknown) {
+  @Post()
+  create(@Body() body: unknown) {
     const payload = parseZod<SongCreateInput>(songCreateSchema, body);
     return this.songsService.create(payload);
   }
 
-  @Get()  findAll() {
+  @Get()
+  findAll() {
     return this.songsService.findAll();
   }
 
-  @Patch(':id')  update(
+  @Patch(':id')
+  update(
     @Param() params: unknown,
     @Body() body: unknown,
   ) {
@@ -35,7 +38,8 @@ export class SongsController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)  remove(@Param() params: unknown) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param() params: unknown) {
     const { id } = parseZod<SongIdParams>(songIdParamSchema, params);
     return this.songsService.remove(id);
   }

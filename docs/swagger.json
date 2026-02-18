@@ -81,42 +81,18 @@
                             "name": {
                               "type": "string",
                               "example": "string"
-                            },
-                            "grade": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "class": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "num": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "point": {
-                              "type": "integer",
-                              "example": 1
                             }
                           },
                           "required": [
                             "id",
                             "stuid",
-                            "name",
-                            "grade",
-                            "class",
-                            "num",
-                            "point"
+                            "name"
                           ],
                           "additionalProperties": false,
                           "example": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "grade": 1,
-                            "class": 1,
-                            "num": 1,
-                            "point": 1
+                            "name": "string"
                           }
                         },
                         {
@@ -127,11 +103,7 @@
                       "example": {
                         "id": 1,
                         "stuid": 1,
-                        "name": "string",
-                        "grade": 1,
-                        "class": 1,
-                        "num": 1,
-                        "point": 1
+                        "name": "string"
                       }
                     }
                   },
@@ -153,11 +125,7 @@
                     "student": {
                       "id": 1,
                       "stuid": 1,
-                      "name": "string",
-                      "grade": 1,
-                      "class": 1,
-                      "num": 1,
-                      "point": 1
+                      "name": "string"
                     }
                   }
                 }
@@ -297,42 +265,18 @@
                               "name": {
                                 "type": "string",
                                 "example": "string"
-                              },
-                              "grade": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "class": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "num": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "point": {
-                                "type": "integer",
-                                "example": 1
                               }
                             },
                             "required": [
                               "id",
                               "stuid",
-                              "name",
-                              "grade",
-                              "class",
-                              "num",
-                              "point"
+                              "name"
                             ],
                             "additionalProperties": false,
                             "example": {
                               "id": 1,
                               "stuid": 1,
-                              "name": "string",
-                              "grade": 1,
-                              "class": 1,
-                              "num": 1,
-                              "point": 1
+                              "name": "string"
                             }
                           },
                           {
@@ -343,11 +287,7 @@
                         "example": {
                           "id": 1,
                           "stuid": 1,
-                          "name": "string",
-                          "grade": 1,
-                          "class": 1,
-                          "num": 1,
-                          "point": 1
+                          "name": "string"
                         }
                       }
                     },
@@ -369,11 +309,7 @@
                       "student": {
                         "id": 1,
                         "stuid": 1,
-                        "name": "string",
-                        "grade": 1,
-                        "class": 1,
-                        "num": 1,
-                        "point": 1
+                        "name": "string"
                       }
                     }
                   },
@@ -387,11 +323,7 @@
                       "student": {
                         "id": 1,
                         "stuid": 1,
-                        "name": "string",
-                        "grade": 1,
-                        "class": 1,
-                        "num": 1,
-                        "point": 1
+                        "name": "string"
                       }
                     }
                   ]
@@ -482,42 +414,18 @@
                             "name": {
                               "type": "string",
                               "example": "string"
-                            },
-                            "grade": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "class": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "num": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "point": {
-                              "type": "integer",
-                              "example": 1
                             }
                           },
                           "required": [
                             "id",
                             "stuid",
-                            "name",
-                            "grade",
-                            "class",
-                            "num",
-                            "point"
+                            "name"
                           ],
                           "additionalProperties": false,
                           "example": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "grade": 1,
-                            "class": 1,
-                            "num": 1,
-                            "point": 1
+                            "name": "string"
                           }
                         },
                         {
@@ -528,11 +436,7 @@
                       "example": {
                         "id": 1,
                         "stuid": 1,
-                        "name": "string",
-                        "grade": 1,
-                        "class": 1,
-                        "num": 1,
-                        "point": 1
+                        "name": "string"
                       }
                     }
                   },
@@ -554,11 +458,7 @@
                     "student": {
                       "id": 1,
                       "stuid": 1,
-                      "name": "string",
-                      "grade": 1,
-                      "class": 1,
-                      "num": 1,
-                      "point": 1
+                      "name": "string"
                     }
                   }
                 }
@@ -724,42 +624,18 @@
                             "name": {
                               "type": "string",
                               "example": "string"
-                            },
-                            "grade": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "class": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "num": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "point": {
-                              "type": "integer",
-                              "example": 1
                             }
                           },
                           "required": [
                             "id",
                             "stuid",
-                            "name",
-                            "grade",
-                            "class",
-                            "num",
-                            "point"
+                            "name"
                           ],
                           "additionalProperties": false,
                           "example": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "grade": 1,
-                            "class": 1,
-                            "num": 1,
-                            "point": 1
+                            "name": "string"
                           }
                         },
                         "teacher": {
@@ -776,48 +652,18 @@
                             "name": {
                               "type": "string",
                               "example": "string"
-                            },
-                            "phoneNumber": {
-                              "anyOf": [
-                                {
-                                  "type": "string",
-                                  "example": "string"
-                                },
-                                {
-                                  "type": "null",
-                                  "example": null
-                                }
-                              ],
-                              "example": "string"
-                            },
-                            "studentId": {
-                              "anyOf": [
-                                {
-                                  "type": "integer",
-                                  "example": 1
-                                },
-                                {
-                                  "type": "null",
-                                  "example": null
-                                }
-                              ],
-                              "example": 1
                             }
                           },
                           "required": [
                             "id",
                             "stuid",
-                            "name",
-                            "phoneNumber",
-                            "studentId"
+                            "name"
                           ],
                           "additionalProperties": false,
                           "example": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "phoneNumber": "string",
-                            "studentId": 1
+                            "name": "string"
                           }
                         }
                       },
@@ -846,18 +692,12 @@
                         "student": {
                           "id": 1,
                           "stuid": 1,
-                          "name": "string",
-                          "grade": 1,
-                          "class": 1,
-                          "num": 1,
-                          "point": 1
+                          "name": "string"
                         },
                         "teacher": {
                           "id": 1,
                           "stuid": 1,
-                          "name": "string",
-                          "phoneNumber": "string",
-                          "studentId": 1
+                          "name": "string"
                         }
                       }
                     }
@@ -879,18 +719,12 @@
                       "student": {
                         "id": 1,
                         "stuid": 1,
-                        "name": "string",
-                        "grade": 1,
-                        "class": 1,
-                        "num": 1,
-                        "point": 1
+                        "name": "string"
                       },
                       "teacher": {
                         "id": 1,
                         "stuid": 1,
-                        "name": "string",
-                        "phoneNumber": "string",
-                        "studentId": 1
+                        "name": "string"
                       }
                     }
                   }
@@ -1036,42 +870,18 @@
                               "name": {
                                 "type": "string",
                                 "example": "string"
-                              },
-                              "grade": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "class": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "num": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "point": {
-                                "type": "integer",
-                                "example": 1
                               }
                             },
                             "required": [
                               "id",
                               "stuid",
-                              "name",
-                              "grade",
-                              "class",
-                              "num",
-                              "point"
+                              "name"
                             ],
                             "additionalProperties": false,
                             "example": {
                               "id": 1,
                               "stuid": 1,
-                              "name": "string",
-                              "grade": 1,
-                              "class": 1,
-                              "num": 1,
-                              "point": 1
+                              "name": "string"
                             }
                           },
                           "teacher": {
@@ -1088,48 +898,18 @@
                               "name": {
                                 "type": "string",
                                 "example": "string"
-                              },
-                              "phoneNumber": {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "example": "string"
-                                  },
-                                  {
-                                    "type": "null",
-                                    "example": null
-                                  }
-                                ],
-                                "example": "string"
-                              },
-                              "studentId": {
-                                "anyOf": [
-                                  {
-                                    "type": "integer",
-                                    "example": 1
-                                  },
-                                  {
-                                    "type": "null",
-                                    "example": null
-                                  }
-                                ],
-                                "example": 1
                               }
                             },
                             "required": [
                               "id",
                               "stuid",
-                              "name",
-                              "phoneNumber",
-                              "studentId"
+                              "name"
                             ],
                             "additionalProperties": false,
                             "example": {
                               "id": 1,
                               "stuid": 1,
-                              "name": "string",
-                              "phoneNumber": "string",
-                              "studentId": 1
+                              "name": "string"
                             }
                           }
                         },
@@ -1158,18 +938,12 @@
                           "student": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "grade": 1,
-                            "class": 1,
-                            "num": 1,
-                            "point": 1
+                            "name": "string"
                           },
                           "teacher": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "phoneNumber": "string",
-                            "studentId": 1
+                            "name": "string"
                           }
                         }
                       },
@@ -1186,18 +960,12 @@
                           "student": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "grade": 1,
-                            "class": 1,
-                            "num": 1,
-                            "point": 1
+                            "name": "string"
                           },
                           "teacher": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "phoneNumber": "string",
-                            "studentId": 1
+                            "name": "string"
                           }
                         }
                       ]
@@ -1221,18 +989,12 @@
                         "student": {
                           "id": 1,
                           "stuid": 1,
-                          "name": "string",
-                          "grade": 1,
-                          "class": 1,
-                          "num": 1,
-                          "point": 1
+                          "name": "string"
                         },
                         "teacher": {
                           "id": 1,
                           "stuid": 1,
-                          "name": "string",
-                          "phoneNumber": "string",
-                          "studentId": 1
+                          "name": "string"
                         }
                       }
                     ]
@@ -1323,42 +1085,18 @@
                             "name": {
                               "type": "string",
                               "example": "string"
-                            },
-                            "grade": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "class": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "num": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "point": {
-                              "type": "integer",
-                              "example": 1
                             }
                           },
                           "required": [
                             "id",
                             "stuid",
-                            "name",
-                            "grade",
-                            "class",
-                            "num",
-                            "point"
+                            "name"
                           ],
                           "additionalProperties": false,
                           "example": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "grade": 1,
-                            "class": 1,
-                            "num": 1,
-                            "point": 1
+                            "name": "string"
                           }
                         },
                         "teacher": {
@@ -1375,48 +1113,18 @@
                             "name": {
                               "type": "string",
                               "example": "string"
-                            },
-                            "phoneNumber": {
-                              "anyOf": [
-                                {
-                                  "type": "string",
-                                  "example": "string"
-                                },
-                                {
-                                  "type": "null",
-                                  "example": null
-                                }
-                              ],
-                              "example": "string"
-                            },
-                            "studentId": {
-                              "anyOf": [
-                                {
-                                  "type": "integer",
-                                  "example": 1
-                                },
-                                {
-                                  "type": "null",
-                                  "example": null
-                                }
-                              ],
-                              "example": 1
                             }
                           },
                           "required": [
                             "id",
                             "stuid",
-                            "name",
-                            "phoneNumber",
-                            "studentId"
+                            "name"
                           ],
                           "additionalProperties": false,
                           "example": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "phoneNumber": "string",
-                            "studentId": 1
+                            "name": "string"
                           }
                         }
                       },
@@ -1445,18 +1153,12 @@
                         "student": {
                           "id": 1,
                           "stuid": 1,
-                          "name": "string",
-                          "grade": 1,
-                          "class": 1,
-                          "num": 1,
-                          "point": 1
+                          "name": "string"
                         },
                         "teacher": {
                           "id": 1,
                           "stuid": 1,
-                          "name": "string",
-                          "phoneNumber": "string",
-                          "studentId": 1
+                          "name": "string"
                         }
                       }
                     }
@@ -1478,18 +1180,12 @@
                       "student": {
                         "id": 1,
                         "stuid": 1,
-                        "name": "string",
-                        "grade": 1,
-                        "class": 1,
-                        "num": 1,
-                        "point": 1
+                        "name": "string"
                       },
                       "teacher": {
                         "id": 1,
                         "stuid": 1,
-                        "name": "string",
-                        "phoneNumber": "string",
-                        "studentId": 1
+                        "name": "string"
                       }
                     }
                   }
@@ -1823,58 +1519,6 @@
                             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$",
                             "example": "2026-01-01T00:00:00.000Z"
                           },
-                          "student": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "stuid": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "name": {
-                                "type": "string",
-                                "example": "string"
-                              },
-                              "grade": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "class": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "num": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "point": {
-                                "type": "integer",
-                                "example": 1
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "stuid",
-                              "name",
-                              "grade",
-                              "class",
-                              "num",
-                              "point"
-                            ],
-                            "additionalProperties": false,
-                            "example": {
-                              "id": 1,
-                              "stuid": 1,
-                              "name": "string",
-                              "grade": 1,
-                              "class": 1,
-                              "num": 1,
-                              "point": 1
-                            }
-                          },
                           "teacher": {
                             "type": "object",
                             "properties": {
@@ -1889,48 +1533,18 @@
                               "name": {
                                 "type": "string",
                                 "example": "string"
-                              },
-                              "phoneNumber": {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "example": "string"
-                                  },
-                                  {
-                                    "type": "null",
-                                    "example": null
-                                  }
-                                ],
-                                "example": "string"
-                              },
-                              "studentId": {
-                                "anyOf": [
-                                  {
-                                    "type": "integer",
-                                    "example": 1
-                                  },
-                                  {
-                                    "type": "null",
-                                    "example": null
-                                  }
-                                ],
-                                "example": 1
                               }
                             },
                             "required": [
                               "id",
                               "stuid",
-                              "name",
-                              "phoneNumber",
-                              "studentId"
+                              "name"
                             ],
                             "additionalProperties": false,
                             "example": {
                               "id": 1,
                               "stuid": 1,
-                              "name": "string",
-                              "phoneNumber": "string",
-                              "studentId": 1
+                              "name": "string"
                             }
                           }
                         },
@@ -1943,7 +1557,6 @@
                           "comment",
                           "baseDate",
                           "updatedDate",
-                          "student",
                           "teacher"
                         ],
                         "additionalProperties": false,
@@ -1956,21 +1569,10 @@
                           "comment": "string",
                           "baseDate": "2026-01-01T00:00:00.000Z",
                           "updatedDate": "2026-01-01T00:00:00.000Z",
-                          "student": {
-                            "id": 1,
-                            "stuid": 1,
-                            "name": "string",
-                            "grade": 1,
-                            "class": 1,
-                            "num": 1,
-                            "point": 1
-                          },
                           "teacher": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "phoneNumber": "string",
-                            "studentId": 1
+                            "name": "string"
                           }
                         }
                       },
@@ -1984,21 +1586,10 @@
                           "comment": "string",
                           "baseDate": "2026-01-01T00:00:00.000Z",
                           "updatedDate": "2026-01-01T00:00:00.000Z",
-                          "student": {
-                            "id": 1,
-                            "stuid": 1,
-                            "name": "string",
-                            "grade": 1,
-                            "class": 1,
-                            "num": 1,
-                            "point": 1
-                          },
                           "teacher": {
                             "id": 1,
                             "stuid": 1,
-                            "name": "string",
-                            "phoneNumber": "string",
-                            "studentId": 1
+                            "name": "string"
                           }
                         }
                       ]
@@ -2029,21 +1620,10 @@
                         "comment": "string",
                         "baseDate": "2026-01-01T00:00:00.000Z",
                         "updatedDate": "2026-01-01T00:00:00.000Z",
-                        "student": {
-                          "id": 1,
-                          "stuid": 1,
-                          "name": "string",
-                          "grade": 1,
-                          "class": 1,
-                          "num": 1,
-                          "point": 1
-                        },
                         "teacher": {
                           "id": 1,
                           "stuid": 1,
-                          "name": "string",
-                          "phoneNumber": "string",
-                          "studentId": 1
+                          "name": "string"
                         }
                       }
                     ]
@@ -2406,7 +1986,7 @@
         ]
       }
     },
-    "/api/remote/cases": {
+    "/api/cases": {
       "get": {
         "operationId": "CasesController_findAll",
         "parameters": [],
@@ -2548,7 +2128,7 @@
         }
       }
     },
-    "/api/remote/cases/{id}": {
+    "/api/cases/{id}": {
       "get": {
         "operationId": "CasesController_findOne",
         "parameters": [
@@ -2976,7 +2556,7 @@
         ]
       }
     },
-    "/api/remote/songs": {
+    "/api/songs": {
       "post": {
         "operationId": "SongsController_create",
         "parameters": [],
@@ -3162,7 +2742,7 @@
         ]
       }
     },
-    "/api/remote/songs/{id}": {
+    "/api/songs/{id}": {
       "patch": {
         "operationId": "SongsController_update",
         "parameters": [
@@ -3885,14 +3465,6 @@
                           "type": "string",
                           "example": "string"
                         },
-                        "capacity": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "grade": {
-                          "type": "integer",
-                          "example": 1
-                        },
                         "dormName": {
                           "type": "string",
                           "example": "string"
@@ -3901,16 +3473,12 @@
                       "required": [
                         "id",
                         "name",
-                        "capacity",
-                        "grade",
                         "dormName"
                       ],
                       "additionalProperties": false,
                       "example": {
                         "id": 1,
                         "name": "string",
-                        "capacity": 1,
-                        "grade": 1,
                         "dormName": "string"
                       }
                     }
@@ -3945,8 +3513,6 @@
                     "room": {
                       "id": 1,
                       "name": "string",
-                      "capacity": 1,
-                      "grade": 1,
                       "dormName": "string"
                     }
                   }
@@ -4124,14 +3690,6 @@
                             "type": "string",
                             "example": "string"
                           },
-                          "capacity": {
-                            "type": "integer",
-                            "example": 1
-                          },
-                          "grade": {
-                            "type": "integer",
-                            "example": 1
-                          },
                           "dormName": {
                             "type": "string",
                             "example": "string"
@@ -4140,16 +3698,12 @@
                         "required": [
                           "id",
                           "name",
-                          "capacity",
-                          "grade",
                           "dormName"
                         ],
                         "additionalProperties": false,
                         "example": {
                           "id": 1,
                           "name": "string",
-                          "capacity": 1,
-                          "grade": 1,
                           "dormName": "string"
                         }
                       }
@@ -4184,8 +3738,6 @@
                       "room": {
                         "id": 1,
                         "name": "string",
-                        "capacity": 1,
-                        "grade": 1,
                         "dormName": "string"
                       }
                     }
@@ -4208,8 +3760,6 @@
                       "room": {
                         "id": 1,
                         "name": "string",
-                        "capacity": 1,
-                        "grade": 1,
                         "dormName": "string"
                       }
                     }
@@ -4350,14 +3900,6 @@
                           "type": "string",
                           "example": "string"
                         },
-                        "capacity": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "grade": {
-                          "type": "integer",
-                          "example": 1
-                        },
                         "dormName": {
                           "type": "string",
                           "example": "string"
@@ -4366,16 +3908,12 @@
                       "required": [
                         "id",
                         "name",
-                        "capacity",
-                        "grade",
                         "dormName"
                       ],
                       "additionalProperties": false,
                       "example": {
                         "id": 1,
                         "name": "string",
-                        "capacity": 1,
-                        "grade": 1,
                         "dormName": "string"
                       }
                     }
@@ -4410,8 +3948,6 @@
                     "room": {
                       "id": 1,
                       "name": "string",
-                      "capacity": 1,
-                      "grade": 1,
                       "dormName": "string"
                     }
                   }
@@ -4741,22 +4277,6 @@
                           "name": {
                             "type": "string",
                             "example": "string"
-                          },
-                          "grade": {
-                            "type": "integer",
-                            "example": 1
-                          },
-                          "class": {
-                            "type": "integer",
-                            "example": 1
-                          },
-                          "num": {
-                            "type": "integer",
-                            "example": 1
-                          },
-                          "point": {
-                            "type": "integer",
-                            "example": 1
                           }
                         },
                         "required": [
@@ -4785,89 +4305,6 @@
                           "name": {
                             "type": "string",
                             "example": "string"
-                          },
-                          "phoneNumber": {
-                            "anyOf": [
-                              {
-                                "type": "string",
-                                "example": "string"
-                              },
-                              {
-                                "type": "null",
-                                "example": null
-                              }
-                            ],
-                            "example": "string"
-                          },
-                          "studentId": {
-                            "anyOf": [
-                              {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              {
-                                "type": "null",
-                                "example": null
-                              }
-                            ],
-                            "example": 1
-                          },
-                          "student": {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "type": "integer",
-                                    "example": 1
-                                  },
-                                  "stuid": {
-                                    "type": "integer",
-                                    "example": 1
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                    "example": "string"
-                                  },
-                                  "grade": {
-                                    "type": "integer",
-                                    "example": 1
-                                  },
-                                  "class": {
-                                    "type": "integer",
-                                    "example": 1
-                                  },
-                                  "num": {
-                                    "type": "integer",
-                                    "example": 1
-                                  },
-                                  "point": {
-                                    "type": "integer",
-                                    "example": 1
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "stuid",
-                                  "name"
-                                ],
-                                "additionalProperties": false,
-                                "example": {
-                                  "id": 1,
-                                  "stuid": 1,
-                                  "name": "string"
-                                }
-                              },
-                              {
-                                "type": "null",
-                                "example": null
-                              }
-                            ],
-                            "example": {
-                              "id": 1,
-                              "stuid": 1,
-                              "name": "string"
-                            }
                           }
                         },
                         "required": [
@@ -5047,10 +4484,6 @@
                         "type": "string",
                         "example": "string"
                       },
-                      "capacity": {
-                        "type": "integer",
-                        "example": 1
-                      },
                       "grade": {
                         "type": "integer",
                         "example": 1
@@ -5059,240 +4492,58 @@
                         "type": "string",
                         "example": "string"
                       },
-                      "dormUsers": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "roomId": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "userId": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "year": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "semester": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "bedPosition": {
-                              "type": "integer",
-                              "example": 1
-                            }
+                      "_count": {
+                        "type": "object",
+                        "properties": {
+                          "dormUsers": {
+                            "type": "integer",
+                            "example": 1
                           },
-                          "required": [
-                            "id",
-                            "roomId",
-                            "userId",
-                            "year",
-                            "semester",
-                            "bedPosition"
-                          ],
-                          "additionalProperties": false,
-                          "example": {
-                            "id": 1,
-                            "roomId": 1,
-                            "userId": 1,
-                            "year": 1,
-                            "semester": 1,
-                            "bedPosition": 1
+                          "dormReport": {
+                            "type": "integer",
+                            "example": 1
                           }
                         },
-                        "example": [
-                          {
-                            "id": 1,
-                            "roomId": 1,
-                            "userId": 1,
-                            "year": 1,
-                            "semester": 1,
-                            "bedPosition": 1
-                          }
-                        ]
-                      },
-                      "dormReport": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "userId": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "roomId": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "description": {
-                              "type": "string",
-                              "example": "string"
-                            },
-                            "imageUrl": {
-                              "anyOf": [
-                                {
-                                  "type": "string",
-                                  "example": "string"
-                                },
-                                {
-                                  "type": "null",
-                                  "example": null
-                                }
-                              ],
-                              "example": "string"
-                            },
-                            "imageKey": {
-                              "anyOf": [
-                                {
-                                  "type": "string",
-                                  "example": "string"
-                                },
-                                {
-                                  "type": "null",
-                                  "example": null
-                                }
-                              ],
-                              "example": "string"
-                            },
-                            "status": {
-                              "type": "string",
-                              "enum": [
-                                "PENDING",
-                                "PROCESSING",
-                                "COMPLETED"
-                              ],
-                              "example": "PENDING"
-                            },
-                            "comment": {
-                              "anyOf": [
-                                {
-                                  "type": "string",
-                                  "example": "string"
-                                },
-                                {
-                                  "type": "null",
-                                  "example": null
-                                }
-                              ],
-                              "example": "string"
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "userId",
-                            "roomId",
-                            "description",
-                            "imageUrl",
-                            "imageKey",
-                            "status",
-                            "comment"
-                          ],
-                          "additionalProperties": false,
-                          "example": {
-                            "id": 1,
-                            "userId": 1,
-                            "roomId": 1,
-                            "description": "string",
-                            "imageUrl": "string",
-                            "imageKey": "string",
-                            "status": "PENDING",
-                            "comment": "string"
-                          }
-                        },
-                        "example": [
-                          {
-                            "id": 1,
-                            "userId": 1,
-                            "roomId": 1,
-                            "description": "string",
-                            "imageUrl": "string",
-                            "imageKey": "string",
-                            "status": "PENDING",
-                            "comment": "string"
-                          }
-                        ]
+                        "required": [
+                          "dormUsers",
+                          "dormReport"
+                        ],
+                        "additionalProperties": false,
+                        "example": {
+                          "dormUsers": 1,
+                          "dormReport": 1
+                        }
                       }
                     },
                     "required": [
                       "id",
                       "name",
-                      "capacity",
                       "grade",
                       "dormName",
-                      "dormUsers",
-                      "dormReport"
+                      "_count"
                     ],
                     "additionalProperties": false,
                     "example": {
                       "id": 1,
                       "name": "string",
-                      "capacity": 1,
                       "grade": 1,
                       "dormName": "string",
-                      "dormUsers": [
-                        {
-                          "id": 1,
-                          "roomId": 1,
-                          "userId": 1,
-                          "year": 1,
-                          "semester": 1,
-                          "bedPosition": 1
-                        }
-                      ],
-                      "dormReport": [
-                        {
-                          "id": 1,
-                          "userId": 1,
-                          "roomId": 1,
-                          "description": "string",
-                          "imageUrl": "string",
-                          "imageKey": "string",
-                          "status": "PENDING",
-                          "comment": "string"
-                        }
-                      ]
+                      "_count": {
+                        "dormUsers": 1,
+                        "dormReport": 1
+                      }
                     }
                   },
                   "example": [
                     {
                       "id": 1,
                       "name": "string",
-                      "capacity": 1,
                       "grade": 1,
                       "dormName": "string",
-                      "dormUsers": [
-                        {
-                          "id": 1,
-                          "roomId": 1,
-                          "userId": 1,
-                          "year": 1,
-                          "semester": 1,
-                          "bedPosition": 1
-                        }
-                      ],
-                      "dormReport": [
-                        {
-                          "id": 1,
-                          "userId": 1,
-                          "roomId": 1,
-                          "description": "string",
-                          "imageUrl": "string",
-                          "imageKey": "string",
-                          "status": "PENDING",
-                          "comment": "string"
-                        }
-                      ]
+                      "_count": {
+                        "dormUsers": 1,
+                        "dormReport": 1
+                      }
                     }
                   ]
                 }
@@ -5356,82 +4607,31 @@
                           }
                         ],
                         "example": 1
-                      },
-                      "student": {
-                        "anyOf": [
-                          {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "stuid": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "name": {
-                                "type": "string",
-                                "example": "string"
-                              },
-                              "grade": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "class": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "num": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "point": {
-                                "type": "integer",
-                                "example": 1
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "stuid",
-                              "name"
-                            ],
-                            "additionalProperties": false,
-                            "example": {
-                              "id": 1,
-                              "stuid": 1,
-                              "name": "string"
-                            }
-                          },
-                          {
-                            "type": "null",
-                            "example": null
-                          }
-                        ],
-                        "example": {
-                          "id": 1,
-                          "stuid": 1,
-                          "name": "string"
-                        }
                       }
                     },
                     "required": [
                       "id",
                       "stuid",
-                      "name"
+                      "name",
+                      "phoneNumber",
+                      "studentId"
                     ],
                     "additionalProperties": false,
                     "example": {
                       "id": 1,
                       "stuid": 1,
-                      "name": "string"
+                      "name": "string",
+                      "phoneNumber": "string",
+                      "studentId": 1
                     }
                   },
                   "example": [
                     {
                       "id": 1,
                       "stuid": 1,
-                      "name": "string"
+                      "name": "string",
+                      "phoneNumber": "string",
+                      "studentId": 1
                     }
                   ]
                 }

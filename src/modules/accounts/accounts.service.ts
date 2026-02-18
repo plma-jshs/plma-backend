@@ -23,10 +23,6 @@ export class AccountsService {
         id: true,
         stuid: true,
         name: true,
-        grade: true,
-        class: true,
-        num: true,
-        point: true,
       },
     },
   } as const;

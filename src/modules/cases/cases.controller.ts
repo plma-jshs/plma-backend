@@ -10,25 +10,29 @@ import {
 import { parseZod } from '@/common/zod/parse-zod';
 
 @ApiTags('Cases')
-@Controller('api/remote/cases')
+@Controller('api/cases')
 export class CasesController {
   constructor(private readonly casesService: CasesService) {}
 
-  @Get()  findAll() {
+  @Get()
+  findAll() {
     return this.casesService.findAll();
   }
 
-  @Put()  replaceAll(@Body() body: unknown) {
+  @Put()
+  replaceAll(@Body() body: unknown) {
     const payload = parseZod<CaseUpdateInput>(updateCaseSchema, body);
     return this.casesService.replaceAll(payload);
   }
 
-  @Get(':id')  findOne(@Param() params: unknown) {
+  @Get(':id')
+  findOne(@Param() params: unknown) {
     const { id } = parseZod<CaseIdParams>(caseIdParamSchema, params);
     return this.casesService.findOne(id);
   }
 
-  @Patch(':id')  update(
+  @Patch(':id')
+  update(
     @Param() params: unknown,
     @Body() body: unknown,
   ) {

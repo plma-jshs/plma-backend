@@ -23,8 +23,6 @@ export class DormRoomsService {
       select: {
         id: true,
         name: true,
-        capacity: true,
-        grade: true,
         dormName: true,
       },
     },

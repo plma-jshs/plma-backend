@@ -30,10 +30,6 @@ const accountStudentSchema = z.object({
   id: z.number().int(),
   stuid: z.number().int(),
   name: z.string(),
-  grade: z.number().int(),
-  class: z.number().int(),
-  num: z.number().int(),
-  point: z.number().int(),
 });
 
 const accountSchema = z.object({

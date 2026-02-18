@@ -55,6 +55,12 @@ const dormRoomBriefSchema = z.object({
   dormName: z.string(),
 });
 
+const dormRoomSummarySchema = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  dormName: z.string(),
+});
+
 const dormAssignmentMemberResponseSchema = z.object({
   userId: z.number().int(),
   bedPosition: z.number().int(),
@@ -77,7 +83,7 @@ const dormReportResponseSchema = z.object({
   status: z.enum(['PENDING', 'PROCESSING', 'COMPLETED']),
   comment: z.string().nullable(),
   user: dormUserBriefSchema,
-  room: dormRoomBriefSchema,
+  room: dormRoomSummarySchema,
 });
 
 export const findAssignmentsResponseSchema = z.object({

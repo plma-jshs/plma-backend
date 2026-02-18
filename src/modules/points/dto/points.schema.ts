@@ -51,12 +51,16 @@ const pointStudentSchema = z.object({
   point: z.number().int(),
 });
 
+const pointStudentBriefSchema = z.object({
+  id: z.number().int(),
+  stuid: z.number().int(),
+  name: z.string(),
+});
+
 const pointTeacherSchema = z.object({
   id: z.number().int(),
   stuid: z.number().int(),
   name: z.string(),
-  phoneNumber: z.string().nullable(),
-  studentId: z.number().int().nullable(),
 });
 
 const reasonSchema = z.object({
@@ -75,7 +79,19 @@ const pointRecordSchema = z.object({
   comment: z.string(),
   baseDate: z.string().datetime(),
   updatedDate: z.string().datetime(),
-  student: pointStudentSchema,
+  student: pointStudentBriefSchema,
+  teacher: pointTeacherSchema,
+});
+
+const pointRecordWithoutStudentSchema = z.object({
+  id: z.number().int(),
+  studentId: z.number().int(),
+  teacherId: z.number().int(),
+  reasonId: z.number().int(),
+  point: z.number().int(),
+  comment: z.string(),
+  baseDate: z.string().datetime(),
+  updatedDate: z.string().datetime(),
   teacher: pointTeacherSchema,
 });
 
@@ -85,7 +101,7 @@ export const updateResponseSchema = z.object({ point: pointRecordSchema });
 export const findStudentsResponseSchema = z.object({ students: z.array(pointStudentSchema) });
 export const findStudentByIdResponseSchema = z.object({
   student: pointStudentSchema,
-  points: z.array(pointRecordSchema),
+  points: z.array(pointRecordWithoutStudentSchema),
 });
 export const findReasonsResponseSchema = z.object({ reasons: z.array(reasonSchema) });
 export const createReasonResponseSchema = z.object({ reason: reasonSchema });

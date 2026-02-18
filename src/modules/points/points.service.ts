@@ -12,26 +12,36 @@ import {
 @Injectable()
 export class PointsService {
   private readonly pageSize = 20;
+  private readonly pointStudentBriefSelect = {
+    id: true,
+    stuid: true,
+    name: true,
+  } as const;
+  private readonly pointStudentSelect = {
+    id: true,
+    stuid: true,
+    name: true,
+    grade: true,
+    class: true,
+    num: true,
+    point: true,
+  } as const;
+  private readonly pointTeacherSelect = {
+    id: true,
+    stuid: true,
+    name: true,
+  } as const;
   private readonly pointInclude = {
     student: {
-      select: {
-        id: true,
-        stuid: true,
-        name: true,
-        grade: true,
-        class: true,
-        num: true,
-        point: true,
-      },
+      select: this.pointStudentBriefSelect,
     },
     teacher: {
-      select: {
-        id: true,
-        stuid: true,
-        name: true,
-        phoneNumber: true,
-        studentId: true,
-      },
+      select: this.pointTeacherSelect,
+    },
+  } as const;
+  private readonly pointIncludeWithoutStudent = {
+    teacher: {
+      select: this.pointTeacherSelect,
     },
   } as const;
 
@@ -101,15 +111,7 @@ export class PointsService {
   async findStudentById(studentId: number) {
     const student = await this.prisma.student.findUnique({
       where: { id: studentId },
-      select: {
-        id: true,
-        stuid: true,
-        name: true,
-        grade: true,
-        class: true,
-        num: true,
-        point: true,
-      },
+      select: this.pointStudentSelect,
     });
 
     if (!student) {
@@ -118,7 +120,7 @@ export class PointsService {
 
     const points = await this.prisma.point.findMany({
       where: { studentId },
-      include: this.pointInclude,
+      include: this.pointIncludeWithoutStudent,
       orderBy: { id: 'desc' },
     });
 

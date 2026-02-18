@@ -37,21 +37,18 @@ export type CaseSumAggregateOutputType = {
 export type CaseMinAggregateOutputType = {
   id: number | null
   status: $Enums.CaseStatus | null
-  baseDate: Date | null
   updatedDate: Date | null
 }
 
 export type CaseMaxAggregateOutputType = {
   id: number | null
   status: $Enums.CaseStatus | null
-  baseDate: Date | null
   updatedDate: Date | null
 }
 
 export type CaseCountAggregateOutputType = {
   id: number
   status: number
-  baseDate: number
   updatedDate: number
   _all: number
 }
@@ -68,21 +65,18 @@ export type CaseSumAggregateInputType = {
 export type CaseMinAggregateInputType = {
   id?: true
   status?: true
-  baseDate?: true
   updatedDate?: true
 }
 
 export type CaseMaxAggregateInputType = {
   id?: true
   status?: true
-  baseDate?: true
   updatedDate?: true
 }
 
 export type CaseCountAggregateInputType = {
   id?: true
   status?: true
-  baseDate?: true
   updatedDate?: true
   _all?: true
 }
@@ -176,7 +170,6 @@ export type CaseGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type CaseGroupByOutputType = {
   id: number
   status: $Enums.CaseStatus
-  baseDate: Date
   updatedDate: Date
   _count: CaseCountAggregateOutputType | null
   _avg: CaseAvgAggregateOutputType | null
@@ -206,14 +199,12 @@ export type CaseWhereInput = {
   NOT?: Prisma.CaseWhereInput | Prisma.CaseWhereInput[]
   id?: Prisma.IntFilter<"Case"> | number
   status?: Prisma.EnumCaseStatusFilter<"Case"> | $Enums.CaseStatus
-  baseDate?: Prisma.DateTimeFilter<"Case"> | Date | string
   updatedDate?: Prisma.DateTimeFilter<"Case"> | Date | string
 }
 
 export type CaseOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  baseDate?: Prisma.SortOrder
   updatedDate?: Prisma.SortOrder
 }
 
@@ -223,14 +214,12 @@ export type CaseWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CaseWhereInput[]
   NOT?: Prisma.CaseWhereInput | Prisma.CaseWhereInput[]
   status?: Prisma.EnumCaseStatusFilter<"Case"> | $Enums.CaseStatus
-  baseDate?: Prisma.DateTimeFilter<"Case"> | Date | string
   updatedDate?: Prisma.DateTimeFilter<"Case"> | Date | string
 }, "id">
 
 export type CaseOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  baseDate?: Prisma.SortOrder
   updatedDate?: Prisma.SortOrder
   _count?: Prisma.CaseCountOrderByAggregateInput
   _avg?: Prisma.CaseAvgOrderByAggregateInput
@@ -245,63 +234,54 @@ export type CaseScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CaseScalarWhereWithAggregatesInput | Prisma.CaseScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Case"> | number
   status?: Prisma.EnumCaseStatusWithAggregatesFilter<"Case"> | $Enums.CaseStatus
-  baseDate?: Prisma.DateTimeWithAggregatesFilter<"Case"> | Date | string
   updatedDate?: Prisma.DateTimeWithAggregatesFilter<"Case"> | Date | string
 }
 
 export type CaseCreateInput = {
   id: number
   status?: $Enums.CaseStatus
-  baseDate: Date | string
   updatedDate?: Date | string
 }
 
 export type CaseUncheckedCreateInput = {
   id: number
   status?: $Enums.CaseStatus
-  baseDate: Date | string
   updatedDate?: Date | string
 }
 
 export type CaseUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumCaseStatusFieldUpdateOperationsInput | $Enums.CaseStatus
-  baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CaseUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumCaseStatusFieldUpdateOperationsInput | $Enums.CaseStatus
-  baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CaseCreateManyInput = {
   id: number
   status?: $Enums.CaseStatus
-  baseDate: Date | string
   updatedDate?: Date | string
 }
 
 export type CaseUpdateManyMutationInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumCaseStatusFieldUpdateOperationsInput | $Enums.CaseStatus
-  baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CaseUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumCaseStatusFieldUpdateOperationsInput | $Enums.CaseStatus
-  baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CaseCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  baseDate?: Prisma.SortOrder
   updatedDate?: Prisma.SortOrder
 }
 
@@ -312,14 +292,12 @@ export type CaseAvgOrderByAggregateInput = {
 export type CaseMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  baseDate?: Prisma.SortOrder
   updatedDate?: Prisma.SortOrder
 }
 
 export type CaseMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  baseDate?: Prisma.SortOrder
   updatedDate?: Prisma.SortOrder
 }
 
@@ -336,7 +314,6 @@ export type EnumCaseStatusFieldUpdateOperationsInput = {
 export type CaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   status?: boolean
-  baseDate?: boolean
   updatedDate?: boolean
 }, ExtArgs["result"]["case"]>
 
@@ -345,11 +322,10 @@ export type CaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type CaseSelectScalar = {
   id?: boolean
   status?: boolean
-  baseDate?: boolean
   updatedDate?: boolean
 }
 
-export type CaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "baseDate" | "updatedDate", ExtArgs["result"]["case"]>
+export type CaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "updatedDate", ExtArgs["result"]["case"]>
 
 export type $CasePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Case"
@@ -357,7 +333,6 @@ export type $CasePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     status: $Enums.CaseStatus
-    baseDate: Date
     updatedDate: Date
   }, ExtArgs["result"]["case"]>
   composites: {}
@@ -730,7 +705,6 @@ export interface Prisma__CaseClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface CaseFieldRefs {
   readonly id: Prisma.FieldRef<"Case", 'Int'>
   readonly status: Prisma.FieldRef<"Case", 'CaseStatus'>
-  readonly baseDate: Prisma.FieldRef<"Case", 'DateTime'>
   readonly updatedDate: Prisma.FieldRef<"Case", 'DateTime'>
 }
     

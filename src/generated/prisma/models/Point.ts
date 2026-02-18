@@ -31,6 +31,7 @@ export type PointAvgAggregateOutputType = {
   studentId: number | null
   teacherId: number | null
   reasonId: number | null
+  point: number | null
 }
 
 export type PointSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type PointSumAggregateOutputType = {
   studentId: number | null
   teacherId: number | null
   reasonId: number | null
+  point: number | null
 }
 
 export type PointMinAggregateOutputType = {
@@ -45,6 +47,8 @@ export type PointMinAggregateOutputType = {
   studentId: number | null
   teacherId: number | null
   reasonId: number | null
+  point: number | null
+  comment: string | null
   baseDate: Date | null
   updatedDate: Date | null
 }
@@ -54,6 +58,8 @@ export type PointMaxAggregateOutputType = {
   studentId: number | null
   teacherId: number | null
   reasonId: number | null
+  point: number | null
+  comment: string | null
   baseDate: Date | null
   updatedDate: Date | null
 }
@@ -63,6 +69,8 @@ export type PointCountAggregateOutputType = {
   studentId: number
   teacherId: number
   reasonId: number
+  point: number
+  comment: number
   baseDate: number
   updatedDate: number
   _all: number
@@ -74,6 +82,7 @@ export type PointAvgAggregateInputType = {
   studentId?: true
   teacherId?: true
   reasonId?: true
+  point?: true
 }
 
 export type PointSumAggregateInputType = {
@@ -81,6 +90,7 @@ export type PointSumAggregateInputType = {
   studentId?: true
   teacherId?: true
   reasonId?: true
+  point?: true
 }
 
 export type PointMinAggregateInputType = {
@@ -88,6 +98,8 @@ export type PointMinAggregateInputType = {
   studentId?: true
   teacherId?: true
   reasonId?: true
+  point?: true
+  comment?: true
   baseDate?: true
   updatedDate?: true
 }
@@ -97,6 +109,8 @@ export type PointMaxAggregateInputType = {
   studentId?: true
   teacherId?: true
   reasonId?: true
+  point?: true
+  comment?: true
   baseDate?: true
   updatedDate?: true
 }
@@ -106,6 +120,8 @@ export type PointCountAggregateInputType = {
   studentId?: true
   teacherId?: true
   reasonId?: true
+  point?: true
+  comment?: true
   baseDate?: true
   updatedDate?: true
   _all?: true
@@ -202,6 +218,8 @@ export type PointGroupByOutputType = {
   studentId: number
   teacherId: number
   reasonId: number
+  point: number
+  comment: string
   baseDate: Date
   updatedDate: Date
   _count: PointCountAggregateOutputType | null
@@ -234,6 +252,8 @@ export type PointWhereInput = {
   studentId?: Prisma.IntFilter<"Point"> | number
   teacherId?: Prisma.IntFilter<"Point"> | number
   reasonId?: Prisma.IntFilter<"Point"> | number
+  point?: Prisma.IntFilter<"Point"> | number
+  comment?: Prisma.StringFilter<"Point"> | string
   baseDate?: Prisma.DateTimeFilter<"Point"> | Date | string
   updatedDate?: Prisma.DateTimeFilter<"Point"> | Date | string
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
@@ -246,11 +266,14 @@ export type PointOrderByWithRelationInput = {
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   reasonId?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
   baseDate?: Prisma.SortOrder
   updatedDate?: Prisma.SortOrder
   student?: Prisma.StudentOrderByWithRelationInput
   teacher?: Prisma.UserOrderByWithRelationInput
   reason?: Prisma.ReasonOrderByWithRelationInput
+  _relevance?: Prisma.PointOrderByRelevanceInput
 }
 
 export type PointWhereUniqueInput = Prisma.AtLeast<{
@@ -261,6 +284,8 @@ export type PointWhereUniqueInput = Prisma.AtLeast<{
   studentId?: Prisma.IntFilter<"Point"> | number
   teacherId?: Prisma.IntFilter<"Point"> | number
   reasonId?: Prisma.IntFilter<"Point"> | number
+  point?: Prisma.IntFilter<"Point"> | number
+  comment?: Prisma.StringFilter<"Point"> | string
   baseDate?: Prisma.DateTimeFilter<"Point"> | Date | string
   updatedDate?: Prisma.DateTimeFilter<"Point"> | Date | string
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
@@ -273,6 +298,8 @@ export type PointOrderByWithAggregationInput = {
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   reasonId?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
   baseDate?: Prisma.SortOrder
   updatedDate?: Prisma.SortOrder
   _count?: Prisma.PointCountOrderByAggregateInput
@@ -290,11 +317,15 @@ export type PointScalarWhereWithAggregatesInput = {
   studentId?: Prisma.IntWithAggregatesFilter<"Point"> | number
   teacherId?: Prisma.IntWithAggregatesFilter<"Point"> | number
   reasonId?: Prisma.IntWithAggregatesFilter<"Point"> | number
+  point?: Prisma.IntWithAggregatesFilter<"Point"> | number
+  comment?: Prisma.StringWithAggregatesFilter<"Point"> | string
   baseDate?: Prisma.DateTimeWithAggregatesFilter<"Point"> | Date | string
   updatedDate?: Prisma.DateTimeWithAggregatesFilter<"Point"> | Date | string
 }
 
 export type PointCreateInput = {
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
   student: Prisma.StudentCreateNestedOneWithoutPointsInput
@@ -307,11 +338,15 @@ export type PointUncheckedCreateInput = {
   studentId: number
   teacherId: number
   reasonId: number
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
 }
 
 export type PointUpdateInput = {
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   student?: Prisma.StudentUpdateOneRequiredWithoutPointsNestedInput
@@ -324,6 +359,8 @@ export type PointUncheckedUpdateInput = {
   studentId?: Prisma.IntFieldUpdateOperationsInput | number
   teacherId?: Prisma.IntFieldUpdateOperationsInput | number
   reasonId?: Prisma.IntFieldUpdateOperationsInput | number
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -333,11 +370,15 @@ export type PointCreateManyInput = {
   studentId: number
   teacherId: number
   reasonId: number
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
 }
 
 export type PointUpdateManyMutationInput = {
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -347,6 +388,8 @@ export type PointUncheckedUpdateManyInput = {
   studentId?: Prisma.IntFieldUpdateOperationsInput | number
   teacherId?: Prisma.IntFieldUpdateOperationsInput | number
   reasonId?: Prisma.IntFieldUpdateOperationsInput | number
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -361,11 +404,19 @@ export type PointOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type PointOrderByRelevanceInput = {
+  fields: Prisma.PointOrderByRelevanceFieldEnum | Prisma.PointOrderByRelevanceFieldEnum[]
+  sort: Prisma.SortOrder
+  search: string
+}
+
 export type PointCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   reasonId?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
   baseDate?: Prisma.SortOrder
   updatedDate?: Prisma.SortOrder
 }
@@ -375,6 +426,7 @@ export type PointAvgOrderByAggregateInput = {
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   reasonId?: Prisma.SortOrder
+  point?: Prisma.SortOrder
 }
 
 export type PointMaxOrderByAggregateInput = {
@@ -382,6 +434,8 @@ export type PointMaxOrderByAggregateInput = {
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   reasonId?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
   baseDate?: Prisma.SortOrder
   updatedDate?: Prisma.SortOrder
 }
@@ -391,6 +445,8 @@ export type PointMinOrderByAggregateInput = {
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   reasonId?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
   baseDate?: Prisma.SortOrder
   updatedDate?: Prisma.SortOrder
 }
@@ -400,6 +456,7 @@ export type PointSumOrderByAggregateInput = {
   studentId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   reasonId?: Prisma.SortOrder
+  point?: Prisma.SortOrder
 }
 
 export type PointCreateNestedManyWithoutStudentInput = {
@@ -533,6 +590,8 @@ export type DateTimeFieldUpdateOperationsInput = {
 }
 
 export type PointCreateWithoutStudentInput = {
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
   teacher: Prisma.UserCreateNestedOneWithoutGivenPointsInput
@@ -543,6 +602,8 @@ export type PointUncheckedCreateWithoutStudentInput = {
   id?: number
   teacherId: number
   reasonId: number
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
 }
@@ -581,11 +642,15 @@ export type PointScalarWhereInput = {
   studentId?: Prisma.IntFilter<"Point"> | number
   teacherId?: Prisma.IntFilter<"Point"> | number
   reasonId?: Prisma.IntFilter<"Point"> | number
+  point?: Prisma.IntFilter<"Point"> | number
+  comment?: Prisma.StringFilter<"Point"> | string
   baseDate?: Prisma.DateTimeFilter<"Point"> | Date | string
   updatedDate?: Prisma.DateTimeFilter<"Point"> | Date | string
 }
 
 export type PointCreateWithoutTeacherInput = {
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
   student: Prisma.StudentCreateNestedOneWithoutPointsInput
@@ -596,6 +661,8 @@ export type PointUncheckedCreateWithoutTeacherInput = {
   id?: number
   studentId: number
   reasonId: number
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
 }
@@ -627,6 +694,8 @@ export type PointUpdateManyWithWhereWithoutTeacherInput = {
 }
 
 export type PointCreateWithoutReasonInput = {
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
   student: Prisma.StudentCreateNestedOneWithoutPointsInput
@@ -637,6 +706,8 @@ export type PointUncheckedCreateWithoutReasonInput = {
   id?: number
   studentId: number
   teacherId: number
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
 }
@@ -671,11 +742,15 @@ export type PointCreateManyStudentInput = {
   id?: number
   teacherId: number
   reasonId: number
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
 }
 
 export type PointUpdateWithoutStudentInput = {
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teacher?: Prisma.UserUpdateOneRequiredWithoutGivenPointsNestedInput
@@ -686,6 +761,8 @@ export type PointUncheckedUpdateWithoutStudentInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   teacherId?: Prisma.IntFieldUpdateOperationsInput | number
   reasonId?: Prisma.IntFieldUpdateOperationsInput | number
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -694,6 +771,8 @@ export type PointUncheckedUpdateManyWithoutStudentInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   teacherId?: Prisma.IntFieldUpdateOperationsInput | number
   reasonId?: Prisma.IntFieldUpdateOperationsInput | number
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -702,11 +781,15 @@ export type PointCreateManyTeacherInput = {
   id?: number
   studentId: number
   reasonId: number
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
 }
 
 export type PointUpdateWithoutTeacherInput = {
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   student?: Prisma.StudentUpdateOneRequiredWithoutPointsNestedInput
@@ -717,6 +800,8 @@ export type PointUncheckedUpdateWithoutTeacherInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   studentId?: Prisma.IntFieldUpdateOperationsInput | number
   reasonId?: Prisma.IntFieldUpdateOperationsInput | number
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -725,6 +810,8 @@ export type PointUncheckedUpdateManyWithoutTeacherInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   studentId?: Prisma.IntFieldUpdateOperationsInput | number
   reasonId?: Prisma.IntFieldUpdateOperationsInput | number
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -733,11 +820,15 @@ export type PointCreateManyReasonInput = {
   id?: number
   studentId: number
   teacherId: number
+  point?: number
+  comment?: string
   baseDate: Date | string
   updatedDate?: Date | string
 }
 
 export type PointUpdateWithoutReasonInput = {
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   student?: Prisma.StudentUpdateOneRequiredWithoutPointsNestedInput
@@ -748,6 +839,8 @@ export type PointUncheckedUpdateWithoutReasonInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   studentId?: Prisma.IntFieldUpdateOperationsInput | number
   teacherId?: Prisma.IntFieldUpdateOperationsInput | number
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -756,6 +849,8 @@ export type PointUncheckedUpdateManyWithoutReasonInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   studentId?: Prisma.IntFieldUpdateOperationsInput | number
   teacherId?: Prisma.IntFieldUpdateOperationsInput | number
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
   baseDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -767,6 +862,8 @@ export type PointSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   studentId?: boolean
   teacherId?: boolean
   reasonId?: boolean
+  point?: boolean
+  comment?: boolean
   baseDate?: boolean
   updatedDate?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
@@ -781,11 +878,13 @@ export type PointSelectScalar = {
   studentId?: boolean
   teacherId?: boolean
   reasonId?: boolean
+  point?: boolean
+  comment?: boolean
   baseDate?: boolean
   updatedDate?: boolean
 }
 
-export type PointOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "teacherId" | "reasonId" | "baseDate" | "updatedDate", ExtArgs["result"]["point"]>
+export type PointOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "teacherId" | "reasonId" | "point" | "comment" | "baseDate" | "updatedDate", ExtArgs["result"]["point"]>
 export type PointInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -804,6 +903,8 @@ export type $PointPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     studentId: number
     teacherId: number
     reasonId: number
+    point: number
+    comment: string
     baseDate: Date
     updatedDate: Date
   }, ExtArgs["result"]["point"]>
@@ -1182,6 +1283,8 @@ export interface PointFieldRefs {
   readonly studentId: Prisma.FieldRef<"Point", 'Int'>
   readonly teacherId: Prisma.FieldRef<"Point", 'Int'>
   readonly reasonId: Prisma.FieldRef<"Point", 'Int'>
+  readonly point: Prisma.FieldRef<"Point", 'Int'>
+  readonly comment: Prisma.FieldRef<"Point", 'String'>
   readonly baseDate: Prisma.FieldRef<"Point", 'DateTime'>
   readonly updatedDate: Prisma.FieldRef<"Point", 'DateTime'>
 }

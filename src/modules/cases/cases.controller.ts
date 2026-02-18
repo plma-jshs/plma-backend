@@ -47,18 +47,18 @@ export class CasesController {
     return this.casesService.update(id, payload);
   }
 
-  @Post()
-  create(@Body() body: unknown) {
+  @Post('schedules')
+  createSchedule(@Body() body: unknown) {
     const payload = parseZod<CaseScheduleCreateInput>(caseScheduleCreateSchema, body);
     return this.casesService.createSchedule(payload);
   }
 
-  @Get()
+  @Get('schedules')
   findAllSchedule() {
     return this.casesService.findAllSchedule();
   }
 
-  @Patch(':id')
+  @Patch('schedules/:id')
   updateSchedule(
     @Param() params: unknown,
     @Body() body: unknown,
@@ -68,7 +68,7 @@ export class CasesController {
     return this.casesService.updateSchedule(id, payload);
   }
 
-  @Delete(':id')
+  @Delete('schedules/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param() params: unknown) {
     const { id } = parseZod<CaseScheduleIdParams>(caseScheduleIdParamSchema, params);

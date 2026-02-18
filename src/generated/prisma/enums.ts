@@ -9,10 +9,53 @@
 * 🟢 You can import this file directly.
 */
 
-export const dorm_reports_status = {
-  pending: 'pending',
-  in_progress: 'in_progress',
-  completed: 'completed'
+export const ReasonType = {
+  PLUS: 'PLUS',
+  MINUS: 'MINUS',
+  ETC: 'ETC'
 } as const
 
-export type dorm_reports_status = (typeof dorm_reports_status)[keyof typeof dorm_reports_status]
+export type ReasonType = (typeof ReasonType)[keyof typeof ReasonType]
+
+
+export const CaseStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  DISCONNECTED: 'DISCONNECTED'
+} as const
+
+export type CaseStatus = (typeof CaseStatus)[keyof typeof CaseStatus]
+
+
+export const CaseAction = {
+  OPEN: 'OPEN',
+  CLOSE: 'CLOSE'
+} as const
+
+export type CaseAction = (typeof CaseAction)[keyof typeof CaseAction]
+
+
+export const SongStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type SongStatus = (typeof SongStatus)[keyof typeof SongStatus]
+
+
+export const DormName = {
+  송죽관: '송죽관',
+  동백관: '동백관'
+} as const
+
+export type DormName = (typeof DormName)[keyof typeof DormName]
+
+
+export const DormReportStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type DormReportStatus = (typeof DormReportStatus)[keyof typeof DormReportStatus]

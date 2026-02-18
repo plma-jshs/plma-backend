@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   PointCreateDto,
@@ -12,6 +12,29 @@ import {
 @Injectable()
 export class PointsService {
   private readonly pageSize = 20;
+  private readonly pointInclude = {
+    student: {
+      select: {
+        id: true,
+        stuid: true,
+        name: true,
+        grade: true,
+        class: true,
+        num: true,
+        point: true,
+      },
+    },
+    teacher: {
+      select: {
+        id: true,
+        stuid: true,
+        name: true,
+        phoneNumber: true,
+        studentId: true,
+      },
+    },
+    reason: true,
+  } as const;
 
   constructor(private readonly prisma: PrismaService) {}
 
@@ -24,9 +47,11 @@ export class PointsService {
         studentId: body.studentId,
         teacherId,
         reasonId: body.reasonId,
+        point: body.point,
+        comment: body.comment,
         baseDate: new Date(),
       },
-      include: { student: true, teacher: true, reason: true },
+      include: this.pointInclude,
     });
 
     return { point };
@@ -44,7 +69,7 @@ export class PointsService {
       where: {
         ...(stuId ? { student: { stuid: stuId } } : {}),
       },
-      include: { student: true, teacher: true, reason: true },
+      include: this.pointInclude,
       orderBy: { id: 'desc' },
       skip: (page - 1) * this.pageSize,
       take: this.pageSize,
@@ -74,6 +99,33 @@ export class PointsService {
     return { students };
   }
 
+  async findStudentById(studentId: number) {
+    const student = await this.prisma.student.findUnique({
+      where: { id: studentId },
+      select: {
+        id: true,
+        stuid: true,
+        name: true,
+        grade: true,
+        class: true,
+        num: true,
+        point: true,
+      },
+    });
+
+    if (!student) {
+      throw new NotFoundException('student not found');
+    }
+
+    const points = await this.prisma.point.findMany({
+      where: { studentId },
+      include: this.pointInclude,
+      orderBy: { id: 'desc' },
+    });
+
+    return { student, points };
+  }
+
   findReasons() {
     return this.prisma.reason
       .findMany({ orderBy: { id: 'desc' } })
@@ -92,16 +144,17 @@ export class PointsService {
 
   async removeReason(id: number) {
     await this.prisma.reason.delete({ where: { id } });
-    return { deleted: true };
   }
 
   async update(id: number, body: PointUpdateDto) {
     const point = await this.prisma.point.update({
       where: { id },
       data: {
-        ...(body.reasonId ? { reasonId: body.reasonId } : {}),
+        reasonId: body.reasonId,
+        point: body.point,
+        comment: body.comment,
       },
-      include: { student: true, teacher: true, reason: true },
+      include: this.pointInclude,
     });
 
     return { point };
@@ -109,6 +162,5 @@ export class PointsService {
 
   async remove(id: number) {
     await this.prisma.point.delete({ where: { id } });
-    return { deleted: true };
   }
 }

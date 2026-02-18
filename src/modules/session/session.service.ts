@@ -7,7 +7,24 @@ export class SessionService {
 
   getCurrentUser() {
     return this.prisma.user.findFirst({
-      include: { student: true },
+      select: {
+        id: true,
+        stuid: true,
+        name: true,
+        phoneNumber: true,
+        studentId: true,
+        student: {
+          select: {
+            id: true,
+            stuid: true,
+            name: true,
+            grade: true,
+            class: true,
+            num: true,
+            point: true,
+          },
+        },
+      },
       orderBy: { id: 'asc' },
     });
   }

@@ -41,28 +41,28 @@ enum DormReportStatus {
 }
 
 model Student {
-  id        Int     @id @default(autoincrement())
-  stuid     Int     @unique
-  name      String
-  grade     Int
-  class     Int
-  num       Int
-  point     Int     @default(0)
-  user      User?
-  points    Point[]
+  id     Int     @id @default(autoincrement())
+  stuid  Int     @unique
+  name   String
+  grade  Int
+  class  Int
+  num    Int
+  point  Int     @default(0)
+  user   User?
+  points Point[]
 
   @@map("students")
 }
 
 model User {
-  id          Int         @id @default(autoincrement())
-  stuid       Int         @unique
+  id          Int          @id @default(autoincrement())
+  stuid       Int          @unique
   password    String
   name        String
-  studentId   Int?        @unique
+  studentId   Int?         @unique
   phoneNumber String?
-  student     Student?    @relation(fields: [studentId], references: [id], onDelete: SetNull)
-  givenPoints Point[]     @relation("TeacherPoints")
+  student     Student?     @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  givenPoints Point[]      @relation("TeacherPoints")
   dormUsers   DormUser[]
   reports     DormReport[]
 
@@ -84,6 +84,8 @@ model Point {
   studentId   Int
   teacherId   Int
   reasonId    Int
+  point       Int      @default(0)
+  comment     String   @default("")
   baseDate    DateTime @db.Date
   updatedDate DateTime @updatedAt
   student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
@@ -144,9 +146,9 @@ model DormUser {
   room        DormRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, year, semester])
   @@index([roomId])
   @@index([userId])
-  @@unique([userId, year, semester])
   @@map("dorm_users")
 }
 

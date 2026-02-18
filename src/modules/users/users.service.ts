@@ -6,16 +6,35 @@ import { AccountCreateDto, AccountUpdateDto } from './dto/accounts.dto';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private readonly accountSelect = {
+    id: true,
+    stuid: true,
+    name: true,
+    phoneNumber: true,
+    studentId: true,
+    student: {
+      select: {
+        id: true,
+        stuid: true,
+        name: true,
+        grade: true,
+        class: true,
+        num: true,
+        point: true,
+      },
+    },
+  } as const;
+
   create(body: AccountCreateDto) {
     return this.prisma.user.create({
       data: body,
-      include: { student: true },
+      select: this.accountSelect,
     });
   }
 
   findAll() {
     return this.prisma.user.findMany({
-      include: { student: true },
+      select: this.accountSelect,
       orderBy: { id: 'desc' },
     });
   }
@@ -24,11 +43,11 @@ export class UsersService {
     return this.prisma.user.update({
       where: { id },
       data: body,
-      include: { student: true },
+      select: this.accountSelect,
     });
   }
 
   remove(id: number) {
-    return this.prisma.user.delete({ where: { id } });
+    return this.prisma.user.delete({ where: { id } }).then(() => undefined);
   }
 }

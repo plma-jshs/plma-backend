@@ -19,6 +19,6 @@ export class SongsService {
   }
 
   remove(id: number) {
-    return this.prisma.song.delete({ where: { id } });
+    return this.prisma.song.delete({ where: { id } }).then(() => undefined);
   }
 }

@@ -44,12 +44,10 @@ export class CasesService {
     ]);
 
     return {
-      status: body.status,
       targetStatus,
       totalCases,
-      disconnectedCases,
+      excludedDisconnectedCount: disconnectedCases,
       updatedCount: updated.count,
-      skippedCount: disconnectedCases,
     };
   }
 }

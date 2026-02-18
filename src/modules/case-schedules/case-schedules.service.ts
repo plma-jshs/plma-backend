@@ -35,6 +35,6 @@ export class CaseSchedulesService {
   }
 
   remove(id: number) {
-    return this.prisma.caseSchedule.delete({ where: { id } });
+    return this.prisma.caseSchedule.delete({ where: { id } }).then(() => undefined);
   }
 }

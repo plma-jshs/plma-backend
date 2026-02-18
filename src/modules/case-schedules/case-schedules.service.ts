@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
-  CaseScheduleCreateDto,
-  CaseScheduleUpdateDto,
-} from './dto/case-schedules.dto';
+  CaseScheduleCreateInput,
+  CaseScheduleUpdateInput,
+} from './dto/case-schedules.schema';
 
 @Injectable()
 export class CaseSchedulesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(body: CaseScheduleCreateDto) {
+  create(body: CaseScheduleCreateInput) {
     return this.prisma.caseSchedule.create({
       data: {
         ...body,
@@ -22,7 +22,7 @@ export class CaseSchedulesService {
     return this.prisma.caseSchedule.findMany({ orderBy: { date: 'asc' } });
   }
 
-  update(id: number, body: CaseScheduleUpdateDto) {
+  update(id: number, body: CaseScheduleUpdateInput) {
     const { date, ...rest } = body;
 
     return this.prisma.caseSchedule.update({

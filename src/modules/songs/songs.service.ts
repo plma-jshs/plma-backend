@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { SongCreateDto, SongUpdateDto } from './dto/songs.dto';
+import { SongCreateInput, SongUpdateInput } from './dto/songs.schema';
 
 @Injectable()
 export class SongsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(body: SongCreateDto) {
+  create(body: SongCreateInput) {
     return this.prisma.song.create({ data: body });
   }
 
@@ -14,7 +14,7 @@ export class SongsService {
     return this.prisma.song.findMany({ orderBy: { id: 'desc' } });
   }
 
-  update(id: number, body: SongUpdateDto) {
+  update(id: number, body: SongUpdateInput) {
     return this.prisma.song.update({ where: { id }, data: body });
   }
 

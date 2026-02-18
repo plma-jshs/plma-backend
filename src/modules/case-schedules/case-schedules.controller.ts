@@ -1,80 +1,42 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-} from '@nestjs/common';
-import {
-  ApiCreatedResponse,
-  ApiNoContentResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CaseSchedulesService } from './case-schedules.service';
 import {
-  CaseScheduleCreateDto,
-  CaseScheduleUpdateDto,
-} from './dto/case-schedules.dto';
+  CaseScheduleCreateInput,
+  CaseScheduleIdParams,
+  CaseScheduleUpdateInput,
+  caseScheduleCreateSchema,
+  caseScheduleIdParamSchema,
+  caseScheduleUpdateSchema,
+} from './dto/case-schedules.schema';
+import { parseZod } from '@/common/zod/parse-zod';
 
 @ApiTags('Cases/Schedules')
 @Controller('api/remote/cases/schedules')
 export class CaseSchedulesController {
   constructor(private readonly caseSchedulesService: CaseSchedulesService) {}
 
-  @Post()
-  @ApiOperation({ summary: '보관함 스케줄 생성' })
-  @ApiCreatedResponse({
-    description: '생성된 보관함 스케줄',
-    schema: {
-      example: { id: 1, date: '2026-02-18T06:30:00.000Z', action: 'OPEN' },
-    },
-  })
-  create(@Body() body: CaseScheduleCreateDto) {
-    return this.caseSchedulesService.create(body);
+  @Post()  create(@Body() body: unknown) {
+    const payload = parseZod<CaseScheduleCreateInput>(caseScheduleCreateSchema, body);
+    return this.caseSchedulesService.create(payload);
   }
 
-  @Get()
-  @ApiOperation({ summary: '보관함 스케줄 목록 조회' })
-  @ApiOkResponse({
-    description: '보관함 스케줄 목록',
-    schema: {
-      example: [{ id: 1, date: '2026-02-18T06:30:00.000Z', action: 'OPEN' }],
-    },
-  })
-  findAll() {
+  @Get()  findAll() {
     return this.caseSchedulesService.findAll();
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: '보관함 스케줄 수정' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiOkResponse({
-    description: '수정된 보관함 스케줄',
-    schema: {
-      example: { id: 1, date: '2026-02-18T22:00:00.000Z', action: 'CLOSE' },
-    },
-  })
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: CaseScheduleUpdateDto,
+  @Patch(':id')  update(
+    @Param() params: unknown,
+    @Body() body: unknown,
   ) {
-    return this.caseSchedulesService.update(id, body);
+    const { id } = parseZod<CaseScheduleIdParams>(caseScheduleIdParamSchema, params);
+    const payload = parseZod<CaseScheduleUpdateInput>(caseScheduleUpdateSchema, body);
+    return this.caseSchedulesService.update(id, payload);
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: '보관함 스케줄 삭제' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiNoContentResponse({ description: '보관함 스케줄 삭제 완료' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  @HttpCode(HttpStatus.NO_CONTENT)  remove(@Param() params: unknown) {
+    const { id } = parseZod<CaseScheduleIdParams>(caseScheduleIdParamSchema, params);
     return this.caseSchedulesService.remove(id);
   }
 }

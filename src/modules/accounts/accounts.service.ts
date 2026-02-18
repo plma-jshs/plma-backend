@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
-  AccountCreateDto,
-  AccountListQueryDto,
-  AccountUpdateDto,
-} from './dto/accounts.dto';
+  AccountCreateInput,
+  AccountListQuery,
+  AccountUpdateInput,
+} from './dto/accounts.schema';
 
 @Injectable()
-export class UsersService {
+export class AccountsService {
   private readonly pageSize = 20;
 
   constructor(private readonly prisma: PrismaService) {}
@@ -31,14 +31,14 @@ export class UsersService {
     },
   } as const;
 
-  create(body: AccountCreateDto) {
+  create(body: AccountCreateInput) {
     return this.prisma.user.create({
       data: body,
       select: this.accountSelect,
     });
   }
 
-  findAll(query: AccountListQueryDto) {
+  findAll(query: AccountListQuery) {
     const page = Number(query.page) || 1;
 
     return this.prisma.user.findMany({
@@ -49,7 +49,7 @@ export class UsersService {
     });
   }
 
-  update(id: number, body: AccountUpdateDto) {
+  update(id: number, body: AccountUpdateInput) {
     return this.prisma.user.update({
       where: { id },
       data: body,

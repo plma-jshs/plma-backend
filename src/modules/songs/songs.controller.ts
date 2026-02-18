@@ -1,97 +1,42 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-} from '@nestjs/common';
-import {
-  ApiCreatedResponse,
-  ApiNoContentResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { SongsService } from './songs.service';
-import { SongCreateDto, SongUpdateDto } from './dto/songs.dto';
+import {
+  SongCreateInput,
+  SongIdParams,
+  SongUpdateInput,
+  songCreateSchema,
+  songIdParamSchema,
+  songUpdateSchema,
+} from './dto/songs.schema';
+import { parseZod } from '@/common/zod/parse-zod';
 
 @ApiTags('Songs')
 @Controller('api/remote/songs')
 export class SongsController {
   constructor(private readonly songsService: SongsService) {}
 
-  @Post()
-  @ApiOperation({ summary: '기상곡 등록' })
-  @ApiCreatedResponse({
-    description: '생성된 기상곡',
-    schema: {
-      example: {
-        id: 25,
-        title: 'New Day',
-        url: 'https://example.com/song.mp3',
-        duration: 210,
-        status: 'PENDING',
-      },
-    },
-  })
-  create(@Body() body: SongCreateDto) {
-    return this.songsService.create(body);
+  @Post()  create(@Body() body: unknown) {
+    const payload = parseZod<SongCreateInput>(songCreateSchema, body);
+    return this.songsService.create(payload);
   }
 
-  @Get()
-  @ApiOperation({ summary: '기상곡 목록 조회' })
-  @ApiOkResponse({
-    description: '기상곡 목록',
-    schema: {
-      example: [
-        {
-          id: 25,
-          title: 'New Day',
-          url: 'https://example.com/song.mp3',
-          duration: 210,
-          status: 'PENDING',
-        },
-      ],
-    },
-  })
-  findAll() {
+  @Get()  findAll() {
     return this.songsService.findAll();
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: '기상곡 수정' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiOkResponse({
-    description: '수정된 기상곡',
-    schema: {
-      example: {
-        id: 25,
-        title: 'New Day (Remix)',
-        url: 'https://example.com/song.mp3',
-        duration: 220,
-        status: 'APPROVED',
-      },
-    },
-  })
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: SongUpdateDto,
+  @Patch(':id')  update(
+    @Param() params: unknown,
+    @Body() body: unknown,
   ) {
-    return this.songsService.update(id, body);
+    const { id } = parseZod<SongIdParams>(songIdParamSchema, params);
+    const payload = parseZod<SongUpdateInput>(songUpdateSchema, body);
+    return this.songsService.update(id, payload);
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: '기상곡 삭제' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiNoContentResponse({ description: '기상곡 삭제 완료' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  @HttpCode(HttpStatus.NO_CONTENT)  remove(@Param() params: unknown) {
+    const { id } = parseZod<SongIdParams>(songIdParamSchema, params);
     return this.songsService.remove(id);
   }
 }

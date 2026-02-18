@@ -1,166 +1,56 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
-import {
-  ApiCreatedResponse,
-  ApiNoContentResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { DormRoomsService } from './dorms.service';
 import {
-  DormAssignmentsQueryDto,
-  DormAssignmentsUpsertDto,
-  DormReportCreateDto,
-  DormReportUpdateDto,
-} from './dto/dorms.dto';
+  DormAssignmentsQuery,
+  DormAssignmentsUpsertInput,
+  DormReportIdParams,
+  DormReportCreateInput,
+  DormReportUpdateInput,
+  dormAssignmentsQuerySchema,
+  dormAssignmentsUpsertSchema,
+  dormReportCreateSchema,
+  dormReportIdParamSchema,
+  dormReportUpdateSchema,
+} from './dto/dorms.schema';
+import { parseZod } from '@/common/zod/parse-zod';
 
 @ApiTags('dorms')
 @Controller('api/dorms')
 export class DormsController {
   constructor(private readonly dormRoomsService: DormRoomsService) {}
 
-  @Get('assignments')
-  @ApiOperation({ summary: '학기별 기숙사 배정 조회' })
-  @ApiOkResponse({
-    description: '학기 배정 스냅샷',
-    schema: {
-      example: {
-        year: 2026,
-        semester: 1,
-        rooms: [
-          {
-            roomId: 1,
-            room: {
-              id: 1,
-              name: '201호',
-              capacity: 4,
-              grade: 2,
-              dormName: '송죽관',
-            },
-            members: [
-              { userId: 12, bedPosition: 1, user: { id: 12, stuid: 31101, name: '홍길동' } },
-            ],
-          },
-        ],
-      },
-    },
-  })
-  findAssignments(@Query() query: DormAssignmentsQueryDto) {
-    return this.dormRoomsService.findAssignments(query);
+  @Get('assignments')  findAssignments(@Query() query: unknown) {
+    const payload = parseZod<DormAssignmentsQuery>(dormAssignmentsQuerySchema, query);
+    return this.dormRoomsService.findAssignments(payload);
   }
 
-  @Put('assignments')
-  @ApiOperation({ summary: '학기별 기숙사 배정 일괄 반영(스냅샷 업서트)' })
-  @ApiOkResponse({
-    description: '배정 반영 결과',
-    schema: {
-      example: {
-        year: 2026,
-        semester: 1,
-        roomCount: 10,
-        assignedUserCount: 34,
-      },
-    },
-  })
-  upsertAssignments(@Body() body: DormAssignmentsUpsertDto) {
-    return this.dormRoomsService.upsertAssignments(body);
+  @Put('assignments')  upsertAssignments(@Body() body: unknown) {
+    const payload = parseZod<DormAssignmentsUpsertInput>(dormAssignmentsUpsertSchema, body);
+    return this.dormRoomsService.upsertAssignments(payload);
   }
 
-  @Post('reports')
-  @ApiOperation({ summary: '기숙사 고장 신고 생성' })
-  @ApiCreatedResponse({
-    description: '생성된 고장 신고',
-    schema: {
-      example: {
-        id: 7,
-        userId: 12,
-        roomId: 3,
-        description: '샤워실 수도꼭지가 고장났습니다.',
-        imageUrl: 'https://s3.example.com/report-image.jpg',
-        imageKey: 'dorm/reports/abc123.jpg',
-        status: 'PENDING',
-        comment: null,
-        user: { id: 12, stuid: 31101, name: '홍길동' },
-        room: { id: 3, name: '302호', capacity: 4, grade: 2, dormName: '송죽관' },
-      },
-    },
-  })
-  createReport(@Body() body: DormReportCreateDto) {
-    return this.dormRoomsService.createReport(body);
+  @Post('reports')  createReport(@Body() body: unknown) {
+    const payload = parseZod<DormReportCreateInput>(dormReportCreateSchema, body);
+    return this.dormRoomsService.createReport(payload);
   }
 
-  @Get('reports')
-  @ApiOperation({ summary: '기숙사 고장 신고 목록 조회' })
-  @ApiOkResponse({
-    description: '고장 신고 목록',
-    schema: {
-      example: [
-        {
-          id: 7,
-          userId: 12,
-          roomId: 3,
-          description: '샤워실 수도꼭지가 고장났습니다.',
-          imageUrl: 'https://s3.example.com/report-image.jpg',
-          imageKey: 'dorm/reports/abc123.jpg',
-          status: 'PENDING',
-          comment: null,
-          user: { id: 12, stuid: 31101, name: '홍길동' },
-          room: { id: 3, name: '302호', capacity: 4, grade: 2, dormName: '송죽관' },
-        },
-      ],
-    },
-  })
-  findReports() {
+  @Get('reports')  findReports() {
     return this.dormRoomsService.findReports();
   }
 
-  @Patch('reports/:id')
-  @ApiOperation({ summary: '기숙사 고장 신고 수정' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiOkResponse({
-    description: '수정된 고장 신고',
-    schema: {
-      example: {
-        id: 7,
-        userId: 12,
-        roomId: 3,
-        description: '샤워실 수도꼭지 수리 완료',
-        imageUrl: 'https://s3.example.com/report-image.jpg',
-        imageKey: 'dorm/reports/abc123.jpg',
-        status: 'COMPLETED',
-        comment: '수리 완료되었습니다.',
-        user: { id: 12, stuid: 31101, name: '홍길동' },
-        room: { id: 3, name: '302호', capacity: 4, grade: 2, dormName: '송죽관' },
-      },
-    },
-  })
-  updateReport(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: DormReportUpdateDto,
+  @Patch('reports/:id')  updateReport(
+    @Param() params: unknown,
+    @Body() body: unknown,
   ) {
-    return this.dormRoomsService.updateReport(id, body);
+    const { id } = parseZod<DormReportIdParams>(dormReportIdParamSchema, params);
+    const payload = parseZod<DormReportUpdateInput>(dormReportUpdateSchema, body);
+    return this.dormRoomsService.updateReport(id, payload);
   }
 
   @Delete('reports/:id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: '기숙사 고장 신고 삭제' })
-  @ApiParam({ name: 'id', type: Number })
-  @ApiNoContentResponse({ description: '고장 신고 삭제 완료' })
-  removeReport(@Param('id', ParseIntPipe) id: number) {
+  @HttpCode(HttpStatus.NO_CONTENT)  removeReport(@Param() params: unknown) {
+    const { id } = parseZod<DormReportIdParams>(dormReportIdParamSchema, params);
     return this.dormRoomsService.removeReport(id);
   }
 }

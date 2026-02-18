@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { UpdateCaseDto } from './dto/update-case.dto';
+import { CaseUpdateInput } from './dto/cases.schema';
 
 @Injectable()
 export class CasesService {
@@ -14,14 +14,14 @@ export class CasesService {
     return this.prisma.case.findUnique({ where: { id } });
   }
 
-  update(id: number, updateCaseDto: UpdateCaseDto) {
+  update(id: number, updateCaseInput: CaseUpdateInput) {
     return this.prisma.case.update({
       where: { id },
-      data: updateCaseDto,
+      data: updateCaseInput,
     });
   }
 
-  async replaceAll(body: UpdateCaseDto) {
+  async replaceAll(body: CaseUpdateInput) {
     if (!body.status) {
       throw new BadRequestException('status is required for replaceAll');
     }

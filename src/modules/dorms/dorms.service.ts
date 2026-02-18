@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
-  DormAssignmentsQueryDto,
-  DormAssignmentsUpsertDto,
-  DormReportCreateDto,
-  DormReportUpdateDto,
-} from './dto/dorms.dto';
+  DormAssignmentsQuery,
+  DormAssignmentsUpsertInput,
+  DormReportCreateInput,
+  DormReportUpdateInput,
+} from './dto/dorms.schema';
 
 @Injectable()
 export class DormRoomsService {
@@ -30,7 +30,7 @@ export class DormRoomsService {
     },
   } as const;
 
-  async findAssignments(query: DormAssignmentsQueryDto) {
+  async findAssignments(query: DormAssignmentsQuery) {
     const rooms = await this.prisma.dormRoom.findMany({
       orderBy: { id: 'asc' },
       include: {
@@ -74,7 +74,7 @@ export class DormRoomsService {
     };
   }
 
-  async upsertAssignments(body: DormAssignmentsUpsertDto) {
+  async upsertAssignments(body: DormAssignmentsUpsertInput) {
     const roomIds = body.rooms.map((item) => item.roomId);
     const uniqueRoomIds = new Set(roomIds);
 
@@ -160,7 +160,7 @@ export class DormRoomsService {
     };
   }
 
-  createReport(body: DormReportCreateDto) {
+  createReport(body: DormReportCreateInput) {
     return this.prisma.dormReport.create({
       data: body,
       include: this.reportInclude,
@@ -174,7 +174,7 @@ export class DormRoomsService {
     });
   }
 
-  updateReport(id: number, body: DormReportUpdateDto) {
+  updateReport(id: number, body: DormReportUpdateInput) {
     return this.prisma.dormReport.update({
       where: { id },
       data: body,

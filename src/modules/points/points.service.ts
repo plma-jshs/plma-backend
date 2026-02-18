@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
-  PointCreateDto,
-  PointListQueryDto,
-  PointReasonDto,
-  PointReasonUpdateDto,
-  PointStudentsQueryDto,
-  PointUpdateDto,
-} from './dto/points.dto';
+  PointCreateInput,
+  PointListQuery,
+  PointReasonCreateInput,
+  PointReasonUpdateInput,
+  PointStudentsQuery,
+  PointUpdateInput,
+} from './dto/points.schema';
 
 @Injectable()
 export class PointsService {
@@ -33,12 +33,11 @@ export class PointsService {
         studentId: true,
       },
     },
-    reason: true,
   } as const;
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(body: PointCreateDto) {
+  async create(body: PointCreateInput) {
     // TODO(auth): 로그인 연동 후 실제 요청 사용자 ID로 교체해야 함
     const teacherId = 1;
 
@@ -57,7 +56,7 @@ export class PointsService {
     return { point };
   }
 
-  async findAll(query: PointListQueryDto) {
+  async findAll(query: PointListQuery) {
     const page = Number(query.page) || 1;
     const stuId = query.stuId ? Number(query.stuId) : undefined;
 
@@ -78,7 +77,7 @@ export class PointsService {
     return { points };
   }
 
-  async findStudents(query: PointStudentsQueryDto) {
+  async findStudents(query: PointStudentsQuery) {
     const page = Number(query.page) || 1;
 
     if (page < 1) {
@@ -132,12 +131,12 @@ export class PointsService {
       .then((reasons) => ({ reasons }));
   }
 
-  async createReason(body: PointReasonDto) {
+  async createReason(body: PointReasonCreateInput) {
     const reason = await this.prisma.reason.create({ data: body });
     return { reason };
   }
 
-  async updateReason(id: number, body: PointReasonUpdateDto) {
+  async updateReason(id: number, body: PointReasonUpdateInput) {
     const reason = await this.prisma.reason.update({ where: { id }, data: body });
     return { reason };
   }
@@ -146,14 +145,28 @@ export class PointsService {
     await this.prisma.reason.delete({ where: { id } });
   }
 
-  async update(id: number, body: PointUpdateDto) {
+  async update(id: number, body: PointUpdateInput) {
+    const data: {
+      reasonId?: number;
+      point?: number;
+      comment?: string;
+    } = {};
+
+    if (body.reasonId !== undefined) {
+      data.reasonId = body.reasonId;
+    }
+
+    if (body.point !== undefined) {
+      data.point = body.point;
+    }
+
+    if (body.comment !== undefined) {
+      data.comment = body.comment;
+    }
+
     const point = await this.prisma.point.update({
       where: { id },
-      data: {
-        reasonId: body.reasonId,
-        point: body.point,
-        comment: body.comment,
-      },
+      data,
       include: this.pointInclude,
     });
 

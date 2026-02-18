@@ -1,4 +1,4 @@
-import { caseType } from '@/common/enum/caseType';
+import { caseActionType } from '@/common/enum/caseType';
 import { z } from 'zod';
 
 export const caseScheduleIdParamSchema = z.object({
@@ -7,18 +7,18 @@ export const caseScheduleIdParamSchema = z.object({
 
 export const caseScheduleCreateSchema = z.object({
   date: z.date(),
-  action: caseType,
+  action: caseActionType,
 });
 
 export const caseScheduleUpdateSchema = z.object({
   date: z.date().optional(),
-  action: caseType.optional(),
+  action: caseActionType.optional(),
 });
 
 const caseScheduleEntitySchema = z.object({
   id: z.number().int(),
   date: z.date(),
-  action: caseType,
+  action: caseActionType,
 });
 
 export const createResponseSchema = caseScheduleEntitySchema;

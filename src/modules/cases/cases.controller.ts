@@ -26,9 +26,9 @@ export class CasesController {
   }
 
   @Put()
-  replaceAll(@Body() body: unknown) {
+  updateAll(@Body() body: unknown) {
     const payload = parseZod<CaseUpdateInput>(updateCaseSchema, body);
-    return this.casesService.replaceAll(payload);
+    return this.casesService.updateAll(payload);
   }
 
   @Get(':id')

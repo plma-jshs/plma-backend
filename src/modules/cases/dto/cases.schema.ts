@@ -1,24 +1,22 @@
 import { z } from 'zod';
 
-import { caseActionType, caseStatusType } from '@/common/enum/caseType';
-
 export const caseIdParamSchema = z.object({
   id: z.coerce.number().int().min(1),
 });
 
 export const updateCaseSchema = z.object({
-  status: caseStatusType.optional(),
+  isOpen: z.boolean().optional(),
 });
 
 const caseEntitySchema = z.object({
   id: z.number().int(),
-  status: caseStatusType,
+  isOpen: z.boolean(),
   updatedDate: z.date(),
 });
 
 export const findAllResponseSchema = z.array(caseEntitySchema);
 export const replaceAllResponseSchema = z.object({
-  targetStatus: caseStatusType,
+  targetIsOpen: z.boolean(),
   totalCases: z.number().int(),
   excludedDisconnectedCount: z.number().int(),
   updatedCount: z.number().int(),
@@ -32,18 +30,18 @@ export const caseScheduleIdParamSchema = z.object({
 
 export const caseScheduleCreateSchema = z.object({
   date: z.date(),
-  action: caseActionType,
+  isOpen: z.boolean(),
 });
 
 export const caseScheduleUpdateSchema = z.object({
   date: z.date().optional(),
-  action: caseActionType.optional(),
+  isOpen: z.boolean().optional(),
 });
 
 const caseScheduleEntitySchema = z.object({
   id: z.number().int(),
   date: z.date(),
-  action: caseActionType,
+  isOpen: z.boolean(),
 });
 
 export const createScheduleResponseSchema = caseScheduleEntitySchema;

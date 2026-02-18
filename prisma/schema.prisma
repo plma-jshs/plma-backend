@@ -12,17 +12,6 @@ enum ReasonType {
   ETC
 }
 
-enum CaseStatus {
-  OPEN
-  CLOSED
-  DISCONNECTED
-}
-
-enum CaseAction {
-  OPEN
-  CLOSE
-}
-
 enum SongStatus {
   PENDING
   APPROVED
@@ -100,16 +89,17 @@ model Point {
 
 model Case {
   id          Int        @id
-  status      CaseStatus @default(CLOSED)
+  isOpen      Boolean    @default(true)
+  isConnected Boolean    @default(false)
   updatedDate DateTime   @updatedAt
 
   @@map("cases")
 }
 
 model CaseSchedule {
-  id     Int        @id @default(autoincrement())
-  date   DateTime
-  action CaseAction
+  id            Int        @id @default(autoincrement())
+  date          DateTime
+  isOpen        Boolean
 
   @@map("case_schedules")
 }

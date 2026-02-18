@@ -4,7 +4,7 @@
 // biome-ignore-all lint: generated file
 // @ts-nocheck 
 /*
- * This file exports the `reason` model and its related types.
+ * This file exports the `Reason` model and its related types.
  *
  * 🟢 You can import this file directly.
  */
@@ -13,10 +13,10 @@ import type * as $Enums from "../enums.js"
 import type * as Prisma from "../internal/prismaNamespace.js"
 
 /**
- * Model reason
+ * Model Reason
  * 
  */
-export type reasonModel = runtime.Types.Result.DefaultSelection<Prisma.$reasonPayload>
+export type ReasonModel = runtime.Types.Result.DefaultSelection<Prisma.$ReasonPayload>
 
 export type AggregateReason = {
   _count: ReasonCountAggregateOutputType | null
@@ -28,116 +28,102 @@ export type AggregateReason = {
 
 export type ReasonAvgAggregateOutputType = {
   id: number | null
-  plus: number | null
-  minus: number | null
-  dpc: number | null
+  point: number | null
 }
 
 export type ReasonSumAggregateOutputType = {
   id: number | null
-  plus: number | null
-  minus: number | null
-  dpc: number | null
+  point: number | null
 }
 
 export type ReasonMinAggregateOutputType = {
   id: number | null
-  title: string | null
-  plus: number | null
-  minus: number | null
-  dpc: number | null
+  type: $Enums.ReasonType | null
+  point: number | null
+  comment: string | null
 }
 
 export type ReasonMaxAggregateOutputType = {
   id: number | null
-  title: string | null
-  plus: number | null
-  minus: number | null
-  dpc: number | null
+  type: $Enums.ReasonType | null
+  point: number | null
+  comment: string | null
 }
 
 export type ReasonCountAggregateOutputType = {
   id: number
-  title: number
-  plus: number
-  minus: number
-  dpc: number
+  type: number
+  point: number
+  comment: number
   _all: number
 }
 
 
 export type ReasonAvgAggregateInputType = {
   id?: true
-  plus?: true
-  minus?: true
-  dpc?: true
+  point?: true
 }
 
 export type ReasonSumAggregateInputType = {
   id?: true
-  plus?: true
-  minus?: true
-  dpc?: true
+  point?: true
 }
 
 export type ReasonMinAggregateInputType = {
   id?: true
-  title?: true
-  plus?: true
-  minus?: true
-  dpc?: true
+  type?: true
+  point?: true
+  comment?: true
 }
 
 export type ReasonMaxAggregateInputType = {
   id?: true
-  title?: true
-  plus?: true
-  minus?: true
-  dpc?: true
+  type?: true
+  point?: true
+  comment?: true
 }
 
 export type ReasonCountAggregateInputType = {
   id?: true
-  title?: true
-  plus?: true
-  minus?: true
-  dpc?: true
+  type?: true
+  point?: true
+  comment?: true
   _all?: true
 }
 
 export type ReasonAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which reason to aggregate.
+   * Filter which Reason to aggregate.
    */
-  where?: Prisma.reasonWhereInput
+  where?: Prisma.ReasonWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of reasons to fetch.
+   * Determine the order of Reasons to fetch.
    */
-  orderBy?: Prisma.reasonOrderByWithRelationInput | Prisma.reasonOrderByWithRelationInput[]
+  orderBy?: Prisma.ReasonOrderByWithRelationInput | Prisma.ReasonOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the start position
    */
-  cursor?: Prisma.reasonWhereUniqueInput
+  cursor?: Prisma.ReasonWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` reasons from the position of the cursor.
+   * Take `±n` Reasons from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` reasons.
+   * Skip the first `n` Reasons.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Count returned reasons
+   * Count returned Reasons
   **/
   _count?: true | ReasonCountAggregateInputType
   /**
@@ -177,11 +163,11 @@ export type GetReasonAggregateType<T extends ReasonAggregateArgs> = {
 
 
 
-export type reasonGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.reasonWhereInput
-  orderBy?: Prisma.reasonOrderByWithAggregationInput | Prisma.reasonOrderByWithAggregationInput[]
+export type ReasonGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReasonWhereInput
+  orderBy?: Prisma.ReasonOrderByWithAggregationInput | Prisma.ReasonOrderByWithAggregationInput[]
   by: Prisma.ReasonScalarFieldEnum[] | Prisma.ReasonScalarFieldEnum
-  having?: Prisma.reasonScalarWhereWithAggregatesInput
+  having?: Prisma.ReasonScalarWhereWithAggregatesInput
   take?: number
   skip?: number
   _count?: ReasonCountAggregateInputType | true
@@ -193,10 +179,9 @@ export type reasonGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type ReasonGroupByOutputType = {
   id: number
-  title: string
-  plus: number
-  minus: number
-  dpc: number
+  type: $Enums.ReasonType
+  point: number
+  comment: string
   _count: ReasonCountAggregateOutputType | null
   _avg: ReasonAvgAggregateOutputType | null
   _sum: ReasonSumAggregateOutputType | null
@@ -204,7 +189,7 @@ export type ReasonGroupByOutputType = {
   _max: ReasonMaxAggregateOutputType | null
 }
 
-type GetReasonGroupByPayload<T extends reasonGroupByArgs> = Prisma.PrismaPromise<
+type GetReasonGroupByPayload<T extends ReasonGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ReasonGroupByOutputType, T['by']> &
       {
@@ -219,205 +204,292 @@ type GetReasonGroupByPayload<T extends reasonGroupByArgs> = Prisma.PrismaPromise
 
 
 
-export type reasonWhereInput = {
-  AND?: Prisma.reasonWhereInput | Prisma.reasonWhereInput[]
-  OR?: Prisma.reasonWhereInput[]
-  NOT?: Prisma.reasonWhereInput | Prisma.reasonWhereInput[]
-  id?: Prisma.IntFilter<"reason"> | number
-  title?: Prisma.StringFilter<"reason"> | string
-  plus?: Prisma.IntFilter<"reason"> | number
-  minus?: Prisma.IntFilter<"reason"> | number
-  dpc?: Prisma.IntFilter<"reason"> | number
+export type ReasonWhereInput = {
+  AND?: Prisma.ReasonWhereInput | Prisma.ReasonWhereInput[]
+  OR?: Prisma.ReasonWhereInput[]
+  NOT?: Prisma.ReasonWhereInput | Prisma.ReasonWhereInput[]
+  id?: Prisma.IntFilter<"Reason"> | number
+  type?: Prisma.EnumReasonTypeFilter<"Reason"> | $Enums.ReasonType
+  point?: Prisma.IntFilter<"Reason"> | number
+  comment?: Prisma.StringFilter<"Reason"> | string
+  points?: Prisma.PointListRelationFilter
 }
 
-export type reasonOrderByWithRelationInput = {
+export type ReasonOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  plus?: Prisma.SortOrder
-  minus?: Prisma.SortOrder
-  dpc?: Prisma.SortOrder
-  _relevance?: Prisma.reasonOrderByRelevanceInput
+  type?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
+  points?: Prisma.PointOrderByRelationAggregateInput
+  _relevance?: Prisma.ReasonOrderByRelevanceInput
 }
 
-export type reasonWhereUniqueInput = Prisma.AtLeast<{
+export type ReasonWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  AND?: Prisma.reasonWhereInput | Prisma.reasonWhereInput[]
-  OR?: Prisma.reasonWhereInput[]
-  NOT?: Prisma.reasonWhereInput | Prisma.reasonWhereInput[]
-  title?: Prisma.StringFilter<"reason"> | string
-  plus?: Prisma.IntFilter<"reason"> | number
-  minus?: Prisma.IntFilter<"reason"> | number
-  dpc?: Prisma.IntFilter<"reason"> | number
+  AND?: Prisma.ReasonWhereInput | Prisma.ReasonWhereInput[]
+  OR?: Prisma.ReasonWhereInput[]
+  NOT?: Prisma.ReasonWhereInput | Prisma.ReasonWhereInput[]
+  type?: Prisma.EnumReasonTypeFilter<"Reason"> | $Enums.ReasonType
+  point?: Prisma.IntFilter<"Reason"> | number
+  comment?: Prisma.StringFilter<"Reason"> | string
+  points?: Prisma.PointListRelationFilter
 }, "id">
 
-export type reasonOrderByWithAggregationInput = {
+export type ReasonOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  plus?: Prisma.SortOrder
-  minus?: Prisma.SortOrder
-  dpc?: Prisma.SortOrder
-  _count?: Prisma.reasonCountOrderByAggregateInput
-  _avg?: Prisma.reasonAvgOrderByAggregateInput
-  _max?: Prisma.reasonMaxOrderByAggregateInput
-  _min?: Prisma.reasonMinOrderByAggregateInput
-  _sum?: Prisma.reasonSumOrderByAggregateInput
+  type?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
+  _count?: Prisma.ReasonCountOrderByAggregateInput
+  _avg?: Prisma.ReasonAvgOrderByAggregateInput
+  _max?: Prisma.ReasonMaxOrderByAggregateInput
+  _min?: Prisma.ReasonMinOrderByAggregateInput
+  _sum?: Prisma.ReasonSumOrderByAggregateInput
 }
 
-export type reasonScalarWhereWithAggregatesInput = {
-  AND?: Prisma.reasonScalarWhereWithAggregatesInput | Prisma.reasonScalarWhereWithAggregatesInput[]
-  OR?: Prisma.reasonScalarWhereWithAggregatesInput[]
-  NOT?: Prisma.reasonScalarWhereWithAggregatesInput | Prisma.reasonScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"reason"> | number
-  title?: Prisma.StringWithAggregatesFilter<"reason"> | string
-  plus?: Prisma.IntWithAggregatesFilter<"reason"> | number
-  minus?: Prisma.IntWithAggregatesFilter<"reason"> | number
-  dpc?: Prisma.IntWithAggregatesFilter<"reason"> | number
+export type ReasonScalarWhereWithAggregatesInput = {
+  AND?: Prisma.ReasonScalarWhereWithAggregatesInput | Prisma.ReasonScalarWhereWithAggregatesInput[]
+  OR?: Prisma.ReasonScalarWhereWithAggregatesInput[]
+  NOT?: Prisma.ReasonScalarWhereWithAggregatesInput | Prisma.ReasonScalarWhereWithAggregatesInput[]
+  id?: Prisma.IntWithAggregatesFilter<"Reason"> | number
+  type?: Prisma.EnumReasonTypeWithAggregatesFilter<"Reason"> | $Enums.ReasonType
+  point?: Prisma.IntWithAggregatesFilter<"Reason"> | number
+  comment?: Prisma.StringWithAggregatesFilter<"Reason"> | string
 }
 
-export type reasonCreateInput = {
-  title?: string
-  plus?: number
-  minus?: number
-  dpc?: number
+export type ReasonCreateInput = {
+  type: $Enums.ReasonType
+  point: number
+  comment: string
+  points?: Prisma.PointCreateNestedManyWithoutReasonInput
 }
 
-export type reasonUncheckedCreateInput = {
+export type ReasonUncheckedCreateInput = {
   id?: number
-  title?: string
-  plus?: number
-  minus?: number
-  dpc?: number
+  type: $Enums.ReasonType
+  point: number
+  comment: string
+  points?: Prisma.PointUncheckedCreateNestedManyWithoutReasonInput
 }
 
-export type reasonUpdateInput = {
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  plus?: Prisma.IntFieldUpdateOperationsInput | number
-  minus?: Prisma.IntFieldUpdateOperationsInput | number
-  dpc?: Prisma.IntFieldUpdateOperationsInput | number
+export type ReasonUpdateInput = {
+  type?: Prisma.EnumReasonTypeFieldUpdateOperationsInput | $Enums.ReasonType
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  points?: Prisma.PointUpdateManyWithoutReasonNestedInput
 }
 
-export type reasonUncheckedUpdateInput = {
+export type ReasonUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  plus?: Prisma.IntFieldUpdateOperationsInput | number
-  minus?: Prisma.IntFieldUpdateOperationsInput | number
-  dpc?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.EnumReasonTypeFieldUpdateOperationsInput | $Enums.ReasonType
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
+  points?: Prisma.PointUncheckedUpdateManyWithoutReasonNestedInput
 }
 
-export type reasonCreateManyInput = {
+export type ReasonCreateManyInput = {
   id?: number
-  title?: string
-  plus?: number
-  minus?: number
-  dpc?: number
+  type: $Enums.ReasonType
+  point: number
+  comment: string
 }
 
-export type reasonUpdateManyMutationInput = {
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  plus?: Prisma.IntFieldUpdateOperationsInput | number
-  minus?: Prisma.IntFieldUpdateOperationsInput | number
-  dpc?: Prisma.IntFieldUpdateOperationsInput | number
+export type ReasonUpdateManyMutationInput = {
+  type?: Prisma.EnumReasonTypeFieldUpdateOperationsInput | $Enums.ReasonType
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type reasonUncheckedUpdateManyInput = {
+export type ReasonUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  plus?: Prisma.IntFieldUpdateOperationsInput | number
-  minus?: Prisma.IntFieldUpdateOperationsInput | number
-  dpc?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.EnumReasonTypeFieldUpdateOperationsInput | $Enums.ReasonType
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type reasonOrderByRelevanceInput = {
-  fields: Prisma.reasonOrderByRelevanceFieldEnum | Prisma.reasonOrderByRelevanceFieldEnum[]
+export type ReasonOrderByRelevanceInput = {
+  fields: Prisma.ReasonOrderByRelevanceFieldEnum | Prisma.ReasonOrderByRelevanceFieldEnum[]
   sort: Prisma.SortOrder
   search: string
 }
 
-export type reasonCountOrderByAggregateInput = {
+export type ReasonCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  plus?: Prisma.SortOrder
-  minus?: Prisma.SortOrder
-  dpc?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
 }
 
-export type reasonAvgOrderByAggregateInput = {
+export type ReasonAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  plus?: Prisma.SortOrder
-  minus?: Prisma.SortOrder
-  dpc?: Prisma.SortOrder
+  point?: Prisma.SortOrder
 }
 
-export type reasonMaxOrderByAggregateInput = {
+export type ReasonMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  plus?: Prisma.SortOrder
-  minus?: Prisma.SortOrder
-  dpc?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
 }
 
-export type reasonMinOrderByAggregateInput = {
+export type ReasonMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  plus?: Prisma.SortOrder
-  minus?: Prisma.SortOrder
-  dpc?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
 }
 
-export type reasonSumOrderByAggregateInput = {
+export type ReasonSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  plus?: Prisma.SortOrder
-  minus?: Prisma.SortOrder
-  dpc?: Prisma.SortOrder
+  point?: Prisma.SortOrder
+}
+
+export type ReasonScalarRelationFilter = {
+  is?: Prisma.ReasonWhereInput
+  isNot?: Prisma.ReasonWhereInput
+}
+
+export type EnumReasonTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ReasonType
+}
+
+export type ReasonCreateNestedOneWithoutPointsInput = {
+  create?: Prisma.XOR<Prisma.ReasonCreateWithoutPointsInput, Prisma.ReasonUncheckedCreateWithoutPointsInput>
+  connectOrCreate?: Prisma.ReasonCreateOrConnectWithoutPointsInput
+  connect?: Prisma.ReasonWhereUniqueInput
+}
+
+export type ReasonUpdateOneRequiredWithoutPointsNestedInput = {
+  create?: Prisma.XOR<Prisma.ReasonCreateWithoutPointsInput, Prisma.ReasonUncheckedCreateWithoutPointsInput>
+  connectOrCreate?: Prisma.ReasonCreateOrConnectWithoutPointsInput
+  upsert?: Prisma.ReasonUpsertWithoutPointsInput
+  connect?: Prisma.ReasonWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ReasonUpdateToOneWithWhereWithoutPointsInput, Prisma.ReasonUpdateWithoutPointsInput>, Prisma.ReasonUncheckedUpdateWithoutPointsInput>
+}
+
+export type ReasonCreateWithoutPointsInput = {
+  type: $Enums.ReasonType
+  point: number
+  comment: string
+}
+
+export type ReasonUncheckedCreateWithoutPointsInput = {
+  id?: number
+  type: $Enums.ReasonType
+  point: number
+  comment: string
+}
+
+export type ReasonCreateOrConnectWithoutPointsInput = {
+  where: Prisma.ReasonWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReasonCreateWithoutPointsInput, Prisma.ReasonUncheckedCreateWithoutPointsInput>
+}
+
+export type ReasonUpsertWithoutPointsInput = {
+  update: Prisma.XOR<Prisma.ReasonUpdateWithoutPointsInput, Prisma.ReasonUncheckedUpdateWithoutPointsInput>
+  create: Prisma.XOR<Prisma.ReasonCreateWithoutPointsInput, Prisma.ReasonUncheckedCreateWithoutPointsInput>
+  where?: Prisma.ReasonWhereInput
+}
+
+export type ReasonUpdateToOneWithWhereWithoutPointsInput = {
+  where?: Prisma.ReasonWhereInput
+  data: Prisma.XOR<Prisma.ReasonUpdateWithoutPointsInput, Prisma.ReasonUncheckedUpdateWithoutPointsInput>
+}
+
+export type ReasonUpdateWithoutPointsInput = {
+  type?: Prisma.EnumReasonTypeFieldUpdateOperationsInput | $Enums.ReasonType
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type ReasonUncheckedUpdateWithoutPointsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.EnumReasonTypeFieldUpdateOperationsInput | $Enums.ReasonType
+  point?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
+/**
+ * Count Type ReasonCountOutputType
+ */
 
-export type reasonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type ReasonCountOutputType = {
+  points: number
+}
+
+export type ReasonCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  points?: boolean | ReasonCountOutputTypeCountPointsArgs
+}
+
+/**
+ * ReasonCountOutputType without action
+ */
+export type ReasonCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReasonCountOutputType
+   */
+  select?: Prisma.ReasonCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ReasonCountOutputType without action
+ */
+export type ReasonCountOutputTypeCountPointsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PointWhereInput
+}
+
+
+export type ReasonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  title?: boolean
-  plus?: boolean
-  minus?: boolean
-  dpc?: boolean
+  type?: boolean
+  point?: boolean
+  comment?: boolean
+  points?: boolean | Prisma.Reason$pointsArgs<ExtArgs>
+  _count?: boolean | Prisma.ReasonCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reason"]>
 
 
 
-export type reasonSelectScalar = {
+export type ReasonSelectScalar = {
   id?: boolean
-  title?: boolean
-  plus?: boolean
-  minus?: boolean
-  dpc?: boolean
+  type?: boolean
+  point?: boolean
+  comment?: boolean
 }
 
-export type reasonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "plus" | "minus" | "dpc", ExtArgs["result"]["reason"]>
+export type ReasonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "point" | "comment", ExtArgs["result"]["reason"]>
+export type ReasonInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  points?: boolean | Prisma.Reason$pointsArgs<ExtArgs>
+  _count?: boolean | Prisma.ReasonCountOutputTypeDefaultArgs<ExtArgs>
+}
 
-export type $reasonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  name: "reason"
-  objects: {}
+export type $ReasonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  name: "Reason"
+  objects: {
+    points: Prisma.$PointPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
-    title: string
-    plus: number
-    minus: number
-    dpc: number
+    type: $Enums.ReasonType
+    point: number
+    comment: string
   }, ExtArgs["result"]["reason"]>
   composites: {}
 }
 
-export type reasonGetPayload<S extends boolean | null | undefined | reasonDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$reasonPayload, S>
+export type ReasonGetPayload<S extends boolean | null | undefined | ReasonDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ReasonPayload, S>
 
-export type reasonCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<reasonFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+export type ReasonCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
+  Omit<ReasonFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
     select?: ReasonCountAggregateInputType | true
   }
 
-export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['reason'], meta: { name: 'reason' } }
+export interface ReasonDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Reason'], meta: { name: 'Reason' } }
   /**
    * Find zero or one Reason that matches the filter.
-   * @param {reasonFindUniqueArgs} args - Arguments to find a Reason
+   * @param {ReasonFindUniqueArgs} args - Arguments to find a Reason
    * @example
    * // Get one Reason
    * const reason = await prisma.reason.findUnique({
@@ -426,12 +498,12 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    *   }
    * })
    */
-  findUnique<T extends reasonFindUniqueArgs>(args: Prisma.SelectSubset<T, reasonFindUniqueArgs<ExtArgs>>): Prisma.Prisma__reasonClient<runtime.Types.Result.GetResult<Prisma.$reasonPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findUnique<T extends ReasonFindUniqueArgs>(args: Prisma.SelectSubset<T, ReasonFindUniqueArgs<ExtArgs>>): Prisma.Prisma__ReasonClient<runtime.Types.Result.GetResult<Prisma.$ReasonPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find one Reason that matches the filter or throw an error with `error.code='P2025'`
    * if no matches were found.
-   * @param {reasonFindUniqueOrThrowArgs} args - Arguments to find a Reason
+   * @param {ReasonFindUniqueOrThrowArgs} args - Arguments to find a Reason
    * @example
    * // Get one Reason
    * const reason = await prisma.reason.findUniqueOrThrow({
@@ -440,13 +512,13 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    *   }
    * })
    */
-  findUniqueOrThrow<T extends reasonFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, reasonFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__reasonClient<runtime.Types.Result.GetResult<Prisma.$reasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findUniqueOrThrow<T extends ReasonFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, ReasonFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__ReasonClient<runtime.Types.Result.GetResult<Prisma.$ReasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first Reason that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {reasonFindFirstArgs} args - Arguments to find a Reason
+   * @param {ReasonFindFirstArgs} args - Arguments to find a Reason
    * @example
    * // Get one Reason
    * const reason = await prisma.reason.findFirst({
@@ -455,14 +527,14 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    *   }
    * })
    */
-  findFirst<T extends reasonFindFirstArgs>(args?: Prisma.SelectSubset<T, reasonFindFirstArgs<ExtArgs>>): Prisma.Prisma__reasonClient<runtime.Types.Result.GetResult<Prisma.$reasonPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findFirst<T extends ReasonFindFirstArgs>(args?: Prisma.SelectSubset<T, ReasonFindFirstArgs<ExtArgs>>): Prisma.Prisma__ReasonClient<runtime.Types.Result.GetResult<Prisma.$ReasonPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first Reason that matches the filter or
    * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {reasonFindFirstOrThrowArgs} args - Arguments to find a Reason
+   * @param {ReasonFindFirstOrThrowArgs} args - Arguments to find a Reason
    * @example
    * // Get one Reason
    * const reason = await prisma.reason.findFirstOrThrow({
@@ -471,13 +543,13 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    *   }
    * })
    */
-  findFirstOrThrow<T extends reasonFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, reasonFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__reasonClient<runtime.Types.Result.GetResult<Prisma.$reasonPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findFirstOrThrow<T extends ReasonFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, ReasonFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__ReasonClient<runtime.Types.Result.GetResult<Prisma.$ReasonPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find zero or more Reasons that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {reasonFindManyArgs} args - Arguments to filter and select certain fields only.
+   * @param {ReasonFindManyArgs} args - Arguments to filter and select certain fields only.
    * @example
    * // Get all Reasons
    * const reasons = await prisma.reason.findMany()
@@ -489,11 +561,11 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * const reasonWithIdOnly = await prisma.reason.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends reasonFindManyArgs>(args?: Prisma.SelectSubset<T, reasonFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$reasonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+  findMany<T extends ReasonFindManyArgs>(args?: Prisma.SelectSubset<T, ReasonFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReasonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
   /**
    * Create a Reason.
-   * @param {reasonCreateArgs} args - Arguments to create a Reason.
+   * @param {ReasonCreateArgs} args - Arguments to create a Reason.
    * @example
    * // Create one Reason
    * const Reason = await prisma.reason.create({
@@ -503,11 +575,11 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * })
    * 
    */
-  create<T extends reasonCreateArgs>(args: Prisma.SelectSubset<T, reasonCreateArgs<ExtArgs>>): Prisma.Prisma__reasonClient<runtime.Types.Result.GetResult<Prisma.$reasonPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  create<T extends ReasonCreateArgs>(args: Prisma.SelectSubset<T, ReasonCreateArgs<ExtArgs>>): Prisma.Prisma__ReasonClient<runtime.Types.Result.GetResult<Prisma.$ReasonPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Create many Reasons.
-   * @param {reasonCreateManyArgs} args - Arguments to create many Reasons.
+   * @param {ReasonCreateManyArgs} args - Arguments to create many Reasons.
    * @example
    * // Create many Reasons
    * const reason = await prisma.reason.createMany({
@@ -517,11 +589,11 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * })
    *     
    */
-  createMany<T extends reasonCreateManyArgs>(args?: Prisma.SelectSubset<T, reasonCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  createMany<T extends ReasonCreateManyArgs>(args?: Prisma.SelectSubset<T, ReasonCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Delete a Reason.
-   * @param {reasonDeleteArgs} args - Arguments to delete one Reason.
+   * @param {ReasonDeleteArgs} args - Arguments to delete one Reason.
    * @example
    * // Delete one Reason
    * const Reason = await prisma.reason.delete({
@@ -531,11 +603,11 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * })
    * 
    */
-  delete<T extends reasonDeleteArgs>(args: Prisma.SelectSubset<T, reasonDeleteArgs<ExtArgs>>): Prisma.Prisma__reasonClient<runtime.Types.Result.GetResult<Prisma.$reasonPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  delete<T extends ReasonDeleteArgs>(args: Prisma.SelectSubset<T, ReasonDeleteArgs<ExtArgs>>): Prisma.Prisma__ReasonClient<runtime.Types.Result.GetResult<Prisma.$ReasonPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Update one Reason.
-   * @param {reasonUpdateArgs} args - Arguments to update one Reason.
+   * @param {ReasonUpdateArgs} args - Arguments to update one Reason.
    * @example
    * // Update one Reason
    * const reason = await prisma.reason.update({
@@ -548,11 +620,11 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * })
    * 
    */
-  update<T extends reasonUpdateArgs>(args: Prisma.SelectSubset<T, reasonUpdateArgs<ExtArgs>>): Prisma.Prisma__reasonClient<runtime.Types.Result.GetResult<Prisma.$reasonPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  update<T extends ReasonUpdateArgs>(args: Prisma.SelectSubset<T, ReasonUpdateArgs<ExtArgs>>): Prisma.Prisma__ReasonClient<runtime.Types.Result.GetResult<Prisma.$ReasonPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Delete zero or more Reasons.
-   * @param {reasonDeleteManyArgs} args - Arguments to filter Reasons to delete.
+   * @param {ReasonDeleteManyArgs} args - Arguments to filter Reasons to delete.
    * @example
    * // Delete a few Reasons
    * const { count } = await prisma.reason.deleteMany({
@@ -562,13 +634,13 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * })
    * 
    */
-  deleteMany<T extends reasonDeleteManyArgs>(args?: Prisma.SelectSubset<T, reasonDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  deleteMany<T extends ReasonDeleteManyArgs>(args?: Prisma.SelectSubset<T, ReasonDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more Reasons.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {reasonUpdateManyArgs} args - Arguments to update one or more rows.
+   * @param {ReasonUpdateManyArgs} args - Arguments to update one or more rows.
    * @example
    * // Update many Reasons
    * const reason = await prisma.reason.updateMany({
@@ -581,11 +653,11 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * })
    * 
    */
-  updateMany<T extends reasonUpdateManyArgs>(args: Prisma.SelectSubset<T, reasonUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  updateMany<T extends ReasonUpdateManyArgs>(args: Prisma.SelectSubset<T, ReasonUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Create or update one Reason.
-   * @param {reasonUpsertArgs} args - Arguments to update or create a Reason.
+   * @param {ReasonUpsertArgs} args - Arguments to update or create a Reason.
    * @example
    * // Update or create a Reason
    * const reason = await prisma.reason.upsert({
@@ -600,14 +672,14 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    *   }
    * })
    */
-  upsert<T extends reasonUpsertArgs>(args: Prisma.SelectSubset<T, reasonUpsertArgs<ExtArgs>>): Prisma.Prisma__reasonClient<runtime.Types.Result.GetResult<Prisma.$reasonPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  upsert<T extends ReasonUpsertArgs>(args: Prisma.SelectSubset<T, ReasonUpsertArgs<ExtArgs>>): Prisma.Prisma__ReasonClient<runtime.Types.Result.GetResult<Prisma.$ReasonPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
   /**
    * Count the number of Reasons.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {reasonCountArgs} args - Arguments to filter Reasons to count.
+   * @param {ReasonCountArgs} args - Arguments to filter Reasons to count.
    * @example
    * // Count the number of Reasons
    * const count = await prisma.reason.count({
@@ -616,8 +688,8 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    *   }
    * })
   **/
-  count<T extends reasonCountArgs>(
-    args?: Prisma.Subset<T, reasonCountArgs>,
+  count<T extends ReasonCountArgs>(
+    args?: Prisma.Subset<T, ReasonCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
       ? T['select'] extends true
@@ -656,7 +728,7 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * Group by Reason.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {reasonGroupByArgs} args - Group by arguments.
+   * @param {ReasonGroupByArgs} args - Group by arguments.
    * @example
    * // Group by city, order by createdAt, get count
    * const result = await prisma.user.groupBy({
@@ -671,14 +743,14 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * 
   **/
   groupBy<
-    T extends reasonGroupByArgs,
+    T extends ReasonGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
       Prisma.Extends<'skip', Prisma.Keys<T>>,
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-      ? { orderBy: reasonGroupByArgs['orderBy'] }
-      : { orderBy?: reasonGroupByArgs['orderBy'] },
+      ? { orderBy: ReasonGroupByArgs['orderBy'] }
+      : { orderBy?: ReasonGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
@@ -727,21 +799,22 @@ export interface reasonDelegate<ExtArgs extends runtime.Types.Extensions.Interna
           ? never
           : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
       }[OrderFields]
-  >(args: Prisma.SubsetIntersection<T, reasonGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReasonGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  >(args: Prisma.SubsetIntersection<T, ReasonGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReasonGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 /**
- * Fields of the reason model
+ * Fields of the Reason model
  */
-readonly fields: reasonFieldRefs;
+readonly fields: ReasonFieldRefs;
 }
 
 /**
- * The delegate class that acts as a "Promise-like" for reason.
+ * The delegate class that acts as a "Promise-like" for Reason.
  * Why is this prefixed with `Prisma__`?
  * Because we want to prevent naming conflicts as mentioned in
  * https://github.com/prisma/prisma-client-js/issues/707
  */
-export interface Prisma__reasonClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+export interface Prisma__ReasonClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  points<T extends Prisma.Reason$pointsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reason$pointsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -768,330 +841,393 @@ export interface Prisma__reasonClient<T, Null = never, ExtArgs extends runtime.T
 
 
 /**
- * Fields of the reason model
+ * Fields of the Reason model
  */
-export interface reasonFieldRefs {
-  readonly id: Prisma.FieldRef<"reason", 'Int'>
-  readonly title: Prisma.FieldRef<"reason", 'String'>
-  readonly plus: Prisma.FieldRef<"reason", 'Int'>
-  readonly minus: Prisma.FieldRef<"reason", 'Int'>
-  readonly dpc: Prisma.FieldRef<"reason", 'Int'>
+export interface ReasonFieldRefs {
+  readonly id: Prisma.FieldRef<"Reason", 'Int'>
+  readonly type: Prisma.FieldRef<"Reason", 'ReasonType'>
+  readonly point: Prisma.FieldRef<"Reason", 'Int'>
+  readonly comment: Prisma.FieldRef<"Reason", 'String'>
 }
     
 
 // Custom InputTypes
 /**
- * reason findUnique
+ * Reason findUnique
  */
-export type reasonFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the reason
+   * Select specific fields to fetch from the Reason
    */
-  select?: Prisma.reasonSelect<ExtArgs> | null
+  select?: Prisma.ReasonSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the reason
+   * Omit specific fields from the Reason
    */
-  omit?: Prisma.reasonOmit<ExtArgs> | null
+  omit?: Prisma.ReasonOmit<ExtArgs> | null
   /**
-   * Filter, which reason to fetch.
+   * Choose, which related nodes to fetch as well
    */
-  where: Prisma.reasonWhereUniqueInput
+  include?: Prisma.ReasonInclude<ExtArgs> | null
+  /**
+   * Filter, which Reason to fetch.
+   */
+  where: Prisma.ReasonWhereUniqueInput
 }
 
 /**
- * reason findUniqueOrThrow
+ * Reason findUniqueOrThrow
  */
-export type reasonFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the reason
+   * Select specific fields to fetch from the Reason
    */
-  select?: Prisma.reasonSelect<ExtArgs> | null
+  select?: Prisma.ReasonSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the reason
+   * Omit specific fields from the Reason
    */
-  omit?: Prisma.reasonOmit<ExtArgs> | null
+  omit?: Prisma.ReasonOmit<ExtArgs> | null
   /**
-   * Filter, which reason to fetch.
+   * Choose, which related nodes to fetch as well
    */
-  where: Prisma.reasonWhereUniqueInput
+  include?: Prisma.ReasonInclude<ExtArgs> | null
+  /**
+   * Filter, which Reason to fetch.
+   */
+  where: Prisma.ReasonWhereUniqueInput
 }
 
 /**
- * reason findFirst
+ * Reason findFirst
  */
-export type reasonFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the reason
+   * Select specific fields to fetch from the Reason
    */
-  select?: Prisma.reasonSelect<ExtArgs> | null
+  select?: Prisma.ReasonSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the reason
+   * Omit specific fields from the Reason
    */
-  omit?: Prisma.reasonOmit<ExtArgs> | null
+  omit?: Prisma.ReasonOmit<ExtArgs> | null
   /**
-   * Filter, which reason to fetch.
+   * Choose, which related nodes to fetch as well
    */
-  where?: Prisma.reasonWhereInput
+  include?: Prisma.ReasonInclude<ExtArgs> | null
+  /**
+   * Filter, which Reason to fetch.
+   */
+  where?: Prisma.ReasonWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of reasons to fetch.
+   * Determine the order of Reasons to fetch.
    */
-  orderBy?: Prisma.reasonOrderByWithRelationInput | Prisma.reasonOrderByWithRelationInput[]
+  orderBy?: Prisma.ReasonOrderByWithRelationInput | Prisma.ReasonOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for reasons.
+   * Sets the position for searching for Reasons.
    */
-  cursor?: Prisma.reasonWhereUniqueInput
+  cursor?: Prisma.ReasonWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` reasons from the position of the cursor.
+   * Take `±n` Reasons from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` reasons.
+   * Skip the first `n` Reasons.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of reasons.
+   * Filter by unique combinations of Reasons.
    */
   distinct?: Prisma.ReasonScalarFieldEnum | Prisma.ReasonScalarFieldEnum[]
 }
 
 /**
- * reason findFirstOrThrow
+ * Reason findFirstOrThrow
  */
-export type reasonFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the reason
+   * Select specific fields to fetch from the Reason
    */
-  select?: Prisma.reasonSelect<ExtArgs> | null
+  select?: Prisma.ReasonSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the reason
+   * Omit specific fields from the Reason
    */
-  omit?: Prisma.reasonOmit<ExtArgs> | null
+  omit?: Prisma.ReasonOmit<ExtArgs> | null
   /**
-   * Filter, which reason to fetch.
+   * Choose, which related nodes to fetch as well
    */
-  where?: Prisma.reasonWhereInput
+  include?: Prisma.ReasonInclude<ExtArgs> | null
+  /**
+   * Filter, which Reason to fetch.
+   */
+  where?: Prisma.ReasonWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of reasons to fetch.
+   * Determine the order of Reasons to fetch.
    */
-  orderBy?: Prisma.reasonOrderByWithRelationInput | Prisma.reasonOrderByWithRelationInput[]
+  orderBy?: Prisma.ReasonOrderByWithRelationInput | Prisma.ReasonOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for reasons.
+   * Sets the position for searching for Reasons.
    */
-  cursor?: Prisma.reasonWhereUniqueInput
+  cursor?: Prisma.ReasonWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` reasons from the position of the cursor.
+   * Take `±n` Reasons from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` reasons.
+   * Skip the first `n` Reasons.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of reasons.
+   * Filter by unique combinations of Reasons.
    */
   distinct?: Prisma.ReasonScalarFieldEnum | Prisma.ReasonScalarFieldEnum[]
 }
 
 /**
- * reason findMany
+ * Reason findMany
  */
-export type reasonFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the reason
+   * Select specific fields to fetch from the Reason
    */
-  select?: Prisma.reasonSelect<ExtArgs> | null
+  select?: Prisma.ReasonSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the reason
+   * Omit specific fields from the Reason
    */
-  omit?: Prisma.reasonOmit<ExtArgs> | null
+  omit?: Prisma.ReasonOmit<ExtArgs> | null
   /**
-   * Filter, which reasons to fetch.
+   * Choose, which related nodes to fetch as well
    */
-  where?: Prisma.reasonWhereInput
+  include?: Prisma.ReasonInclude<ExtArgs> | null
+  /**
+   * Filter, which Reasons to fetch.
+   */
+  where?: Prisma.ReasonWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of reasons to fetch.
+   * Determine the order of Reasons to fetch.
    */
-  orderBy?: Prisma.reasonOrderByWithRelationInput | Prisma.reasonOrderByWithRelationInput[]
+  orderBy?: Prisma.ReasonOrderByWithRelationInput | Prisma.ReasonOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for listing reasons.
+   * Sets the position for listing Reasons.
    */
-  cursor?: Prisma.reasonWhereUniqueInput
+  cursor?: Prisma.ReasonWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` reasons from the position of the cursor.
+   * Take `±n` Reasons from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` reasons.
+   * Skip the first `n` Reasons.
    */
   skip?: number
   distinct?: Prisma.ReasonScalarFieldEnum | Prisma.ReasonScalarFieldEnum[]
 }
 
 /**
- * reason create
+ * Reason create
  */
-export type reasonCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the reason
+   * Select specific fields to fetch from the Reason
    */
-  select?: Prisma.reasonSelect<ExtArgs> | null
+  select?: Prisma.ReasonSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the reason
+   * Omit specific fields from the Reason
    */
-  omit?: Prisma.reasonOmit<ExtArgs> | null
+  omit?: Prisma.ReasonOmit<ExtArgs> | null
   /**
-   * The data needed to create a reason.
+   * Choose, which related nodes to fetch as well
    */
-  data?: Prisma.XOR<Prisma.reasonCreateInput, Prisma.reasonUncheckedCreateInput>
+  include?: Prisma.ReasonInclude<ExtArgs> | null
+  /**
+   * The data needed to create a Reason.
+   */
+  data: Prisma.XOR<Prisma.ReasonCreateInput, Prisma.ReasonUncheckedCreateInput>
 }
 
 /**
- * reason createMany
+ * Reason createMany
  */
-export type reasonCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to create many reasons.
+   * The data used to create many Reasons.
    */
-  data: Prisma.reasonCreateManyInput | Prisma.reasonCreateManyInput[]
+  data: Prisma.ReasonCreateManyInput | Prisma.ReasonCreateManyInput[]
   skipDuplicates?: boolean
 }
 
 /**
- * reason update
+ * Reason update
  */
-export type reasonUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the reason
+   * Select specific fields to fetch from the Reason
    */
-  select?: Prisma.reasonSelect<ExtArgs> | null
+  select?: Prisma.ReasonSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the reason
+   * Omit specific fields from the Reason
    */
-  omit?: Prisma.reasonOmit<ExtArgs> | null
+  omit?: Prisma.ReasonOmit<ExtArgs> | null
   /**
-   * The data needed to update a reason.
+   * Choose, which related nodes to fetch as well
    */
-  data: Prisma.XOR<Prisma.reasonUpdateInput, Prisma.reasonUncheckedUpdateInput>
+  include?: Prisma.ReasonInclude<ExtArgs> | null
   /**
-   * Choose, which reason to update.
+   * The data needed to update a Reason.
    */
-  where: Prisma.reasonWhereUniqueInput
+  data: Prisma.XOR<Prisma.ReasonUpdateInput, Prisma.ReasonUncheckedUpdateInput>
+  /**
+   * Choose, which Reason to update.
+   */
+  where: Prisma.ReasonWhereUniqueInput
 }
 
 /**
- * reason updateMany
+ * Reason updateMany
  */
-export type reasonUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to update reasons.
+   * The data used to update Reasons.
    */
-  data: Prisma.XOR<Prisma.reasonUpdateManyMutationInput, Prisma.reasonUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.ReasonUpdateManyMutationInput, Prisma.ReasonUncheckedUpdateManyInput>
   /**
-   * Filter which reasons to update
+   * Filter which Reasons to update
    */
-  where?: Prisma.reasonWhereInput
+  where?: Prisma.ReasonWhereInput
   /**
-   * Limit how many reasons to update.
+   * Limit how many Reasons to update.
    */
   limit?: number
 }
 
 /**
- * reason upsert
+ * Reason upsert
  */
-export type reasonUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the reason
+   * Select specific fields to fetch from the Reason
    */
-  select?: Prisma.reasonSelect<ExtArgs> | null
+  select?: Prisma.ReasonSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the reason
+   * Omit specific fields from the Reason
    */
-  omit?: Prisma.reasonOmit<ExtArgs> | null
+  omit?: Prisma.ReasonOmit<ExtArgs> | null
   /**
-   * The filter to search for the reason to update in case it exists.
+   * Choose, which related nodes to fetch as well
    */
-  where: Prisma.reasonWhereUniqueInput
+  include?: Prisma.ReasonInclude<ExtArgs> | null
   /**
-   * In case the reason found by the `where` argument doesn't exist, create a new reason with this data.
+   * The filter to search for the Reason to update in case it exists.
    */
-  create: Prisma.XOR<Prisma.reasonCreateInput, Prisma.reasonUncheckedCreateInput>
+  where: Prisma.ReasonWhereUniqueInput
   /**
-   * In case the reason was found with the provided `where` argument, update it with this data.
+   * In case the Reason found by the `where` argument doesn't exist, create a new Reason with this data.
    */
-  update: Prisma.XOR<Prisma.reasonUpdateInput, Prisma.reasonUncheckedUpdateInput>
+  create: Prisma.XOR<Prisma.ReasonCreateInput, Prisma.ReasonUncheckedCreateInput>
+  /**
+   * In case the Reason was found with the provided `where` argument, update it with this data.
+   */
+  update: Prisma.XOR<Prisma.ReasonUpdateInput, Prisma.ReasonUncheckedUpdateInput>
 }
 
 /**
- * reason delete
+ * Reason delete
  */
-export type reasonDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the reason
+   * Select specific fields to fetch from the Reason
    */
-  select?: Prisma.reasonSelect<ExtArgs> | null
+  select?: Prisma.ReasonSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the reason
+   * Omit specific fields from the Reason
    */
-  omit?: Prisma.reasonOmit<ExtArgs> | null
+  omit?: Prisma.ReasonOmit<ExtArgs> | null
   /**
-   * Filter which reason to delete.
+   * Choose, which related nodes to fetch as well
    */
-  where: Prisma.reasonWhereUniqueInput
+  include?: Prisma.ReasonInclude<ExtArgs> | null
+  /**
+   * Filter which Reason to delete.
+   */
+  where: Prisma.ReasonWhereUniqueInput
 }
 
 /**
- * reason deleteMany
+ * Reason deleteMany
  */
-export type reasonDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ReasonDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which reasons to delete
+   * Filter which Reasons to delete
    */
-  where?: Prisma.reasonWhereInput
+  where?: Prisma.ReasonWhereInput
   /**
-   * Limit how many reasons to delete.
+   * Limit how many Reasons to delete.
    */
   limit?: number
 }
 
 /**
- * reason without action
+ * Reason.points
  */
-export type reasonDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Reason$pointsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the reason
+   * Select specific fields to fetch from the Point
    */
-  select?: Prisma.reasonSelect<ExtArgs> | null
+  select?: Prisma.PointSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the reason
+   * Omit specific fields from the Point
    */
-  omit?: Prisma.reasonOmit<ExtArgs> | null
+  omit?: Prisma.PointOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PointInclude<ExtArgs> | null
+  where?: Prisma.PointWhereInput
+  orderBy?: Prisma.PointOrderByWithRelationInput | Prisma.PointOrderByWithRelationInput[]
+  cursor?: Prisma.PointWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PointScalarFieldEnum | Prisma.PointScalarFieldEnum[]
+}
+
+/**
+ * Reason without action
+ */
+export type ReasonDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reason
+   */
+  select?: Prisma.ReasonSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reason
+   */
+  omit?: Prisma.ReasonOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReasonInclude<ExtArgs> | null
 }

@@ -54,7 +54,7 @@ export class CasesService {
     });
   }
 
-  findAllSchedule() {
+  findSchedules() {
     return this.prisma.caseSchedule.findMany({ orderBy: { date: 'asc' } });
   }
 
@@ -70,7 +70,7 @@ export class CasesService {
     });
   }
 
-  removeSchedule(id: number) {
+  async removeSchedule(id: number) {
     return this.prisma.caseSchedule.delete({ where: { id } }).then(() => undefined);
   }
 }

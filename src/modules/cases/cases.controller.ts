@@ -54,8 +54,8 @@ export class CasesController {
   }
 
   @Get('schedules')
-  findAllSchedule() {
-    return this.casesService.findAllSchedule();
+  findSchedules() {
+    return this.casesService.findSchedules();
   }
 
   @Patch('schedules/:id')
@@ -70,7 +70,7 @@ export class CasesController {
 
   @Delete('schedules/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param() params: unknown) {
+  removeSchedule(@Param() params: unknown) {
     const { id } = parseZod<CaseScheduleIdParams>(caseScheduleIdParamSchema, params);
     return this.casesService.removeSchedule(id);
   }

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { CaseUpdateInput } from './dto/cases.schema';
+import { CaseScheduleCreateInput, CaseScheduleUpdateInput, CaseUpdateInput } from './dto/cases.schema';
 
 @Injectable()
 export class CasesService {
@@ -21,33 +21,56 @@ export class CasesService {
     });
   }
 
-  async replaceAll(body: CaseUpdateInput) {
-    if (!body.status) {
-      throw new BadRequestException('status is required for replaceAll');
+  async updateAll(body: CaseUpdateInput) {
+    if (!body.isOpen) {
+      throw new BadRequestException('isOpen is required for updateAll');
     }
 
-    if (body.status === 'DISCONNECTED') {
-      throw new BadRequestException(
-        'replaceAll does not allow DISCONNECTED as target status',
-      );
-    }
-
-    const targetStatus = body.status;
+    const targetIsOpen = body.isOpen;
 
     const [totalCases, disconnectedCases, updated] = await this.prisma.$transaction([
       this.prisma.case.count(),
-      this.prisma.case.count({ where: { status: 'DISCONNECTED' } }),
+      this.prisma.case.count({ where: { isOpen: false } }),
       this.prisma.case.updateMany({
-        where: { status: { not: 'DISCONNECTED' } },
-        data: { status: targetStatus },
+        where: { isOpen: { not: false } },
+        data: { isOpen: targetIsOpen },
       }),
     ]);
 
     return {
-      targetStatus,
+      targetIsOpen,
       totalCases,
       excludedDisconnectedCount: disconnectedCases,
       updatedCount: updated.count,
     };
+  }
+
+  createSchedule(body: CaseScheduleCreateInput) {
+    return this.prisma.caseSchedule.create({
+      data: {
+        date: new Date(body.date),
+        isOpen: body.isOpen,
+      },
+    });
+  }
+
+  findSchedules() {
+    return this.prisma.caseSchedule.findMany({ orderBy: { date: 'asc' } });
+  }
+
+  updateSchedule(id: number, body: CaseScheduleUpdateInput) {
+    const { date, ...rest } = body;
+
+    return this.prisma.caseSchedule.update({
+      where: { id },
+      data: {
+        ...rest,
+        ...(date ? { date: new Date(date) } : {}),
+      },
+    });
+  }
+
+  async removeSchedule(id: number) {
+    return this.prisma.caseSchedule.delete({ where: { id } }).then(() => undefined);
   }
 }

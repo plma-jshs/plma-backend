@@ -70,6 +70,46 @@ $ mau deploy
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
+## GitHub Actions CI/CD
+
+### CI
+
+- Workflow: `.github/workflows/ci.yml`
+- Trigger:
+  - Pull request to `main`
+  - Push to `main`
+- Steps:
+  - `pnpm install --frozen-lockfile`
+  - `pnpm prisma validate`
+  - ESLint check
+  - Unit test
+  - Build
+
+### CD
+
+- Workflow: `.github/workflows/cd.yml`
+- Trigger: manual (`workflow_dispatch`)
+- Strategy: build artifact in GitHub Actions, upload to server via SSH/SCP, then restart app with `pm2`
+
+Required GitHub Secrets:
+
+- `DEPLOY_HOST`
+- `DEPLOY_USER`
+- `DEPLOY_SSH_KEY` (PEM private key content, e.g. contents of `home.pem`)
+- `DEPLOY_PORT` (optional, default `22`)
+
+Manual deploy inputs:
+
+- `ref`: branch/tag/commit to deploy (default `main`)
+- `app_dir`: app base directory on server (default `/home/ubuntu/Server/plma_backend_using_nestjs`)
+- `process_name`: PM2 process name (default `newplma_v25`)
+
+Server prerequisites:
+
+- Node.js + corepack
+- `pnpm`
+- `pm2`
+
 ## Resources
 
 Check out a few resources that may come in handy when working with NestJS:

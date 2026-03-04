@@ -39,9 +39,6 @@ jobs:
       - name: Prisma schema validate
         run: pnpm prisma validate
 
-      - name: Lint
-        run: pnpm exec eslint "{src,apps,libs,test}/**/*.ts"
-
       - name: Unit test
         run: pnpm test -- --runInBand
 

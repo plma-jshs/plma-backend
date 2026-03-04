@@ -49,7 +49,7 @@ model User {
   password    String
   name        String
   studentId   Int?         @unique
-  phoneNumber String?
+  phoneNumber String?      @db.VarChar(11)
   student     Student?     @relation(fields: [studentId], references: [id], onDelete: SetNull)
   givenPoints Point[]      @relation("TeacherPoints")
   dormUsers   DormUser[]
@@ -99,7 +99,7 @@ model Case {
 model CaseSchedule {
   id            Int        @id @default(autoincrement())
   date          DateTime
-  isOpen        Boolean
+  isOpen        Boolean    @default(false)
 
   @@map("case_schedules")
 }
@@ -137,6 +137,7 @@ model DormUser {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, year, semester])
+  @@unique([roomId, year, semester, bedPosition])
   @@index([roomId])
   @@index([userId])
   @@map("dorm_users")

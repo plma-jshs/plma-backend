@@ -40,7 +40,7 @@ jobs:
         run: pnpm prisma validate
 
       - name: Unit test
-        run: pnpm test -- --runInBand
+        run: pnpm test --runInBand
 
       - name: Build
         run: pnpm build

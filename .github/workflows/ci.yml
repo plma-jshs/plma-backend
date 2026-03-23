@@ -67,5 +67,5 @@ jobs:
             cd $APP_DIR
             pnpm install --prod
             npx prisma generate
-            pm2 restart plma-backend || pm2 start dist/main.js --name plma-backend
+            pm2 restart plma-backend || pm2 start dist/src/main.js --name plma-backend
           "

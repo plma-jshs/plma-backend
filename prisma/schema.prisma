@@ -88,18 +88,18 @@ model Point {
 }
 
 model Case {
-  id          Int        @id
-  isOpen      Boolean    @default(true)
-  isConnected Boolean    @default(false)
-  updatedDate DateTime   @updatedAt
+  id          Int      @id
+  isOpen      Boolean  @default(true)
+  isConnected Boolean  @default(false)
+  updatedDate DateTime @updatedAt
 
   @@map("cases")
 }
 
 model CaseSchedule {
-  id            Int        @id @default(autoincrement())
-  date          DateTime
-  isOpen        Boolean    @default(false)
+  id     Int      @id @default(autoincrement())
+  date   DateTime
+  isOpen Boolean  @default(false)
 
   @@map("case_schedules")
 }

@@ -26,12 +26,15 @@ jobs:
       - name: Create .env file for NestJS
         run: |
           echo DATABASE_URL=${{secrets.DATABASE_URL}} >> .env
-          echo PORT=${{secrets.DATABASE_URL}} >> .env
+          echo PORT=${{secrets.PORT}} >> .env
           # echo JWT_SECRET=${{secrets.JWT_SECRET}} >> .env
           echo REDIS_PASSWORD=${{secrets.REDIS_PASSWORD}} >> .env
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
 
       - name: Build NestJS app
         run: pnpm run build

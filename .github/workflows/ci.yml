@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -19,9 +22,9 @@ jobs:
           node-version: '22'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
 
       - name: Install dependencies & Build
         run: |
@@ -33,10 +36,9 @@ jobs:
         run: |
           echo "PORT=${{ secrets.PORT }}" >> .env
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-          # 필요한 다른 환경변수들도 여기에 추가
 
       - name: Setup SSH agent
-        uses: webfactory/ssh-agent@v0.5.3
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
@@ -51,8 +53,8 @@ jobs:
           SERVER_IP: ${{ secrets.SSH_HOST }}
           APP_DIR: "/home/ubuntu/Server/plma_backend_using_nestjs"
         run: |
-          # rsync를 사용하여 변경된 파일만 효율적으로 전송합니다.
-          rsync -avz -e "ssh -p 9988" \
+          # rsync 실행 시 SSH 키를 명시적으로 사용하도록 설정
+          rsync -avz -e "ssh -p 9988 -o StrictHostKeyChecking=no" \
             ./dist ./package.json ./pnpm-lock.yaml ./prisma ./.env \
             $SERVER_USER@$SERVER_IP:$APP_DIR/
 
@@ -63,16 +65,9 @@ jobs:
           APP_DIR: "/home/ubuntu/Server/plma_backend_using_nestjs"
         run: |
           ssh -p 9988 $SERVER_USER@$SERVER_IP "
-            # 명령어 경로 로드
             export PATH=/home/ubuntu/.nvm/versions/node/v22.15.0/bin:\$PATH
             cd $APP_DIR
-            
-            # 운영용 패키지만 설치 (매우 가벼움)
             pnpm install --prod
-            
-            # Prisma 클라이언트 생성 (서버 OS용 바이너리 확보용)
             npx prisma generate
-            
-            # 서비스 재시작
             pm2 restart plma-backend || pm2 start dist/main.js --name plma-backend
           "

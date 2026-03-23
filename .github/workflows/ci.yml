@@ -49,7 +49,7 @@ jobs:
 
       - name: Transfer Files to Server
         env:
-          SERVER_USER: ${{ secrets.SSH_USER }}
+          SERVER_USER: ${{ secrets.SSH_HOST_USER }}
           SERVER_IP: ${{ secrets.SSH_HOST }}
           APP_DIR: "/home/ubuntu/Server/plma_backend_using_nestjs"
         run: |
@@ -60,7 +60,7 @@ jobs:
 
       - name: Execute on Server
         env:
-          SERVER_USER: ${{ secrets.SSH_USER }}
+          SERVER_USER: ${{ secrets.SSH_HOST_USER }}
           SERVER_IP: ${{ secrets.SSH_HOST }}
           APP_DIR: "/home/ubuntu/Server/plma_backend_using_nestjs"
         run: |

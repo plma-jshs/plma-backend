@@ -53,10 +53,20 @@ jobs:
         env:
           SERVER_USER: ${{ secrets.SSH_HOST_USER }}
           SERVER_IP: ${{ secrets.SSH_HOST }}
-          APP_DIR: ${{ secrets.WORK_DIR }}
+          APP_DIR: "/home/ubuntu/Server/plma_backend_using_nestjs"
         run: |
-          # 1. 빌드 파일(dist), 패키지 정보, prisma 폴더, .env만 서버로 전송합니다.
           scp -r -P 9988 ./dist ./package.json ./pnpm-lock.yaml ./prisma ./.env $SERVER_USER@$SERVER_IP:$APP_DIR/
-          
-          # 2. 서버에 접속해서 pnpm 설치 -> 패키지 설치 -> Prisma 생성 -> pm2 재시작
-          ssh -p 9988 $SERVER_USER@$SERVER_IP "cd $APP_DIR && npm install -g pnpm && pnpm install --prod && npx prisma generate && pm2 restart plma-backend || pm2 start dist/main.js --name plma-backend"
+
+          ssh -p 9988 $SERVER_USER@$SERVER_IP "
+            export PATH=/home/ubuntu/.nvm/versions/node/v22.15.0/bin:\$PATH
+            
+            cd $APP_DIR
+            if ! command -v pnpm &> /dev/null; then
+              npm install -g pnpm
+            fi
+            
+            pnpm install --prod
+            npx prisma generate
+            
+            pm2 restart plma-backend || pm2 start dist/main.js --name plma-backend
+          "

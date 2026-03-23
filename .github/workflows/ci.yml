@@ -1,4 +1,4 @@
-name: Deploy NestJS App to Lightsail
+name: Deploy NestJS to Lightsail
 
 on:
   push:
@@ -11,33 +11,29 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Create .env file for NestJS
+      - name: Install dependencies & Build
         run: |
-          echo DATABASE_URL=${{secrets.DATABASE_URL}} >> .env
-          echo PORT=${{secrets.PORT}} >> .env
-          # echo JWT_SECRET=${{secrets.JWT_SECRET}} >> .env
-          echo REDIS_PASSWORD=${{secrets.REDIS_PASSWORD}} >> .env
+          pnpm install
+          npx prisma generate
+          pnpm run build
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Generate Prisma Client
-        run: npx prisma generate
-
-      - name: Build NestJS app
-        run: pnpm run build
+      - name: Create .env file
+        run: |
+          echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          # 필요한 다른 환경변수들도 여기에 추가
 
       - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.5.3
@@ -49,24 +45,34 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -p 9988 ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy and Restart Server
+      - name: Transfer Files to Server
         env:
-          SERVER_USER: ${{ secrets.SSH_HOST_USER }}
+          SERVER_USER: ${{ secrets.SSH_USER }}
           SERVER_IP: ${{ secrets.SSH_HOST }}
           APP_DIR: "/home/ubuntu/Server/plma_backend_using_nestjs"
         run: |
-          scp -r -P 9988 ./dist ./package.json ./pnpm-lock.yaml ./prisma ./.env $SERVER_USER@$SERVER_IP:$APP_DIR/
+          # rsync를 사용하여 변경된 파일만 효율적으로 전송합니다.
+          rsync -avz -e "ssh -p 9988" \
+            ./dist ./package.json ./pnpm-lock.yaml ./prisma ./.env \
+            $SERVER_USER@$SERVER_IP:$APP_DIR/
 
+      - name: Execute on Server
+        env:
+          SERVER_USER: ${{ secrets.SSH_USER }}
+          SERVER_IP: ${{ secrets.SSH_HOST }}
+          APP_DIR: "/home/ubuntu/Server/plma_backend_using_nestjs"
+        run: |
           ssh -p 9988 $SERVER_USER@$SERVER_IP "
+            # 명령어 경로 로드
             export PATH=/home/ubuntu/.nvm/versions/node/v22.15.0/bin:\$PATH
-            
             cd $APP_DIR
-            if ! command -v pnpm &> /dev/null; then
-              npm install -g pnpm
-            fi
             
+            # 운영용 패키지만 설치 (매우 가벼움)
             pnpm install --prod
+            
+            # Prisma 클라이언트 생성 (서버 OS용 바이너리 확보용)
             npx prisma generate
             
+            # 서비스 재시작
             pm2 restart plma-backend || pm2 start dist/main.js --name plma-backend
           "

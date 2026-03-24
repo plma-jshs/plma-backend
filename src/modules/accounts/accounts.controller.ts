@@ -35,19 +35,25 @@ export class AccountsController {
     private readonly sessionService: SessionService,
   ) {}
 
-  private async ensureAdminSession(
+  private async ensurePermission(
     authorization: string | undefined,
     cookie: string | undefined,
+    requiredPermissions: string[],
   ) {
     const session = await this.sessionService.checkSession({ authorization, cookie });
 
-    if (!session || typeof session !== 'object') {
-      throw new ForbiddenException('admin session is required');
+    const sessionData = session as { isLogined?: unknown; permissions?: unknown };
+    const permissions = Array.isArray(sessionData.permissions)
+      ? sessionData.permissions.filter((permission): permission is string => typeof permission === 'string')
+      : [];
+
+    if (sessionData.isLogined !== true) {
+      throw new ForbiddenException('login session is required');
     }
 
-    const sessionData = session as Record<string, unknown>;
-    if (sessionData.isLogined !== true || sessionData.jshsus !== true) {
-      throw new ForbiddenException('admin session is required');
+    const hasPermission = requiredPermissions.some((permission) => permissions.includes(permission));
+    if (!hasPermission) {
+      throw new ForbiddenException('permission is required');
     }
   }
 
@@ -57,7 +63,7 @@ export class AccountsController {
     @Headers('authorization') authorization?: string,
     @Headers('cookie') cookie?: string,
   ) {
-    await this.ensureAdminSession(authorization, cookie);
+    await this.ensurePermission(authorization, cookie, ['addIAMAccount', 'applyAccess']);
     const payload = parseZod<AccountCreateInput>(accountCreateSchema, body);
     return this.accountsService.create(payload);
   }
@@ -68,7 +74,7 @@ export class AccountsController {
     @Headers('authorization') authorization?: string,
     @Headers('cookie') cookie?: string,
   ) {
-    await this.ensureAdminSession(authorization, cookie);
+    await this.ensurePermission(authorization, cookie, ['viewIAMAccounts', 'viewPLMAAccounts']);
     const payload = parseZod<AccountListQuery>(accountListQuerySchema, query);
     return this.accountsService.findAll(payload);
   }
@@ -80,7 +86,7 @@ export class AccountsController {
     @Headers('authorization') authorization?: string,
     @Headers('cookie') cookie?: string,
   ) {
-    await this.ensureAdminSession(authorization, cookie);
+    await this.ensurePermission(authorization, cookie, ['applyAccess']);
     const { id } = parseZod<AccountIdParams>(accountIdParamSchema, params);
     const payload = parseZod<AccountUpdateInput>(accountUpdateSchema, body);
     return this.accountsService.update(id, payload);
@@ -93,7 +99,7 @@ export class AccountsController {
     @Headers('authorization') authorization?: string,
     @Headers('cookie') cookie?: string,
   ) {
-    await this.ensureAdminSession(authorization, cookie);
+    await this.ensurePermission(authorization, cookie, ['applyAccess']);
     const { id } = parseZod<AccountIdParams>(accountIdParamSchema, params);
     return this.accountsService.remove(id);
   }

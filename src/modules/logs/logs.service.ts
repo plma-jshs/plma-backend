@@ -21,7 +21,6 @@ export class LogsService {
     id: true,
     stuid: true,
     name: true,
-    phoneNumber: true,
     studentId: true,
   } as const;
 

@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { randomBytes, scrypt as scryptCallback } from 'crypto';
+import { promisify } from 'util';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   AccountCreateInput,
   AccountListQuery,
   AccountUpdateInput,
 } from './dto/accounts.schema';
+
+const scrypt = promisify(scryptCallback);
 
 @Injectable()
 export class AccountsService {
@@ -27,9 +31,20 @@ export class AccountsService {
     },
   } as const;
 
-  create(body: AccountCreateInput) {
+  private async hashPassword(password: string) {
+    const salt = randomBytes(16).toString('hex');
+    const derivedKey = await scrypt(password, salt, 64) as Buffer;
+    return `scrypt$${salt}$${derivedKey.toString('hex')}`;
+  }
+
+  async create(body: AccountCreateInput) {
+    const password = await this.hashPassword(body.password);
+
     return this.prisma.user.create({
-      data: body,
+      data: {
+        ...body,
+        password,
+      },
       select: this.accountSelect,
     });
   }
@@ -45,10 +60,16 @@ export class AccountsService {
     });
   }
 
-  update(id: number, body: AccountUpdateInput) {
+  async update(id: number, body: AccountUpdateInput) {
+    const data = { ...body };
+
+    if (body.password !== undefined) {
+      data.password = await this.hashPassword(body.password);
+    }
+
     return this.prisma.user.update({
       where: { id },
-      data: body,
+      data,
       select: this.accountSelect,
     });
   }

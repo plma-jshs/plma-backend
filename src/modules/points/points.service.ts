@@ -47,14 +47,11 @@ export class PointsService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(body: PointCreateInput) {
-    // TODO(auth): 로그인 연동 후 실제 요청 사용자 ID로 교체해야 함
-    const teacherId = 1;
-
+  async create(body: PointCreateInput, requesterUserId: number) {
     const point = await this.prisma.point.create({
       data: {
         studentId: body.studentId,
-        teacherId,
+        teacherId: requesterUserId,
         reasonId: body.reasonId,
         point: body.point,
         comment: body.comment,

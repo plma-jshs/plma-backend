@@ -22,7 +22,7 @@ export class CasesService {
   }
 
   async updateAll(body: CaseUpdateInput) {
-    if (!body.isOpen) {
+    if (body.isOpen === undefined) {
       throw new BadRequestException('isOpen is required for updateAll');
     }
 
@@ -30,9 +30,9 @@ export class CasesService {
 
     const [totalCases, disconnectedCases, updated] = await this.prisma.$transaction([
       this.prisma.case.count(),
-      this.prisma.case.count({ where: { isOpen: false } }),
+      this.prisma.case.count({ where: { isConnected: false } }),
       this.prisma.case.updateMany({
-        where: { isOpen: { not: false } },
+        where: { isConnected: true },
         data: { isOpen: targetIsOpen },
       }),
     ]);

@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Headers,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PointsService } from './points.service';
 import {
@@ -18,23 +31,49 @@ import {
   pointUpdateSchema,
 } from './dto/points.schema';
 import { parseZod } from '@/common/zod/parse-zod';
+import { SessionService } from '@/modules/session/session.service';
 
 @ApiTags('Points')
 @Controller('api/points')
 export class PointsController {
-  constructor(private readonly pointsService: PointsService) {}
+  constructor(
+    private readonly pointsService: PointsService,
+    private readonly sessionService: SessionService,
+  ) {}
 
-  @Post()  create(@Body() body: unknown) {
-    const payload = parseZod<PointCreateInput>(pointCreateSchema, body);
-    return this.pointsService.create(payload);
+  private async getRequesterUserId(
+    authorization: string | undefined,
+    cookie: string | undefined,
+  ) {
+    const currentUser = await this.sessionService.getCurrentUser({ authorization, cookie });
+    const userId = currentUser?.user?.id;
+
+    if (typeof userId !== 'number' || !Number.isInteger(userId) || userId < 1) {
+      throw new UnauthorizedException('login session user is required');
+    }
+
+    return userId;
   }
 
-  @Get()  findAll(@Query() query: unknown) {
+  @Post()
+  async create(
+    @Body() body: unknown,
+    @Headers('authorization') authorization?: string,
+    @Headers('cookie') cookie?: string,
+  ) {
+    const payload = parseZod<PointCreateInput>(pointCreateSchema, body);
+    const requesterUserId = await this.getRequesterUserId(authorization, cookie);
+    return this.pointsService.create(payload, requesterUserId);
+  }
+
+  @Get()
+  findAll(@Query() query: unknown) {
     const payload = parseZod<PointListQuery>(pointListQuerySchema, query);
     return this.pointsService.findAll(payload);
   }
 
-  @Patch(':id')  update(
+  @Patch(':id')
+  update(
     @Param() params: unknown,
     @Body() body: unknown,
   ) {
@@ -44,31 +83,37 @@ export class PointsController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)  remove(@Param() params: unknown) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param() params: unknown) {
     const { id } = parseZod<PointIdParams>(pointIdParamSchema, params);
     return this.pointsService.remove(id);
   }
 
-  @Get('students')  findStudents(@Query() query: unknown) {
+  @Get('students')
+  findStudents(@Query() query: unknown) {
     const payload = parseZod<PointStudentsQuery>(pointStudentsQuerySchema, query);
     return this.pointsService.findStudents(payload);
   }
 
-  @Get('students/:id')  findStudentById(@Param() params: unknown) {
+  @Get('students/:id')
+  findStudentById(@Param() params: unknown) {
     const { id } = parseZod<PointIdParams>(pointIdParamSchema, params);
     return this.pointsService.findStudentById(id);
   }
 
-  @Get('reasons')  findReasons() {
+  @Get('reasons')
+  findReasons() {
     return this.pointsService.findReasons();
   }
 
-  @Post('reasons')  createReason(@Body() body: unknown) {
+  @Post('reasons')
+  createReason(@Body() body: unknown) {
     const payload = parseZod<PointReasonCreateInput>(pointReasonSchema, body);
     return this.pointsService.createReason(payload);
   }
 
-  @Patch('reasons/:id')  updateReason(
+  @Patch('reasons/:id')
+  updateReason(
     @Param() params: unknown,
     @Body() body: unknown,
   ) {
@@ -78,7 +123,8 @@ export class PointsController {
   }
 
   @Delete('reasons/:id')
-  @HttpCode(HttpStatus.NO_CONTENT)  removeReason(@Param() params: unknown) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  removeReason(@Param() params: unknown) {
     const { id } = parseZod<PointIdParams>(pointIdParamSchema, params);
     return this.pointsService.removeReason(id);
   }

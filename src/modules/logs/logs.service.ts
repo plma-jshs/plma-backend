@@ -47,11 +47,11 @@ export class LogsService {
         point: true,
         comment: true,
         baseDate: true,
-        updatedDate: true,
+        updatedAt: true,
         student: { select: this.logPointStudentSelect },
         teacher: { select: this.logPointTeacherSelect },
       },
-      orderBy: { updatedDate: 'desc' },
+      orderBy: { updatedAt: 'desc' },
       take: 100,
     });
   }
@@ -81,7 +81,7 @@ export class LogsService {
 
   getRemoteLogs() {
     return this.prisma.case.findMany({
-      orderBy: { updatedDate: 'desc' },
+      orderBy: { updatedAt: 'desc' },
       take: 100,
     });
   }

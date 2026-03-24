@@ -7,7 +7,7 @@ export const IPoint = z.object({
     teacherId: z.int(),
     reason: IReason,
     baseDate: z.date(),
-    updatedDate: z.date(),
+    updatedAt: z.date(),
 }).strict();
 
 export type IPoint = z.infer<typeof IPoint>;

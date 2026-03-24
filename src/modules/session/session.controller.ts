@@ -1,7 +1,12 @@
-import { Controller, Get, Headers } from '@nestjs/common';
+import { Controller, Get, Headers, Req } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { Request } from 'express';
 import { SessionService } from './session.service';
 import { apiUserSwaggerSchema, checkSessionSwaggerSchema } from './dto/session.schema';
+
+type RequestWithUserInfo = Request & {
+  user_info?: unknown;
+};
 
 @ApiTags('Session')
 @Controller()
@@ -19,14 +24,11 @@ export class SessionController {
     return this.sessionService.getCurrentUser({ authorization, cookie });
   }
 
-  @Get('check-session')
+  @Get('api/check-session')
   @ApiOperation({ summary: 'IAM 세션 검증' })
   @ApiOkResponse({ schema: checkSessionSwaggerSchema })
   @ApiUnauthorizedResponse({ description: 'Authorization 헤더 또는 iam_token 쿠키가 없거나 유효하지 않음' })
-  checkSession(
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
-  ) {
-    return this.sessionService.checkSession({ authorization, cookie });
+  checkSession(@Req() req: RequestWithUserInfo) {
+    return req.user_info ?? { isLogined: false };
   }
 }

@@ -23,7 +23,7 @@ export const accountUpdateSchema = z.object({
 });
 
 export const accountListQuerySchema = z.object({
-  page: z.coerce.number().int().min(1),
+  page: z.coerce.number().int().min(1).default(1),
 });
 
 const accountStudentSchema = z.object({

@@ -63,7 +63,7 @@ describe('SessionService', () => {
       expect(fetchSpy).toHaveBeenCalledWith(
         'https://iam.jshsus.kr/check-session',
         expect.objectContaining({
-          headers: expect.objectContaining({ cookie: 'iam_token=token-b' }),
+          headers: expect.objectContaining({ authorization: 'Bearer token-b' }),
         }),
       );
       expect(result).toEqual({ isLogined: true });

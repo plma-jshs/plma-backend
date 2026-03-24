@@ -75,20 +75,19 @@ export class SessionService {
     throw new UnauthorizedException('Missing Authorization header or iam_token cookie');
   }
 
-  public async checkSession(headers: SessionHeaders) {
-    const { token, source } = this.resolveToken(headers);
-
-    const requestHeaders: Record<string, string> =
-      source === 'authorization'
-        ? { authorization: `Bearer ${token}` }
-        : { cookie: `iam_token=${token}` };
+  public async checkSessionByToken(token: string) {
+    if (!token) {
+      throw new UnauthorizedException('Missing iam_token cookie');
+    }
 
     let response: Response;
 
     try {
       response = await fetch(this.iamCheckSessionUrl, {
         method: 'GET',
-        headers: requestHeaders,
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
       });
     } catch {
       throw new BadGatewayException('Failed to connect to IAM check-session endpoint');
@@ -115,6 +114,11 @@ export class SessionService {
     } catch {
       throw new BadGatewayException('Invalid JSON received from IAM');
     }
+  }
+
+  public async checkSession(headers: SessionHeaders) {
+    const { token } = this.resolveToken(headers);
+    return this.checkSessionByToken(token);
   }
 
   public async getCurrentUser(headers: SessionHeaders) {

@@ -11,7 +11,7 @@ export const updateCaseSchema = z.object({
 const caseEntitySchema = z.object({
   id: z.number().int(),
   isOpen: z.boolean(),
-  updatedDate: z.date(),
+  updatedAt: z.date(),
 });
 
 export const findAllResponseSchema = z.array(caseEntitySchema);

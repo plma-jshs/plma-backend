@@ -7,7 +7,7 @@ export const pointIdParamSchema = z.object({
 
 export const pointListQuerySchema = z.object({
   stuId: z.coerce.number().int().min(1).optional(),
-  page: z.coerce.number().int().min(1),
+  page: z.coerce.number().int().min(1).default(1),
 });
 
 export const pointCreateSchema = z.object({
@@ -27,7 +27,7 @@ export const pointStudentsQuerySchema = z.object({
   grade: z.coerce.number().int().min(1).optional(),
   class: z.coerce.number().int().min(1).optional(),
   number: z.coerce.number().int().min(1).optional(),
-  page: z.coerce.number().int().min(1),
+  page: z.coerce.number().int().min(1).default(1),
 });
 
 export const pointReasonSchema = z.object({
@@ -78,8 +78,8 @@ const pointRecordSchema = z.object({
   reasonId: z.number().int(),
   point: z.number().int(),
   comment: z.string(),
-  baseDate: z.string().datetime(),
-  updatedDate: z.string().datetime(),
+  baseDate: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
   student: pointStudentBriefSchema,
   teacher: pointTeacherSchema,
 });
@@ -91,8 +91,8 @@ const pointRecordWithoutStudentSchema = z.object({
   reasonId: z.number().int(),
   point: z.number().int(),
   comment: z.string(),
-  baseDate: z.string().datetime(),
-  updatedDate: z.string().datetime(),
+  baseDate: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
   teacher: pointTeacherSchema,
 });
 

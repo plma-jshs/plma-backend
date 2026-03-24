@@ -27,8 +27,8 @@ const logPointSchema = z.object({
   reasonId: z.number().int(),
   point: z.number().int(),
   comment: z.string(),
-  baseDate: z.string().datetime(),
-  updatedDate: z.string().datetime(),
+  baseDate: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
   student: logStudentSchema,
   teacher: logUserSchema,
 });
@@ -36,7 +36,7 @@ const logPointSchema = z.object({
 const logSongSchema = z.object({
   id: z.number().int(),
   title: z.string(),
-  url: z.string().url(),
+  url: z.url(),
   duration: z.number().int(),
   status: z.enum(['PENDING', 'APPROVED', 'REJECTED']),
 });
@@ -55,7 +55,7 @@ const logDormRoomSchema = z.object({
 const logCaseSchema = z.object({
   id: z.number().int(),
   status: z.enum(['OPEN', 'CLOSED', 'DISCONNECTED']),
-  updatedDate: z.string().datetime(),
+  updatedAt: z.iso.datetime(),
 });
 
 export const getPointLogsResponseSchema = z.array(logPointSchema);

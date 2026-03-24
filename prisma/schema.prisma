@@ -69,17 +69,17 @@ model Reason {
 }
 
 model Point {
-  id          Int      @id @default(autoincrement())
-  studentId   Int
-  teacherId   Int
-  reasonId    Int
-  point       Int      @default(0)
-  comment     String   @default("")
-  baseDate    DateTime @db.Date
-  updatedDate DateTime @updatedAt
-  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  teacher     User     @relation("TeacherPoints", fields: [teacherId], references: [id], onDelete: Restrict)
-  reason      Reason   @relation(fields: [reasonId], references: [id], onDelete: Restrict)
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  teacherId Int
+  reasonId  Int
+  point     Int      @default(0)
+  comment   String   @default("")
+  baseDate  DateTime @db.Date
+  updatedAt DateTime @updatedAt
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  teacher   User     @relation("TeacherPoints", fields: [teacherId], references: [id], onDelete: Restrict)
+  reason    Reason   @relation(fields: [reasonId], references: [id], onDelete: Restrict)
 
   @@index([studentId])
   @@index([teacherId])
@@ -91,7 +91,7 @@ model Case {
   id          Int      @id
   isOpen      Boolean  @default(true)
   isConnected Boolean  @default(false)
-  updatedDate DateTime @updatedAt
+  updatedAt   DateTime @updatedAt
 
   @@map("cases")
 }

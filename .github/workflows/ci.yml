@@ -2,13 +2,11 @@ name: Deploy NestJS to Lightsail
 
 on:
   push:
-    branches:
-      - main
-      # 임시
-      - develop
+    branches: [main, develop]
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  APP_DIR: "/home/ubuntu/Server/plma_backend_using_nestjs"
 
 jobs:
   build-and-deploy:
@@ -18,34 +16,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
-      - name: Install dependencies
-        run: |
-          pnpm install
+      - name: Setup Node.js with Caching
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm" # ⚡ pnpm 의존성 캐싱 추가
 
-      - name: Build
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile # 🔒 락파일 기반 설치
+
+      - name: Build & Test
         run: |
           pnpm run build
-
-      - name: Run unit tests
-        run: |
           pnpm test
-
-      - name: Run e2e tests
-        run: |
           pnpm test:e2e
-
-      - name: Create .env file
-        run: |
-          echo "PORT=${{ secrets.PORT }}" >> .env
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
 
       - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.9.0
@@ -57,26 +44,36 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -p 9988 ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Transfer Files to Server
-        env:
-          SERVER_USER: ${{ secrets.SSH_HOST_USER }}
-          SERVER_IP: ${{ secrets.SSH_HOST }}
-          APP_DIR: "/home/ubuntu/Server/plma_backend_using_nestjs"
+      - name: Create .env in CI
         run: |
-          # rsync 실행 시 SSH 키를 명시적으로 사용하도록 설정
-          rsync -avz -e "ssh -p 9988 -o StrictHostKeyChecking=no" \
-            ./dist ./package.json ./pnpm-lock.yaml ./.env \
-            $SERVER_USER@$SERVER_IP:$APP_DIR/
+          echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}" >> .env
+          echo "IAM_CHECK_SESSION_URL=${{ secrets.IAM_CHECK_SESSION_URL }}" >> .env
 
-      - name: Execute on Server
+      - name: Deploy to Server
         env:
-          SERVER_USER: ${{ secrets.SSH_HOST_USER }}
-          SERVER_IP: ${{ secrets.SSH_HOST }}
-          APP_DIR: "/home/ubuntu/Server/plma_backend_using_nestjs"
+          SERVER: ${{ secrets.SSH_HOST_USER }}@${{ secrets.SSH_HOST }}
         run: |
-          ssh -p 9988 $SERVER_USER@$SERVER_IP "
-            export PATH=/home/ubuntu/.nvm/versions/node/v22.15.0/bin:\$PATH
+          # 1. dist 폴더를 임시 폴더로 전송 (덮어쓰기 방지)
+          rsync -avz -e "ssh -p 9988" ./dist ./package.json ./pnpm-lock.yaml ./.env $SERVER:$APP_DIR/new_dist/
+
+          # 2. 서버 내에서 아토믹하게 교체 및 재시작
+          ssh -p 9988 $SERVER "
+            set -e
             cd $APP_DIR
+            # 기존 dist 백업 및 신규 dist 교체
+            rm -rf dist_old && mv dist dist_old || true
+            mv new_dist/dist dist
+            cp new_dist/package.json new_dist/pnpm-lock.yaml new_dist/.env .
+            rm -rf new_dist
+
+            # Node.js 경로를 더 유연하게 찾기 (NVM 환경 대응)
+            export NVM_DIR=\"\$HOME/.nvm\"
+            [ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"
+
+            corepack enable
+            
             pnpm install --prod
             pm2 restart plma-backend || pm2 start dist/src/main.js --name plma-backend
           "

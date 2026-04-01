@@ -1,46 +1,54 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { SongsService } from './songs.service';
 import {
-  SongCreateInput,
-  SongIdParams,
-  SongUpdateInput,
-  songCreateSchema,
-  songIdParamSchema,
-  songUpdateSchema,
-} from './dto/songs.schema';
-import { parseZod } from '@/common/zod/parse-zod';
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { ZodResponse } from "nestjs-zod";
+import { SongsService } from "./songs.service";
+import {
+  SongCreateDto,
+  SongCreateResponseDto,
+  SongFindAllResponseDto,
+  SongIdParamDto,
+  SongListQueryDto,
+  SongUpdateDto,
+  SongUpdateResponseDto,
+} from "./dto/songs.schema";
 
-@ApiTags('Songs')
-@Controller('api/songs')
+@ApiTags("Songs")
+@Controller("songs")
 export class SongsController {
   constructor(private readonly songsService: SongsService) {}
 
   @Post()
-  create(@Body() body: unknown) {
-    const payload = parseZod<SongCreateInput>(songCreateSchema, body);
-    return this.songsService.create(payload);
+  @ZodResponse({ type: SongCreateResponseDto })
+  create(@Body() body: SongCreateDto) {
+    return this.songsService.create(body);
   }
 
   @Get()
-  findAll() {
-    return this.songsService.findAll();
+  @ZodResponse({ type: SongFindAllResponseDto })
+  findAll(@Query() query: SongListQueryDto) {
+    return this.songsService.findAll(query);
   }
 
-  @Patch(':id')
-  update(
-    @Param() params: unknown,
-    @Body() body: unknown,
-  ) {
-    const { id } = parseZod<SongIdParams>(songIdParamSchema, params);
-    const payload = parseZod<SongUpdateInput>(songUpdateSchema, body);
-    return this.songsService.update(id, payload);
+  @Patch(":id")
+  @ZodResponse({ type: SongUpdateResponseDto })
+  update(@Param() params: SongIdParamDto, @Body() body: SongUpdateDto) {
+    return this.songsService.update(params.id, body);
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param() params: unknown) {
-    const { id } = parseZod<SongIdParams>(songIdParamSchema, params);
-    return this.songsService.remove(id);
+  remove(@Param() params: SongIdParamDto) {
+    return this.songsService.remove(params.id);
   }
 }

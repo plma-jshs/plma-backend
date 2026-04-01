@@ -21,16 +21,26 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
-      - name: Install dependencies & Build
+      - name: Install dependencies
         run: |
           pnpm install
-          npx prisma generate
+
+      - name: Build
+        run: |
           pnpm run build
+
+      - name: Run unit tests
+        run: |
+          pnpm test
+
+      - name: Run e2e tests
+        run: |
+          pnpm test:e2e
 
       - name: Create .env file
         run: |
@@ -55,7 +65,7 @@ jobs:
         run: |
           # rsync 실행 시 SSH 키를 명시적으로 사용하도록 설정
           rsync -avz -e "ssh -p 9988 -o StrictHostKeyChecking=no" \
-            ./dist ./package.json ./pnpm-lock.yaml ./prisma ./.env \
+            ./dist ./package.json ./pnpm-lock.yaml ./.env \
             $SERVER_USER@$SERVER_IP:$APP_DIR/
 
       - name: Execute on Server
@@ -68,6 +78,5 @@ jobs:
             export PATH=/home/ubuntu/.nvm/versions/node/v22.15.0/bin:\$PATH
             cd $APP_DIR
             pnpm install --prod
-            npx prisma generate
             pm2 restart plma-backend || pm2 start dist/src/main.js --name plma-backend
           "

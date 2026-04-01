@@ -1,80 +1,42 @@
-import { Controller, ForbiddenException, Get, Headers } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { LogsService } from './logs.service';
-import { SessionService } from '@/modules/session/session.service';
+import { Controller, Get, UseGuards } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { LogsService } from "./logs.service";
+import { Permissions } from "@/common/auth/permissions.decorator";
+import { PermissionsGuard } from "@/common/auth/permissions.guard";
 
-@ApiTags('Logs')
-@Controller('api/logs')
+@ApiTags("Logs")
+@Controller("logs")
+@UseGuards(PermissionsGuard)
 export class LogsController {
-  constructor(
-    private readonly logsService: LogsService,
-    private readonly sessionService: SessionService,
-  ) {}
+  constructor(private readonly logsService: LogsService) {}
 
-  private async ensurePermission(
-    authorization: string | undefined,
-    cookie: string | undefined,
-    requiredPermissions: string[],
-  ) {
-    const session = await this.sessionService.checkSession({ authorization, cookie });
-
-    const sessionData = session as { isLogined?: unknown; permissions?: unknown };
-    const permissions = Array.isArray(sessionData.permissions)
-      ? sessionData.permissions.filter((permission): permission is string => typeof permission === 'string')
-      : [];
-
-    if (sessionData.isLogined !== true) {
-      throw new ForbiddenException('login session is required');
-    }
-
-    const hasPermission = requiredPermissions.some((permission) => permissions.includes(permission));
-    if (!hasPermission) {
-      throw new ForbiddenException('permission is required');
-    }
-  }
-
-  @Get('points')
-  async getPointLogs(
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
-  ) {
-    await this.ensurePermission(authorization, cookie, ['viewPointsLogs', 'viewAll']);
+  @Get("points")
+  @Permissions("viewPointsLogs", "viewAll")
+  async getPointLogs() {
     return this.logsService.getPointLogs();
   }
 
-  @Get('songs')
-  async getSongLogs(
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
-  ) {
-    await this.ensurePermission(authorization, cookie, ['viewRemoteSongsView', 'viewAll']);
+  @Get("songs")
+  @Permissions("viewRemoteSongsView", "viewAll")
+  async getSongLogs() {
     return this.logsService.getSongLogs();
   }
 
-  @Get('dorms')
-  async getDormLogs(
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
-  ) {
-    await this.ensurePermission(authorization, cookie, ['viewDormStatus', 'viewDormManage', 'viewAll']);
+  @Get("dorms")
+  @Permissions("viewDormStatus", "viewDormManage", "viewAll")
+  async getDormLogs() {
     return this.logsService.getDormLogs();
   }
 
-  @Get('accounts')
-  async getAccountLogs(
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
-  ) {
-    await this.ensurePermission(authorization, cookie, ['viewIAMAccounts', 'viewPLMAAccounts', 'viewAll']);
+  @Get("accounts")
+  @Permissions("viewIAMAccounts", "viewPLMAAccounts", "viewAll")
+  async getAccountLogs() {
     return this.logsService.getAccountLogs();
   }
 
-  @Get('remote')
-  async getRemoteLogs(
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
-  ) {
-    await this.ensurePermission(authorization, cookie, ['viewRemoteCaseHistory', 'viewAll']);
+  @Get("remote")
+  @Permissions("viewRemoteCaseHistory", "viewAll")
+  async getRemoteLogs() {
     return this.logsService.getRemoteLogs();
   }
 }

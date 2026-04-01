@@ -3,129 +3,125 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
   Patch,
   Post,
   Query,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { PointsService } from './points.service';
+  UseGuards,
+} from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { ZodResponse } from "nestjs-zod";
+import { PointsService } from "./points.service";
 import {
-  PointCreateInput,
-  PointIdParams,
-  PointListQuery,
-  PointReasonCreateInput,
-  PointReasonUpdateInput,
-  PointStudentsQuery,
-  PointUpdateInput,
-  pointCreateSchema,
-  pointIdParamSchema,
-  pointListQuerySchema,
-  pointReasonSchema,
-  pointReasonUpdateSchema,
-  pointStudentsQuerySchema,
-  pointUpdateSchema,
-} from './dto/points.schema';
-import { parseZod } from '@/common/zod/parse-zod';
-import { SessionService } from '@/modules/session/session.service';
+  PointCreateDto,
+  PointCreateReasonResponseDto,
+  PointCreateResponseDto,
+  PointFindAllResponseDto,
+  PointFindReasonsResponseDto,
+  PointFindStudentByIdResponseDto,
+  PointFindStudentsResponseDto,
+  PointIdParamDto,
+  PointListQueryDto,
+  PointReasonCreateDto,
+  PointReasonUpdateDto,
+  PointStudentsQueryDto,
+  PointUpdateReasonResponseDto,
+  PointUpdateDto,
+  PointUpdateResponseDto,
+} from "./dto/points.schema";
+import { AuthGuard } from "@/common/auth/auth.guard";
+import { CurrentUser } from "@/common/auth/current-user.decorator";
+import { Permissions } from "@/common/auth/permissions.decorator";
+import { PermissionsGuard } from "@/common/auth/permissions.guard";
 
-@ApiTags('Points')
-@Controller('api/points')
+@ApiTags("Points")
+@Controller("points")
+@UseGuards(AuthGuard, PermissionsGuard)
 export class PointsController {
-  constructor(
-    private readonly pointsService: PointsService,
-    private readonly sessionService: SessionService,
-  ) {}
-
-  private async getRequesterUserId(
-    authorization: string | undefined,
-    cookie: string | undefined,
-  ) {
-    const currentUser = await this.sessionService.getCurrentUser({ authorization, cookie });
-    const userId = currentUser?.user?.id;
-
-    if (typeof userId !== 'number' || !Number.isInteger(userId) || userId < 1) {
-      throw new UnauthorizedException('login session user is required');
-    }
-
-    return userId;
-  }
+  constructor(private readonly pointsService: PointsService) {}
 
   @Post()
+  @Permissions("applyAccess", "viewAll")
+  @ZodResponse({ type: PointCreateResponseDto })
   async create(
-    @Body() body: unknown,
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
+    @Body() body: PointCreateDto,
+    @CurrentUser() user: { id: number },
   ) {
-    const payload = parseZod<PointCreateInput>(pointCreateSchema, body);
-    const requesterUserId = await this.getRequesterUserId(authorization, cookie);
-    return this.pointsService.create(payload, requesterUserId);
+    return this.pointsService.create(body, user.id);
   }
 
   @Get()
-  findAll(@Query() query: unknown) {
-    const payload = parseZod<PointListQuery>(pointListQuerySchema, query);
-    return this.pointsService.findAll(payload);
+  @Permissions("viewPointsLogs", "viewAll")
+  @ZodResponse({ type: PointFindAllResponseDto })
+  findAll(@Query() query: PointListQueryDto) {
+    return this.pointsService.findAll(query);
   }
 
-  @Patch(':id')
+  @Patch(":id")
+  @Permissions("applyAccess", "viewAll")
+  @ZodResponse({ type: PointUpdateResponseDto })
   update(
-    @Param() params: unknown,
-    @Body() body: unknown,
+    @Param() params: PointIdParamDto,
+    @Body() body: PointUpdateDto,
+    @CurrentUser() user: { id: number },
   ) {
-    const { id } = parseZod<PointIdParams>(pointIdParamSchema, params);
-    const payload = parseZod<PointUpdateInput>(pointUpdateSchema, body);
-    return this.pointsService.update(id, payload);
+    return this.pointsService.update(params.id, body, user.id);
   }
 
-  @Delete(':id')
+  @Delete(":id")
+  @Permissions("applyAccess", "viewAll")
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param() params: unknown) {
-    const { id } = parseZod<PointIdParams>(pointIdParamSchema, params);
-    return this.pointsService.remove(id);
+  remove(
+    @Param() params: PointIdParamDto,
+    @CurrentUser() user: { id: number },
+  ) {
+    return this.pointsService.remove(params.id, user.id);
   }
 
-  @Get('students')
-  findStudents(@Query() query: unknown) {
-    const payload = parseZod<PointStudentsQuery>(pointStudentsQuerySchema, query);
-    return this.pointsService.findStudents(payload);
+  @Get("students")
+  @Permissions("viewPointsLogs", "viewAll")
+  @ZodResponse({ type: PointFindStudentsResponseDto })
+  findStudents(@Query() query: PointStudentsQueryDto) {
+    return this.pointsService.findStudents(query);
   }
 
-  @Get('students/:id')
-  findStudentById(@Param() params: unknown) {
-    const { id } = parseZod<PointIdParams>(pointIdParamSchema, params);
-    return this.pointsService.findStudentById(id);
+  @Get("students/:id")
+  @Permissions("viewPointsLogs", "viewAll")
+  @ZodResponse({ type: PointFindStudentByIdResponseDto })
+  findStudentById(@Param() params: PointIdParamDto) {
+    return this.pointsService.findStudentById(params.id);
   }
 
-  @Get('reasons')
+  @Get("reasons")
+  @Permissions("viewPointsLogs", "viewAll")
+  @ZodResponse({ type: PointFindReasonsResponseDto })
   findReasons() {
     return this.pointsService.findReasons();
   }
 
-  @Post('reasons')
-  createReason(@Body() body: unknown) {
-    const payload = parseZod<PointReasonCreateInput>(pointReasonSchema, body);
-    return this.pointsService.createReason(payload);
+  @Post("reasons")
+  @Permissions("applyAccess", "viewAll")
+  @ZodResponse({ type: PointCreateReasonResponseDto })
+  createReason(@Body() body: PointReasonCreateDto) {
+    return this.pointsService.createReason(body);
   }
 
-  @Patch('reasons/:id')
+  @Patch("reasons/:id")
+  @Permissions("applyAccess", "viewAll")
+  @ZodResponse({ type: PointUpdateReasonResponseDto })
   updateReason(
-    @Param() params: unknown,
-    @Body() body: unknown,
+    @Param() params: PointIdParamDto,
+    @Body() body: PointReasonUpdateDto,
   ) {
-    const { id } = parseZod<PointIdParams>(pointIdParamSchema, params);
-    const payload = parseZod<PointReasonUpdateInput>(pointReasonUpdateSchema, body);
-    return this.pointsService.updateReason(id, payload);
+    return this.pointsService.updateReason(params.id, body);
   }
 
-  @Delete('reasons/:id')
+  @Delete("reasons/:id")
+  @Permissions("applyAccess", "viewAll")
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeReason(@Param() params: unknown) {
-    const { id } = parseZod<PointIdParams>(pointIdParamSchema, params);
-    return this.pointsService.removeReason(id);
+  removeReason(@Param() params: PointIdParamDto) {
+    return this.pointsService.removeReason(params.id);
   }
 }

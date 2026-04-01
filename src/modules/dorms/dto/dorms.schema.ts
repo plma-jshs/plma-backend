@@ -1,4 +1,5 @@
-import { z } from 'zod';
+import { z } from "zod";
+import { createZodDto } from "nestjs-zod";
 
 export const dormReportIdParamSchema = z.object({
   id: z.coerce.number().int().min(1),
@@ -25,21 +26,31 @@ export const dormAssignmentsQuerySchema = z.object({
   semester: z.union([z.literal(1), z.literal(2)]),
 });
 
-export const dormReportCreateSchema = z.object({
+export const dormReportsQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  size: z.coerce.number().int().min(1).max(100).default(20),
+});
+
+const dormReportMutationSchema = z.object({
   userId: z.coerce.number().int().min(1),
   roomId: z.coerce.number().int().min(1),
   description: z.string().trim().min(1).max(1000),
   imageUrl: z.string().trim().url().optional(),
   imageKey: z.string().trim().max(255).optional(),
+  status: z.enum(["PENDING", "PROCESSING", "COMPLETED"]),
+  comment: z.string().trim().max(500),
 });
 
-export const dormReportUpdateSchema = z.object({
-  description: z.string().trim().min(1).max(1000).optional(),
-  imageUrl: z.string().trim().url().optional(),
-  imageKey: z.string().trim().max(255).optional(),
-  status: z.enum(['PENDING', 'PROCESSING', 'COMPLETED']).optional(),
-  comment: z.string().trim().max(500).optional(),
-});
+export const dormReportCreateSchema = dormReportMutationSchema
+  .omit({ status: true, comment: true })
+  .extend({
+    imageUrl: z.string().trim().url().optional(),
+    imageKey: z.string().trim().max(255).optional(),
+  });
+
+export const dormReportUpdateSchema = dormReportMutationSchema
+  .omit({ userId: true, roomId: true })
+  .partial();
 
 const dormUserBriefSchema = z.object({
   id: z.number().int(),
@@ -55,10 +66,9 @@ const dormRoomBriefSchema = z.object({
   dormName: z.string(),
 });
 
-const dormRoomSummarySchema = z.object({
-  id: z.number().int(),
-  name: z.string(),
-  dormName: z.string(),
+const dormRoomSummarySchema = dormRoomBriefSchema.omit({
+  capacity: true,
+  grade: true,
 });
 
 const dormAssignmentMemberResponseSchema = z.object({
@@ -80,7 +90,7 @@ const dormReportResponseSchema = z.object({
   description: z.string(),
   imageUrl: z.string().nullable(),
   imageKey: z.string().nullable(),
-  status: z.enum(['PENDING', 'PROCESSING', 'COMPLETED']),
+  status: z.enum(["PENDING", "PROCESSING", "COMPLETED"]),
   comment: z.string().nullable(),
   user: dormUserBriefSchema,
   room: dormRoomSummarySchema,
@@ -98,13 +108,41 @@ export const upsertAssignmentsResponseSchema = z.object({
   assignedUserCount: z.number().int(),
 });
 export const createReportResponseSchema = dormReportResponseSchema;
-export const findReportsResponseSchema = z.array(dormReportResponseSchema);
+export const findReportsResponseSchema = z.object({
+  data: z.array(dormReportResponseSchema),
+  meta: z.object({
+    total: z.number().int().min(0),
+    page: z.number().int().min(1),
+    size: z.number().int().min(1),
+    lastPage: z.number().int().min(0),
+  }),
+});
 export const updateReportResponseSchema = dormReportResponseSchema;
 
-export type DormReportIdParams = z.infer<typeof dormReportIdParamSchema>;
-export type DormAssignmentMemberInput = z.infer<typeof dormAssignmentMemberSchema>;
-export type DormAssignmentRoomInput = z.infer<typeof dormAssignmentRoomSchema>;
-export type DormAssignmentsUpsertInput = z.infer<typeof dormAssignmentsUpsertSchema>;
-export type DormAssignmentsQuery = z.infer<typeof dormAssignmentsQuerySchema>;
-export type DormReportCreateInput = z.infer<typeof dormReportCreateSchema>;
-export type DormReportUpdateInput = z.infer<typeof dormReportUpdateSchema>;
+export class DormReportIdParamDto extends createZodDto(
+  dormReportIdParamSchema,
+) {}
+export class DormAssignmentsUpsertDto extends createZodDto(
+  dormAssignmentsUpsertSchema,
+) {}
+export class DormAssignmentsQueryDto extends createZodDto(
+  dormAssignmentsQuerySchema,
+) {}
+export class DormReportsQueryDto extends createZodDto(dormReportsQuerySchema) {}
+export class DormReportCreateDto extends createZodDto(dormReportCreateSchema) {}
+export class DormReportUpdateDto extends createZodDto(dormReportUpdateSchema) {}
+export class DormFindAssignmentsResponseDto extends createZodDto(
+  findAssignmentsResponseSchema,
+) {}
+export class DormUpsertAssignmentsResponseDto extends createZodDto(
+  upsertAssignmentsResponseSchema,
+) {}
+export class DormCreateReportResponseDto extends createZodDto(
+  createReportResponseSchema,
+) {}
+export class DormFindReportsResponseDto extends createZodDto(
+  findReportsResponseSchema,
+) {}
+export class DormUpdateReportResponseDto extends createZodDto(
+  updateReportResponseSchema,
+) {}

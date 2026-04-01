@@ -1,80 +1,165 @@
-import { Injectable } from '@nestjs/common';
-import { randomBytes, scrypt as scryptCallback } from 'crypto';
-import { promisify } from 'util';
-import { PrismaService } from '@/prisma/prisma.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { eq, desc, sql } from "drizzle-orm";
+import { DbService } from "@/db/db.service";
+import { users } from "@/db/schema";
+import { ensureFound } from "@/common/db/ensure-found";
+import { PasswordService } from "@/common/security/password.service";
 import {
-  AccountCreateInput,
-  AccountListQuery,
-  AccountUpdateInput,
-} from './dto/accounts.schema';
-
-const scrypt = promisify(scryptCallback);
+  AccountCreateDto,
+  AccountListQueryDto,
+  AccountUpdateDto,
+} from "./dto/accounts.schema";
 
 @Injectable()
 export class AccountsService {
   private readonly pageSize = 20;
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly db: DbService,
+    private readonly passwordService: PasswordService,
+  ) {}
 
-  private readonly accountSelect = {
-    id: true,
-    stuid: true,
-    name: true,
-    phoneNumber: true,
-    studentId: true,
-    student: {
-      select: {
+  async create(body: AccountCreateDto) {
+    const password = await this.passwordService.hash(body.password);
+    const [created] = await this.db.db
+      .insert(users)
+      .values({
+        ...body,
+        password,
+      })
+      .$returningId();
+
+    const createdUser = await this.db.db.query.users.findFirst({
+      where: eq(users.id, created.id),
+      columns: {
         id: true,
         stuid: true,
         name: true,
+        phoneNumber: true,
+        studentId: true,
       },
-    },
-  } as const;
-
-  private async hashPassword(password: string) {
-    const salt = randomBytes(16).toString('hex');
-    const derivedKey = await scrypt(password, salt, 64) as Buffer;
-    return `scrypt$${salt}$${derivedKey.toString('hex')}`;
-  }
-
-  async create(body: AccountCreateInput) {
-    const password = await this.hashPassword(body.password);
-
-    return this.prisma.user.create({
-      data: {
-        ...body,
-        password,
+      with: {
+        student: {
+          columns: {
+            id: true,
+            stuid: true,
+            name: true,
+          },
+        },
       },
-      select: this.accountSelect,
     });
+
+    return ensureFound(createdUser, "account not found");
   }
 
-  findAll(query: AccountListQuery) {
-    const page = Number(query.page) || 1;
+  async findAll(query: AccountListQueryDto) {
+    const page = query.page;
+    const offset = (page - 1) * this.pageSize;
 
-    return this.prisma.user.findMany({
-      select: this.accountSelect,
-      orderBy: { id: 'desc' },
-      skip: (page - 1) * this.pageSize,
-      take: this.pageSize,
-    });
-  }
+    const [data, totalResult] = await Promise.all([
+      this.db.db.query.users.findMany({
+        columns: {
+          id: true,
+          stuid: true,
+          name: true,
+          phoneNumber: true,
+          studentId: true,
+        },
+        with: {
+          student: {
+            columns: {
+              id: true,
+              stuid: true,
+              name: true,
+            },
+          },
+        },
+        orderBy: [desc(users.id)],
+        offset,
+        limit: this.pageSize,
+      }),
+      this.db.db.select({ total: sql<number>`count(*)` }).from(users),
+    ]);
 
-  async update(id: number, body: AccountUpdateInput) {
-    const data = { ...body };
+    const total = Number(totalResult[0]?.total ?? 0);
+    const lastPage = total === 0 ? 0 : Math.ceil(total / this.pageSize);
 
-    if (body.password !== undefined) {
-      data.password = await this.hashPassword(body.password);
-    }
-
-    return this.prisma.user.update({
-      where: { id },
+    return {
       data,
-      select: this.accountSelect,
-    });
+      meta: {
+        total,
+        page,
+        lastPage,
+      },
+    };
   }
 
-  remove(id: number) {
-    return this.prisma.user.delete({ where: { id } }).then(() => undefined);
+  async findOne(id: number) {
+    const user = await this.db.db.query.users.findFirst({
+      where: eq(users.id, id),
+      columns: {
+        id: true,
+        stuid: true,
+        name: true,
+        phoneNumber: true,
+        studentId: true,
+      },
+      with: {
+        student: {
+          columns: {
+            id: true,
+            stuid: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return ensureFound(user, "account not found");
+  }
+
+  async update(id: number, body: AccountUpdateDto) {
+    const password =
+      body.password === undefined
+        ? undefined
+        : await this.passwordService.hash(body.password);
+
+    await this.db.db
+      .update(users)
+      .set({ ...body, password })
+      .where(eq(users.id, id));
+
+    const updatedUser = await this.db.db.query.users.findFirst({
+      where: eq(users.id, id),
+      columns: {
+        id: true,
+        stuid: true,
+        name: true,
+        phoneNumber: true,
+        studentId: true,
+      },
+      with: {
+        student: {
+          columns: {
+            id: true,
+            stuid: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return ensureFound(updatedUser, "account not found");
+  }
+
+  async remove(id: number) {
+    const existingUser = await this.db.db.query.users.findFirst({
+      where: eq(users.id, id),
+      columns: { id: true },
+    });
+
+    ensureFound(existingUser, "account not found");
+
+    await this.db.db.delete(users).where(eq(users.id, id));
   }
 }

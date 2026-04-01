@@ -1,56 +1,74 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { DormRoomsService } from './dorms.service';
 import {
-  DormAssignmentsQuery,
-  DormAssignmentsUpsertInput,
-  DormReportIdParams,
-  DormReportCreateInput,
-  DormReportUpdateInput,
-  dormAssignmentsQuerySchema,
-  dormAssignmentsUpsertSchema,
-  dormReportCreateSchema,
-  dormReportIdParamSchema,
-  dormReportUpdateSchema,
-} from './dto/dorms.schema';
-import { parseZod } from '@/common/zod/parse-zod';
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+} from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { ZodResponse } from "nestjs-zod";
+import { DormRoomsService } from "./dorms.service";
+import {
+  DormAssignmentsQueryDto,
+  DormCreateReportResponseDto,
+  DormFindAssignmentsResponseDto,
+  DormFindReportsResponseDto,
+  DormReportsQueryDto,
+  DormAssignmentsUpsertDto,
+  DormUpsertAssignmentsResponseDto,
+  DormReportCreateDto,
+  DormReportIdParamDto,
+  DormReportUpdateDto,
+  DormUpdateReportResponseDto,
+} from "./dto/dorms.schema";
 
-@ApiTags('dorms')
-@Controller('api/dorms')
+@ApiTags("dorms")
+@Controller("dorms")
 export class DormsController {
   constructor(private readonly dormRoomsService: DormRoomsService) {}
 
-  @Get('assignments')  findAssignments(@Query() query: unknown) {
-    const payload = parseZod<DormAssignmentsQuery>(dormAssignmentsQuerySchema, query);
-    return this.dormRoomsService.findAssignments(payload);
+  @Get("assignments")
+  @ZodResponse({ type: DormFindAssignmentsResponseDto })
+  findAssignments(@Query() query: DormAssignmentsQueryDto) {
+    return this.dormRoomsService.findAssignments(query);
   }
 
-  @Put('assignments')  upsertAssignments(@Body() body: unknown) {
-    const payload = parseZod<DormAssignmentsUpsertInput>(dormAssignmentsUpsertSchema, body);
-    return this.dormRoomsService.upsertAssignments(payload);
+  @Put("assignments")
+  @ZodResponse({ type: DormUpsertAssignmentsResponseDto })
+  upsertAssignments(@Body() body: DormAssignmentsUpsertDto) {
+    return this.dormRoomsService.upsertAssignments(body);
   }
 
-  @Post('reports')  createReport(@Body() body: unknown) {
-    const payload = parseZod<DormReportCreateInput>(dormReportCreateSchema, body);
-    return this.dormRoomsService.createReport(payload);
+  @Post("reports")
+  @ZodResponse({ type: DormCreateReportResponseDto })
+  createReport(@Body() body: DormReportCreateDto) {
+    return this.dormRoomsService.createReport(body);
   }
 
-  @Get('reports')  findReports() {
-    return this.dormRoomsService.findReports();
+  @Get("reports")
+  @ZodResponse({ type: DormFindReportsResponseDto })
+  findReports(@Query() query: DormReportsQueryDto) {
+    return this.dormRoomsService.findReports(query);
   }
 
-  @Patch('reports/:id')  updateReport(
-    @Param() params: unknown,
-    @Body() body: unknown,
+  @Patch("reports/:id")
+  @ZodResponse({ type: DormUpdateReportResponseDto })
+  updateReport(
+    @Param() params: DormReportIdParamDto,
+    @Body() body: DormReportUpdateDto,
   ) {
-    const { id } = parseZod<DormReportIdParams>(dormReportIdParamSchema, params);
-    const payload = parseZod<DormReportUpdateInput>(dormReportUpdateSchema, body);
-    return this.dormRoomsService.updateReport(id, payload);
+    return this.dormRoomsService.updateReport(params.id, body);
   }
 
-  @Delete('reports/:id')
-  @HttpCode(HttpStatus.NO_CONTENT)  removeReport(@Param() params: unknown) {
-    const { id } = parseZod<DormReportIdParams>(dormReportIdParamSchema, params);
-    return this.dormRoomsService.removeReport(id);
+  @Delete("reports/:id")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  removeReport(@Param() params: DormReportIdParamDto) {
+    return this.dormRoomsService.removeReport(params.id);
   }
 }

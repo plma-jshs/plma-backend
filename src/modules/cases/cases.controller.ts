@@ -1,77 +1,101 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { CasesService } from './cases.service';
 import {
-  CaseIdParams,
-  CaseScheduleCreateInput,
-  CaseScheduleIdParams,
-  CaseScheduleUpdateInput,
-  CaseUpdateInput,
-  caseIdParamSchema,
-  caseScheduleCreateSchema,
-  caseScheduleIdParamSchema,
-  caseScheduleUpdateSchema,
-  updateCaseSchema,
-} from './dto/cases.schema';
-import { parseZod } from '@/common/zod/parse-zod';
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { ZodResponse } from "nestjs-zod";
+import { AuthGuard } from "@/common/auth/auth.guard";
+import { Permissions } from "@/common/auth/permissions.decorator";
+import { PermissionsGuard } from "@/common/auth/permissions.guard";
+import { CasesService } from "./cases.service";
+import {
+  CaseCreateScheduleResponseDto,
+  CaseFindAllQueryDto,
+  CaseFindAllResponseDto,
+  CaseFindAllScheduleQueryDto,
+  CaseFindAllScheduleResponseDto,
+  CaseIdParamDto,
+  CaseReplaceAllDto,
+  CaseReplaceAllResponseDto,
+  CaseScheduleCreateDto,
+  CaseScheduleIdParamDto,
+  CaseScheduleUpdateDto,
+  CaseUpdateDto,
+  CaseUpdateResponseDto,
+  CaseUpdateScheduleResponseDto,
+} from "./dto/cases.schema";
 
-@ApiTags('Cases')
-@Controller('api/cases')
+@ApiTags("Cases")
+@Controller("cases")
+@UseGuards(AuthGuard, PermissionsGuard)
 export class CasesController {
   constructor(private readonly casesService: CasesService) {}
 
   @Get()
-  findAll() {
-    return this.casesService.findAll();
+  @Permissions("viewRemoteCaseHistory", "viewAll")
+  @ZodResponse({ type: CaseFindAllResponseDto })
+  findAll(@Query() query: CaseFindAllQueryDto) {
+    return this.casesService.findAll(query);
   }
 
   @Put()
-  updateAll(@Body() body: unknown) {
-    const payload = parseZod<CaseUpdateInput>(updateCaseSchema, body);
-    return this.casesService.updateAll(payload);
+  @Permissions("applyAccess", "viewAll")
+  @ZodResponse({ type: CaseReplaceAllResponseDto })
+  updateAll(@Body() body: CaseReplaceAllDto) {
+    return this.casesService.updateAll(body);
   }
 
-  @Get(':id')
-  findOne(@Param() params: unknown) {
-    const { id } = parseZod<CaseIdParams>(caseIdParamSchema, params);
-    return this.casesService.findOne(id);
+  @Get(":id")
+  @Permissions("viewRemoteCaseHistory", "viewAll")
+  findOne(@Param() params: CaseIdParamDto) {
+    return this.casesService.findOne(params.id);
   }
 
-  @Patch(':id')
-  update(
-    @Param() params: unknown,
-    @Body() body: unknown,
-  ) {
-    const { id } = parseZod<CaseIdParams>(caseIdParamSchema, params);
-    const payload = parseZod<CaseUpdateInput>(updateCaseSchema, body);
-    return this.casesService.update(id, payload);
+  @Patch(":id")
+  @Permissions("applyAccess", "viewAll")
+  @ZodResponse({ type: CaseUpdateResponseDto })
+  update(@Param() params: CaseIdParamDto, @Body() body: CaseUpdateDto) {
+    return this.casesService.update(params.id, body);
   }
 
-  @Post('schedules')
-  createSchedule(@Body() body: unknown) {
-    const payload = parseZod<CaseScheduleCreateInput>(caseScheduleCreateSchema, body);
-    return this.casesService.createSchedule(payload);
+  @Post("schedules")
+  @Permissions("applyAccess", "viewAll")
+  @ZodResponse({ type: CaseCreateScheduleResponseDto })
+  createSchedule(@Body() body: CaseScheduleCreateDto) {
+    return this.casesService.createSchedule(body);
   }
 
-  @Get('schedules')
-  findSchedules() {
-    return this.casesService.findSchedules();
+  @Get("schedules")
+  @Permissions("viewRemoteCaseHistory", "viewAll")
+  @ZodResponse({ type: CaseFindAllScheduleResponseDto })
+  findSchedules(@Query() query: CaseFindAllScheduleQueryDto) {
+    return this.casesService.findSchedules(query);
   }
 
-  @Patch('schedules/:id')
+  @Patch("schedules/:id")
+  @Permissions("applyAccess", "viewAll")
+  @ZodResponse({ type: CaseUpdateScheduleResponseDto })
   updateSchedule(
-    @Param() params: unknown,
-    @Body() body: unknown,
+    @Param() params: CaseScheduleIdParamDto,
+    @Body() body: CaseScheduleUpdateDto,
   ) {
-    const { id } = parseZod<CaseScheduleIdParams>(caseScheduleIdParamSchema, params);
-    const payload = parseZod<CaseScheduleUpdateInput>(caseScheduleUpdateSchema, body);
-    return this.casesService.updateSchedule(id, payload);
+    return this.casesService.updateSchedule(params.id, body);
   }
 
-  @Delete('schedules/:id')
+  @Delete("schedules/:id")
+  @Permissions("applyAccess", "viewAll")
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeSchedule(@Param() params: unknown) {
-    const { id } = parseZod<CaseScheduleIdParams>(caseScheduleIdParamSchema, params);
-    return this.casesService.removeSchedule(id);
+  removeSchedule(@Param() params: CaseScheduleIdParamDto) {
+    return this.casesService.removeSchedule(params.id);
   }
 }

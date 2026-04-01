@@ -1,18 +1,42 @@
-import 'dotenv/config';
-import { existsSync, readFileSync } from 'fs';
-import { resolve } from 'path';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { PrismaExceptionFilter } from '@/prisma/prisma-exception.filter';
+import "dotenv/config";
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import {
+  cleanupOpenApiDoc,
+  ZodSerializerInterceptor,
+  ZodValidationPipe,
+} from "nestjs-zod";
+import { GlobalExceptionFilter } from "@/common/filters/global-exception.filter";
+import { LoggingInterceptor } from "@/common/interceptors/logging.interceptor";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalFilters(new PrismaExceptionFilter());
+  const corsOriginsRaw = process.env.CORS_ORIGINS;
+  if (!corsOriginsRaw) {
+    throw new Error("CORS_ORIGINS is not defined");
+  }
 
-  const corsOrigins = (process.env.CORS_ORIGINS
-    ?? 'https://plma.jshsus.kr,https://iam.jshsus.kr,http://localhost:3000,http://localhost:5173')
-    .split(',')
+  const portRaw = process.env.PORT;
+  if (!portRaw) {
+    throw new Error("PORT is not defined");
+  }
+
+  const port = Number(portRaw);
+  if (!Number.isInteger(port) || port < 1) {
+    throw new Error("PORT must be a positive integer");
+  }
+
+  const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix("api");
+  app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalPipes(new ZodValidationPipe());
+  app.useGlobalInterceptors(
+    new LoggingInterceptor(),
+    new ZodSerializerInterceptor(),
+  );
+
+  const corsOrigins = corsOriginsRaw
+    .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
 
@@ -28,22 +52,17 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const generatedSwaggerPath = resolve(process.cwd(), 'docs', 'swagger.json');
-  const hasGeneratedSwagger = existsSync(generatedSwaggerPath);
+  const openApiDoc = SwaggerModule.createDocument(
+    app,
+    new DocumentBuilder()
+      .setTitle("PLMA API")
+      .setDescription("PLMA API documentation")
+      .setVersion("0.0")
+      .build(),
+  );
 
-  const openApiDoc = hasGeneratedSwagger
-    ? JSON.parse(readFileSync(generatedSwaggerPath, 'utf8'))
-    : SwaggerModule.createDocument(
-        app,
-        new DocumentBuilder()
-          .setTitle('PLMA API')
-          .setDescription('PLMA API documentation')
-          .setVersion('0.0')
-          .build(),
-      );
+  SwaggerModule.setup("api/docs", app, cleanupOpenApiDoc(openApiDoc));
 
-  SwaggerModule.setup('api/docs', app, openApiDoc);
-
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(port);
 }
 bootstrap();

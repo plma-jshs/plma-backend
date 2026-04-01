@@ -1,76 +1,187 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from '@/prisma/prisma.service';
-import { CaseScheduleCreateInput, CaseScheduleUpdateInput, CaseUpdateInput } from './dto/cases.schema';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { asc, eq, sql } from "drizzle-orm";
+import { DbService } from "@/db/db.service";
+import { cases, caseSchedules } from "@/db/schema";
+import { ensureFound } from "@/common/db/ensure-found";
+import {
+  CaseFindAllQueryDto,
+  CaseFindAllScheduleQueryDto,
+  CaseReplaceAllDto,
+  CaseScheduleCreateDto,
+  CaseScheduleUpdateDto,
+  CaseUpdateDto,
+} from "./dto/cases.schema";
 
 @Injectable()
 export class CasesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly db: DbService) {}
 
-  findAll() {
-    return this.prisma.case.findMany({ orderBy: { id: 'asc' } });
-  }
-
-  findOne(id: number) {
-    return this.prisma.case.findUnique({ where: { id } });
-  }
-
-  update(id: number, updateCaseInput: CaseUpdateInput) {
-    return this.prisma.case.update({
-      where: { id },
-      data: updateCaseInput,
-    });
-  }
-
-  async updateAll(body: CaseUpdateInput) {
-    if (body.isOpen === undefined) {
-      throw new BadRequestException('isOpen is required for updateAll');
-    }
-
-    const targetIsOpen = body.isOpen;
-
-    const [totalCases, disconnectedCases, updated] = await this.prisma.$transaction([
-      this.prisma.case.count(),
-      this.prisma.case.count({ where: { isConnected: false } }),
-      this.prisma.case.updateMany({
-        where: { isConnected: true },
-        data: { isOpen: targetIsOpen },
-      }),
-    ]);
-
+  private serializeCase(data: {
+    id: number;
+    isOpen: boolean;
+    updatedAt: Date;
+  }) {
     return {
-      targetIsOpen,
-      totalCases,
-      excludedDisconnectedCount: disconnectedCases,
-      updatedCount: updated.count,
+      id: data.id,
+      isOpen: data.isOpen,
+      updatedAt: data.updatedAt.toISOString(),
     };
   }
 
-  createSchedule(body: CaseScheduleCreateInput) {
-    return this.prisma.caseSchedule.create({
-      data: {
-        date: new Date(body.date),
+  private serializeSchedule(data: { id: number; date: Date; isOpen: boolean }) {
+    return {
+      id: data.id,
+      isOpen: data.isOpen,
+      date: data.date.toISOString(),
+    };
+  }
+
+  async findAll(query: CaseFindAllQueryDto) {
+    const { page, size } = query;
+    const [rows, totalRows] = await Promise.all([
+      this.db.db
+        .select()
+        .from(cases)
+        .orderBy(asc(cases.id))
+        .offset((page - 1) * size)
+        .limit(size),
+      this.db.db.select({ total: sql<number>`count(*)` }).from(cases),
+    ]);
+
+    const total = Number(totalRows[0]?.total ?? 0);
+    const lastPage = total === 0 ? 0 : Math.ceil(total / size);
+
+    return {
+      data: rows.map((row) => this.serializeCase(row)),
+      meta: { total, page, size, lastPage },
+    };
+  }
+
+  async findOne(id: number) {
+    const row = await this.db.db.query.cases.findFirst({
+      where: eq(cases.id, id),
+    });
+    return row ? this.serializeCase(row) : null;
+  }
+
+  async update(id: number, updateCaseInput: CaseUpdateDto) {
+    const existingCase = await this.db.db.query.cases.findFirst({
+      where: eq(cases.id, id),
+    });
+    ensureFound(existingCase, "case not found");
+
+    await this.db.db
+      .update(cases)
+      .set({ ...updateCaseInput, updatedAt: new Date() })
+      .where(eq(cases.id, id));
+
+    const row = ensureFound(
+      await this.db.db.query.cases.findFirst({ where: eq(cases.id, id) }),
+      "case not found",
+    );
+
+    return this.serializeCase(row);
+  }
+
+  async updateAll(body: CaseReplaceAllDto) {
+    const targetIsOpen = body.isOpen;
+
+    const [totalCasesRow] = await this.db.db
+      .select({ count: sql<number>`count(*)` })
+      .from(cases);
+    const [disconnectedRow] = await this.db.db
+      .select({ count: sql<number>`count(*)` })
+      .from(cases)
+      .where(eq(cases.isConnected, false));
+    const [connectedRow] = await this.db.db
+      .select({ count: sql<number>`count(*)` })
+      .from(cases)
+      .where(eq(cases.isConnected, true));
+
+    await this.db.db
+      .update(cases)
+      .set({ isOpen: targetIsOpen, updatedAt: new Date() })
+      .where(eq(cases.isConnected, true));
+
+    return {
+      targetIsOpen,
+      totalCases: Number(totalCasesRow?.count ?? 0),
+      excludedDisconnectedCount: Number(disconnectedRow?.count ?? 0),
+      updatedCount: Number(connectedRow?.count ?? 0),
+    };
+  }
+
+  async createSchedule(body: CaseScheduleCreateDto) {
+    const [created] = await this.db.db
+      .insert(caseSchedules)
+      .values({
+        date: body.date,
         isOpen: body.isOpen,
-      },
-    });
+      })
+      .$returningId();
+    const row = ensureFound(
+      await this.db.db.query.caseSchedules.findFirst({
+        where: eq(caseSchedules.id, created.id),
+      }),
+      "case schedule not found",
+    );
+
+    return this.serializeSchedule(row);
   }
 
-  findSchedules() {
-    return this.prisma.caseSchedule.findMany({ orderBy: { date: 'asc' } });
+  async findSchedules(query: CaseFindAllScheduleQueryDto) {
+    const { page, size } = query;
+    const [rows, totalRows] = await Promise.all([
+      this.db.db
+        .select()
+        .from(caseSchedules)
+        .orderBy(asc(caseSchedules.date))
+        .offset((page - 1) * size)
+        .limit(size),
+      this.db.db.select({ total: sql<number>`count(*)` }).from(caseSchedules),
+    ]);
+
+    const total = Number(totalRows[0]?.total ?? 0);
+    const lastPage = total === 0 ? 0 : Math.ceil(total / size);
+
+    return {
+      data: rows.map((row) => this.serializeSchedule(row)),
+      meta: { total, page, size, lastPage },
+    };
   }
 
-  updateSchedule(id: number, body: CaseScheduleUpdateInput) {
-    const { date, ...rest } = body;
-
-    return this.prisma.caseSchedule.update({
-      where: { id },
-      data: {
-        ...rest,
-        ...(date ? { date: new Date(date) } : {}),
-      },
+  async updateSchedule(id: number, body: CaseScheduleUpdateDto) {
+    const existingSchedule = await this.db.db.query.caseSchedules.findFirst({
+      where: eq(caseSchedules.id, id),
     });
+    ensureFound(existingSchedule, "case schedule not found");
+
+    await this.db.db
+      .update(caseSchedules)
+      .set({
+        ...body,
+        date: body.date,
+      })
+      .where(eq(caseSchedules.id, id));
+
+    const row = ensureFound(
+      await this.db.db.query.caseSchedules.findFirst({
+        where: eq(caseSchedules.id, id),
+      }),
+      "case schedule not found",
+    );
+
+    return this.serializeSchedule(row);
   }
 
   async removeSchedule(id: number) {
-    return this.prisma.caseSchedule.delete({ where: { id } }).then(() => undefined);
+    const existingSchedule = await this.db.db.query.caseSchedules.findFirst({
+      where: eq(caseSchedules.id, id),
+      columns: { id: true },
+    });
+
+    ensureFound(existingSchedule, "case schedule not found");
+
+    await this.db.db.delete(caseSchedules).where(eq(caseSchedules.id, id));
   }
 }

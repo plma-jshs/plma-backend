@@ -1,4 +1,5 @@
-import { z } from 'zod';
+import { z } from "zod";
+import { createZodDto } from "nestjs-zod";
 
 const phoneRegex = /^01[0-9]-?\d{3,4}-?\d{4}$/;
 
@@ -14,12 +15,11 @@ export const accountCreateSchema = z.object({
   phoneNumber: z.string().trim().regex(phoneRegex).optional(),
 });
 
-export const accountUpdateSchema = z.object({
-  stuid: z.coerce.number().int().min(1).optional(),
-  password: z.string().trim().min(8).max(72).optional(),
-  name: z.string().trim().min(1).max(30).optional(),
+export const accountUpdateSchema = accountCreateSchema.partial().extend({
   studentId: z.union([z.coerce.number().int().min(1), z.null()]).optional(),
-  phoneNumber: z.union([z.string().trim().regex(phoneRegex), z.null()]).optional(),
+  phoneNumber: z
+    .union([z.string().trim().regex(phoneRegex), z.null()])
+    .optional(),
 });
 
 export const accountListQuerySchema = z.object({
@@ -41,11 +41,33 @@ const accountSchema = z.object({
   student: accountStudentSchema.nullable(),
 });
 
+const accountPaginationMetaSchema = z.object({
+  total: z.number().int().min(0),
+  page: z.number().int().min(1),
+  lastPage: z.number().int().min(0),
+});
+
 export const createResponseSchema = accountSchema;
-export const findAllResponseSchema = z.array(accountSchema);
+export const findAllResponseSchema = z.object({
+  data: z.array(accountSchema),
+  meta: accountPaginationMetaSchema,
+});
+export const findOneResponseSchema = accountSchema;
 export const updateResponseSchema = accountSchema;
 
-export type AccountIdParams = z.infer<typeof accountIdParamSchema>;
-export type AccountCreateInput = z.infer<typeof accountCreateSchema>;
-export type AccountUpdateInput = z.infer<typeof accountUpdateSchema>;
-export type AccountListQuery = z.infer<typeof accountListQuerySchema>;
+export class AccountIdParamDto extends createZodDto(accountIdParamSchema) {}
+export class AccountCreateDto extends createZodDto(accountCreateSchema) {}
+export class AccountUpdateDto extends createZodDto(accountUpdateSchema) {}
+export class AccountListQueryDto extends createZodDto(accountListQuerySchema) {}
+export class AccountCreateResponseDto extends createZodDto(
+  createResponseSchema,
+) {}
+export class AccountFindAllResponseDto extends createZodDto(
+  findAllResponseSchema,
+) {}
+export class AccountFindOneResponseDto extends createZodDto(
+  findOneResponseSchema,
+) {}
+export class AccountUpdateResponseDto extends createZodDto(
+  updateResponseSchema,
+) {}

@@ -1,138 +1,55 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# PLMA Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS + Drizzle ORM 백엔드입니다.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 필수 환경 변수
 
-## Description
+기본값 없이 아래 값이 모두 필요합니다.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ pnpm install
+```env
+PORT=3000
+DATABASE_URL=mysql://USER:PASSWORD@HOST:3306/DB_NAME
+CORS_ORIGINS=https://plma.jshsus.kr,https://iam.jshsus.kr,http://localhost:3000,http://localhost:5173
+IAM_CHECK_SESSION_URL=https://iam.jshsus.kr/check-session
 ```
 
-## Compile and run the project
+## 실행
 
 ```bash
-# development
-$ pnpm start
-
-# watch mode
-$ pnpm start:dev
-
-# production mode
-$ pnpm start:prod
+pnpm install
+pnpm start:dev
 ```
 
-## Run tests
+## 빌드/테스트
 
 ```bash
-# unit tests
-$ pnpm test
-
-# e2e tests
-$ pnpm test:e2e
-
-# test coverage
-$ pnpm test:cov
+pnpm run build
+pnpm test
+pnpm test:e2e
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## DB (Drizzle)
 
 ```bash
-$ pnpm add -g @nestjs/mau
-$ mau deploy
+pnpm run db:generate
+pnpm run db:push
+pnpm run db:studio
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 문서
 
-## GitHub Actions CI/CD
+- Swagger: `http://localhost:3000/api/docs`
 
-### CI
+## API 정책
 
-- Workflow: `.github/workflows/ci.yml`
-- Trigger:
-  - Pull request to `main`
-  - Push to `main`
-- Steps:
-  - `pnpm install --frozen-lockfile`
-  - `pnpm prisma validate`
-  - ESLint check
-  - Unit test
-  - Build
+목록 조회 API는 아래 기본 정렬과 페이지네이션 규칙을 따릅니다.
 
-### CD
+- Cases 목록(`GET /api/cases`): `id ASC`
+- Case Schedules 목록(`GET /api/cases/schedules`): `date ASC`
+- Dorm Reports 목록(`GET /api/dorms/reports`): `id DESC`
 
-- Workflow: `.github/workflows/cd.yml`
-- Trigger: manual (`workflow_dispatch`)
-- Strategy: build artifact in GitHub Actions, upload to server via SSH/SCP, then restart app with `pm2`
+페이지네이션 규칙:
 
-Required GitHub Secrets:
-
-- `DEPLOY_HOST`
-- `DEPLOY_USER`
-- `DEPLOY_SSH_KEY` (PEM private key content, e.g. contents of `home.pem`)
-- `DEPLOY_PORT` (optional, default `22`)
-
-Manual deploy inputs:
-
-- `ref`: branch/tag/commit to deploy (default `main`)
-- `app_dir`: app base directory on server (default `/home/ubuntu/Server/plma_backend_using_nestjs`)
-- `process_name`: PM2 process name (default `newplma_v25`)
-
-Server prerequisites:
-
-- Node.js + corepack
-- `pnpm`
-- `pm2`
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- 기본값: `page=1`, `size=20`
+- 최대값: `size <= 100`
+- 응답 메타 규격: `meta.total`, `meta.page`, `meta.size`, `meta.lastPage`

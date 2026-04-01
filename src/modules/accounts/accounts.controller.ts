@@ -1,106 +1,74 @@
 import {
   Body,
   Controller,
-  ForbiddenException,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
   Patch,
   Post,
   Query,
-} from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { AccountsService } from './accounts.service';
+  UseGuards,
+} from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { ZodResponse } from "nestjs-zod";
+import { AccountsService } from "./accounts.service";
 import {
-  AccountIdParams,
-  AccountCreateInput,
-  AccountListQuery,
-  AccountUpdateInput,
-  accountCreateSchema,
-  accountIdParamSchema,
-  accountListQuerySchema,
-  accountUpdateSchema,
-} from './dto/accounts.schema';
-import { parseZod } from '@/common/zod/parse-zod';
-import { SessionService } from '@/modules/session/session.service';
+  AccountCreateDto,
+  AccountCreateResponseDto,
+  AccountFindAllResponseDto,
+  AccountFindOneResponseDto,
+  AccountIdParamDto,
+  AccountListQueryDto,
+  AccountUpdateDto,
+  AccountUpdateResponseDto,
+} from "./dto/accounts.schema";
+import { Permissions } from "@/common/auth/permissions.decorator";
+import { PermissionsGuard } from "@/common/auth/permissions.guard";
 
-@ApiTags('Accounts')
-@Controller('api/accounts')
+@ApiTags("Accounts")
+@Controller("accounts")
+@UseGuards(PermissionsGuard)
 export class AccountsController {
-  constructor(
-    private readonly accountsService: AccountsService,
-    private readonly sessionService: SessionService,
-  ) {}
-
-  private async ensurePermission(
-    authorization: string | undefined,
-    cookie: string | undefined,
-    requiredPermissions: string[],
-  ) {
-    const session = await this.sessionService.checkSession({ authorization, cookie });
-
-    const sessionData = session as { isLogined?: unknown; permissions?: unknown };
-    const permissions = Array.isArray(sessionData.permissions)
-      ? sessionData.permissions.filter((permission): permission is string => typeof permission === 'string')
-      : [];
-
-    if (sessionData.isLogined !== true) {
-      throw new ForbiddenException('login session is required');
-    }
-
-    const hasPermission = requiredPermissions.some((permission) => permissions.includes(permission));
-    if (!hasPermission) {
-      throw new ForbiddenException('permission is required');
-    }
-  }
+  constructor(private readonly accountsService: AccountsService) {}
 
   @Post()
-  async create(
-    @Body() body: unknown,
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
-  ) {
-    await this.ensurePermission(authorization, cookie, ['addIAMAccount', 'applyAccess']);
-    const payload = parseZod<AccountCreateInput>(accountCreateSchema, body);
-    return this.accountsService.create(payload);
+  @HttpCode(HttpStatus.CREATED)
+  @Permissions("addIAMAccount", "applyAccess")
+  @ZodResponse({ type: AccountCreateResponseDto })
+  async create(@Body() body: AccountCreateDto) {
+    return this.accountsService.create(body);
   }
 
   @Get()
-  async findAll(
-    @Query() query: unknown,
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
-  ) {
-    await this.ensurePermission(authorization, cookie, ['viewIAMAccounts', 'viewPLMAAccounts']);
-    const payload = parseZod<AccountListQuery>(accountListQuerySchema, query);
-    return this.accountsService.findAll(payload);
+  @Permissions("viewIAMAccounts", "viewPLMAAccounts")
+  @ZodResponse({ type: AccountFindAllResponseDto })
+  async findAll(@Query() query: AccountListQueryDto) {
+    return this.accountsService.findAll(query);
   }
 
-  @Patch(':id')
+  @Get(":id")
+  @Permissions("viewIAMAccounts", "viewPLMAAccounts")
+  @ZodResponse({ type: AccountFindOneResponseDto })
+  async findOne(@Param() params: AccountIdParamDto) {
+    return this.accountsService.findOne(params.id);
+  }
+
+  @Patch(":id")
+  @Permissions("applyAccess")
+  @ZodResponse({ type: AccountUpdateResponseDto })
   async update(
-    @Param() params: unknown,
-    @Body() body: unknown,
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
+    @Param() params: AccountIdParamDto,
+    @Body() body: AccountUpdateDto,
   ) {
-    await this.ensurePermission(authorization, cookie, ['applyAccess']);
-    const { id } = parseZod<AccountIdParams>(accountIdParamSchema, params);
-    const payload = parseZod<AccountUpdateInput>(accountUpdateSchema, body);
-    return this.accountsService.update(id, payload);
+    return this.accountsService.update(params.id, body);
   }
 
-  @Delete(':id')
+  @Delete(":id")
+  @Permissions("applyAccess")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(
-    @Param() params: unknown,
-    @Headers('authorization') authorization?: string,
-    @Headers('cookie') cookie?: string,
-  ) {
-    await this.ensurePermission(authorization, cookie, ['applyAccess']);
-    const { id } = parseZod<AccountIdParams>(accountIdParamSchema, params);
-    return this.accountsService.remove(id);
+  async remove(@Param() params: AccountIdParamDto) {
+    return this.accountsService.remove(params.id);
   }
 }

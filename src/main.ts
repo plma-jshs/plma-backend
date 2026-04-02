@@ -29,11 +29,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("api");
   app.useGlobalFilters(new GlobalExceptionFilter());
-  app.useGlobalPipes(new ZodValidationPipe());
-  app.useGlobalInterceptors(
-    new LoggingInterceptor(),
-    new ZodSerializerInterceptor(),
-  );
+  // app.useGlobalPipes(new ZodValidationPipe());
+  // app.useGlobalInterceptors(
+  //   new LoggingInterceptor(),
+  //   new ZodSerializerInterceptor(),
+  // );
 
   const corsOrigins = corsOriginsRaw
     .split(",")

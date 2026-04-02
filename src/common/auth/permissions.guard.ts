@@ -41,10 +41,10 @@ export class PermissionsGuard implements CanActivate {
       permissions?: unknown;
     };
 
-    const mergedGuards = this.reflector.getAllAndMerge<unknown[]>(GUARDS_METADATA, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const mergedGuards = this.reflector.getAllAndMerge<unknown[]>(
+      GUARDS_METADATA,
+      [context.getHandler(), context.getClass()],
+    );
     const handlerGuards = Reflect.getMetadata(
       GUARDS_METADATA,
       context.getHandler(),
@@ -60,10 +60,12 @@ export class PermissionsGuard implements CanActivate {
       ...(Array.isArray(classGuards) ? classGuards : []),
     ];
 
-    const hasAuthGuard = guards.some((guard) =>
-      guard === AuthGuard ||
-      (guard as { name?: string })?.name === AuthGuard.name ||
-      (guard as { constructor?: { name?: string } })?.constructor?.name === AuthGuard.name,
+    const hasAuthGuard = guards.some(
+      (guard) =>
+        guard === AuthGuard ||
+        (guard as { name?: string })?.name === AuthGuard.name ||
+        (guard as { constructor?: { name?: string } })?.constructor?.name ===
+          AuthGuard.name,
     );
 
     const permissions = Array.isArray(sessionData.permissions)

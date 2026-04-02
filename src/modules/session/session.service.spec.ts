@@ -98,7 +98,7 @@ describe("SessionService", () => {
       const headers = extractSessionHeaders({
         authorization: ["Bearer ignored-array"],
         cookie: "foo=bar; iam_token=token-from-cookie",
-      });
+      } as unknown as import("http").IncomingHttpHeaders);
 
       const result = await service.checkSession(headers);
 
@@ -117,7 +117,7 @@ describe("SessionService", () => {
       const headers = extractSessionHeaders({
         authorization: ["Bearer ignored-array"],
         cookie: ["iam_token=token-array"],
-      });
+      } as unknown as import("http").IncomingHttpHeaders);
 
       await expect(service.checkSession(headers)).resolves.toEqual({
         isLogined: false,

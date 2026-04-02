@@ -76,6 +76,77 @@ export class SessionService {
     };
   }
 
+  private normalizeSessionPayload(raw: unknown) {
+    if (!raw || typeof raw !== "object") {
+      return { isLogined: false as const };
+    }
+
+    const source = raw as Record<string, unknown>;
+
+    const toIntOrUndefined = (value: unknown) => {
+      if (value === null) {
+        return null;
+      }
+
+      const num = Number(value);
+      if (!Number.isInteger(num)) {
+        return undefined;
+      }
+
+      return num;
+    };
+
+    const toBooleanOrUndefined = (value: unknown) => {
+      if (value === null) {
+        return null;
+      }
+
+      if (typeof value === "boolean") {
+        return value;
+      }
+
+      if (value === 1 || value === "1") {
+        return true;
+      }
+
+      if (value === 0 || value === "0") {
+        return false;
+      }
+
+      return undefined;
+    };
+
+    const normalized: Record<string, unknown> = {
+      isLogined: source.isLogined === true,
+    };
+
+    const iamId = toIntOrUndefined(source.iamId);
+    const userId = toIntOrUndefined(source.userId);
+    const plmaId = toIntOrUndefined(source.plmaId);
+    const stuid = toIntOrUndefined(source.stuid);
+    const jshsus = toBooleanOrUndefined(source.jshsus);
+
+    if (iamId !== undefined) normalized.iamId = iamId;
+    if (userId !== undefined) normalized.userId = userId;
+    if (plmaId !== undefined) normalized.plmaId = plmaId;
+    if (stuid !== undefined) normalized.stuid = stuid;
+    if (jshsus !== undefined) normalized.jshsus = jshsus;
+
+    if (typeof source.name === "string") {
+      normalized.name = source.name;
+    } else if (source.name === null) {
+      normalized.name = null;
+    }
+
+    if (Array.isArray(source.permissions)) {
+      normalized.permissions = source.permissions.filter(
+        (permission): permission is string => typeof permission === "string",
+      );
+    }
+
+    return normalized;
+  }
+
   public async checkSessionByToken(token: string | undefined) {
     if (!token) {
       return { isLogined: false };
@@ -105,7 +176,7 @@ export class SessionService {
     }
 
     try {
-      return JSON.parse(raw) as unknown;
+      return this.normalizeSessionPayload(JSON.parse(raw) as unknown);
     } catch {
       return { isLogined: false };
     }

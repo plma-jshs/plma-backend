@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
-  Optional,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { GUARDS_METADATA } from "@nestjs/common/constants";
@@ -15,22 +14,15 @@ import { extractSessionHeaders } from "@/common/http/session-headers";
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   constructor(
+    private readonly reflector: Reflector,
     private readonly sessionService: SessionService,
-    @Optional() private readonly reflector?: Reflector,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredPermissions =
-      this.reflector?.getAllAndOverride<string[]>(PERMISSIONS_KEY, [
-        context.getHandler(),
-        context.getClass(),
-      ]) ??
-      ((Reflect.getMetadata(PERMISSIONS_KEY, context.getHandler()) as
-        | string[]
-        | undefined) ??
-        (Reflect.getMetadata(PERMISSIONS_KEY, context.getClass()) as
-          | string[]
-          | undefined));
+    const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
+      PERMISSIONS_KEY,
+      [context.getHandler(), context.getClass()],
+    );
 
     if (!requiredPermissions || requiredPermissions.length === 0) {
       return true;
@@ -49,7 +41,7 @@ export class PermissionsGuard implements CanActivate {
       permissions?: unknown;
     };
 
-    const mergedGuards = this.reflector?.getAllAndMerge<unknown[]>(
+    const mergedGuards = this.reflector.getAllAndMerge<unknown[]>(
       GUARDS_METADATA,
       [context.getHandler(), context.getClass()],
     );

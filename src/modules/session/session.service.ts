@@ -1,11 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { eq } from "drizzle-orm";
 import { DbService } from "@/db/db.service";
-import { users } from "@/db/schema";
+import { students, users } from "@/db/schema";
 import { SessionHeaders } from "@/common/http/session-headers";
 
 @Injectable()
 export class SessionService {
+  private readonly isDevelopment = process.env.NODE_ENV === "development";
+
   private readonly iamCheckSessionUrl = (() => {
     const value = process.env.IAM_CHECK_SESSION_URL;
     if (!value) {
@@ -56,6 +58,24 @@ export class SessionService {
     return undefined;
   }
 
+  private getDevelopmentMockSession() {
+    return {
+      isLogined: true,
+      iamId: 999999,
+      userId: 1,
+      plmaId: 1,
+      stuid: 900001,
+      name: "Dev Mock User",
+      jshsus: true,
+      permissions: [
+        "viewAll",
+        "applyAccess",
+        "viewPointsLogs",
+        "viewRemoteCaseHistory",
+      ],
+    };
+  }
+
   public async checkSessionByToken(token: string | undefined) {
     if (!token) {
       return { isLogined: false };
@@ -92,9 +112,137 @@ export class SessionService {
   }
 
   public async checkSession(headers: SessionHeaders) {
+    if (this.isDevelopment) {
+      return this.getDevelopmentMockSession();
+    }
+
     const resolvedToken = this.resolveToken(headers);
     const token = resolvedToken?.token;
     return this.checkSessionByToken(token);
+  }
+
+  public async syncUserFromSession(session: unknown) {
+    if (!session || typeof session !== "object") {
+      return null;
+    }
+
+    const sessionData = session as Record<string, unknown>;
+    if (sessionData.isLogined !== true) {
+      return null;
+    }
+
+    const userId = Number(sessionData.userId);
+    const stuid = Number(sessionData.stuid);
+    const name =
+      typeof sessionData.name === "string" && sessionData.name.trim().length > 0
+        ? sessionData.name.trim()
+        : null;
+
+    if (
+      !Number.isInteger(userId) ||
+      userId < 1 ||
+      !Number.isInteger(stuid) ||
+      stuid < 1 ||
+      !name
+    ) {
+      return null;
+    }
+
+    const existingById = await this.db.db.query.users.findFirst({
+      where: eq(users.id, userId),
+      columns: {
+        id: true,
+        stuid: true,
+        name: true,
+        phoneNumber: true,
+        studentId: true,
+      },
+      with: {
+        student: {
+          columns: {
+            id: true,
+            stuid: true,
+            name: true,
+            grade: true,
+            class: true,
+            num: true,
+            point: true,
+          },
+        },
+      },
+    });
+    if (existingById) {
+      return existingById;
+    }
+
+    const existingByStuid = await this.db.db.query.users.findFirst({
+      where: eq(users.stuid, stuid),
+      columns: {
+        id: true,
+        stuid: true,
+        name: true,
+        phoneNumber: true,
+        studentId: true,
+      },
+      with: {
+        student: {
+          columns: {
+            id: true,
+            stuid: true,
+            name: true,
+            grade: true,
+            class: true,
+            num: true,
+            point: true,
+          },
+        },
+      },
+    });
+    if (existingByStuid) {
+      return existingByStuid;
+    }
+
+    const matchedStudent = await this.db.db.query.students.findFirst({
+      where: eq(students.stuid, stuid),
+      columns: { id: true },
+    });
+
+    try {
+      await this.db.db.insert(users).values({
+        id: userId,
+        stuid,
+        name,
+        password: "IAM_SYNC_ACCOUNT",
+        studentId: matchedStudent?.id,
+        phoneNumber: null,
+      });
+    } catch {
+      // concurrent sync requests may already have inserted the same user
+    }
+
+    return this.db.db.query.users.findFirst({
+      where: eq(users.id, userId),
+      columns: {
+        id: true,
+        stuid: true,
+        name: true,
+        phoneNumber: true,
+        studentId: true,
+      },
+      with: {
+        student: {
+          columns: {
+            id: true,
+            stuid: true,
+            name: true,
+            grade: true,
+            class: true,
+            num: true,
+            point: true,
+          },
+        },
+      },
+    });
   }
 
   public async getCurrentUser(headers: SessionHeaders) {

@@ -38,11 +38,11 @@ import { AuthGuard } from "@/common/auth/auth.guard";
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor, // 이참에 같이 등록
+      useClass: LoggingInterceptor,
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: ZodSerializerInterceptor, // 에러의 주범 해결!
+      useClass: ZodSerializerInterceptor,
     },
     {
       provide: APP_PIPE,

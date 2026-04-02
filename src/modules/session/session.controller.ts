@@ -41,10 +41,6 @@ export class SessionController {
     @Headers("authorization") authorization?: string,
     @Headers("cookie") cookie?: string,
   ) {
-    const sessionUser = await this.sessionService.getCurrentUser({
-      authorization,
-      cookie,
-    });
-    return sessionUser.user ? sessionUser : { isLogined: false };
+    return this.sessionService.getCurrentUser({ authorization, cookie });
   }
 }

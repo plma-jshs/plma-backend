@@ -38,7 +38,9 @@ export class AuthGuard implements CanActivate {
       extractSessionHeaders(request.headers),
     );
 
-    const user = currentUserResponse?.user;
+    const user =
+      currentUserResponse?.user ??
+      (await this.sessionService.syncUserFromSession(currentUserResponse));
 
     if (
       !user ||

@@ -12,6 +12,7 @@ describe("AppController (e2e)", () => {
   const sessionServiceMock = {
     getCurrentUser: jest.fn(),
     checkSession: jest.fn(),
+    syncUserFromSession: jest.fn(),
   };
 
   const dbMock = {
@@ -35,6 +36,8 @@ describe("AppController (e2e)", () => {
   beforeEach(async () => {
     sessionServiceMock.getCurrentUser.mockReset();
     sessionServiceMock.checkSession.mockReset();
+    sessionServiceMock.syncUserFromSession.mockReset();
+    sessionServiceMock.syncUserFromSession.mockResolvedValue(null);
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],

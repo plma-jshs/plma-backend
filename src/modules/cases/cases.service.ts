@@ -115,7 +115,7 @@ export class CasesService {
     const [created] = await this.db.db
       .insert(caseSchedules)
       .values({
-        date: body.date,
+        date: new Date(body.date),
         isOpen: body.isOpen,
       })
       .$returningId();
@@ -156,12 +156,20 @@ export class CasesService {
     });
     ensureFound(existingSchedule, "case schedule not found");
 
+    const updatePayload: {
+      date?: Date;
+      isOpen?: boolean;
+    } = {
+      isOpen: body.isOpen,
+    };
+
+    if (body.date !== undefined) {
+      updatePayload.date = new Date(body.date);
+    }
+
     await this.db.db
       .update(caseSchedules)
-      .set({
-        ...body,
-        date: body.date,
-      })
+      .set(updatePayload)
       .where(eq(caseSchedules.id, id));
 
     const row = ensureFound(

@@ -50,7 +50,7 @@ export const caseScheduleIdParamSchema = z.object({
 });
 
 export const caseScheduleCreateSchema = z.object({
-  date: z.coerce.date(),
+  date: z.iso.datetime(),
   isOpen: z.boolean(),
 });
 

@@ -1,12 +1,10 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
+import { Controller, Get } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { LogsService } from "./logs.service";
 import { Permissions } from "@/common/auth/permissions.decorator";
-import { PermissionsGuard } from "@/common/auth/permissions.guard";
 
 @ApiTags("Logs")
 @Controller("logs")
-@UseGuards(PermissionsGuard)
 export class LogsController {
   constructor(private readonly logsService: LogsService) {}
 

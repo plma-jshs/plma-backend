@@ -34,11 +34,10 @@ import {
 import { AuthGuard } from "@/common/auth/auth.guard";
 import { CurrentUser } from "@/common/auth/current-user.decorator";
 import { Permissions } from "@/common/auth/permissions.decorator";
-import { PermissionsGuard } from "@/common/auth/permissions.guard";
 
 @ApiTags("Points")
 @Controller("points")
-@UseGuards(AuthGuard, PermissionsGuard)
+@UseGuards(AuthGuard)
 export class PointsController {
   constructor(private readonly pointsService: PointsService) {}
 

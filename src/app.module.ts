@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { APP_GUARD } from "@nestjs/core";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
@@ -25,6 +26,13 @@ import { AuthGuard } from "@/common/auth/auth.guard";
     LogsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PermissionsGuard, AuthGuard],
+  providers: [
+    AppService,
+    AuthGuard,
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
+    },
+  ],
 })
 export class AppModule {}

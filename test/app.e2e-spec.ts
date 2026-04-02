@@ -33,7 +33,8 @@ describe("AppController (e2e)", () => {
   } as unknown as DbService;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    sessionServiceMock.getCurrentUser.mockReset();
+    sessionServiceMock.checkSession.mockReset();
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],

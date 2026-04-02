@@ -16,7 +16,6 @@ import { ApiTags } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 import { AuthGuard } from "@/common/auth/auth.guard";
 import { Permissions } from "@/common/auth/permissions.decorator";
-import { PermissionsGuard } from "@/common/auth/permissions.guard";
 import { CasesService } from "./cases.service";
 import {
   CaseCreateScheduleResponseDto,
@@ -37,7 +36,7 @@ import {
 
 @ApiTags("Cases")
 @Controller("cases")
-@UseGuards(AuthGuard, PermissionsGuard)
+@UseGuards(AuthGuard)
 export class CasesController {
   constructor(private readonly casesService: CasesService) {}
 

@@ -9,7 +9,6 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
@@ -25,11 +24,9 @@ import {
   AccountUpdateResponseDto,
 } from "./dto/accounts.schema";
 import { Permissions } from "@/common/auth/permissions.decorator";
-import { PermissionsGuard } from "@/common/auth/permissions.guard";
 
 @ApiTags("Accounts")
 @Controller("accounts")
-@UseGuards(PermissionsGuard)
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
